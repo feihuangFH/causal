@@ -3925,5 +3925,15 @@
       "Part VI: Selection on Observables",
       "Chapter 11: Regression and Matching"
     ]
+  },
+  {
+    "objectID": "index.html#acknowledgement",
+    "href": "index.html#acknowledgement",
+    "title": "Causal Inference for Policy Evaluation",
+    "section": "Acknowledgement",
+    "text": "Acknowledgement\nI would like to acknowledge Dr. Patrick Laub, whose Quarto website templates supported the development of this site.",
+    "crumbs": [
+      "Home"
+    ]
   }
 ]
