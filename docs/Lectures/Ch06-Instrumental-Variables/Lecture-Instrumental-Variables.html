@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Fei Huang, UNSW Sydney">
+
+<title>Instrumental Variables – Causal Inference for Policy Evaluation</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.html" rel="next">
+<link href="../../Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2ed7f7ae727038b1aa95f4c24ad3a3a6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-af98a32a849caa794534a9445d98b5fe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html">Part III: Instrumental Variables</a></li><li class="breadcrumb-item"><a href="../../Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html">Chapter 6: Instrumental Variables</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Causal Inference for Policy Evaluation</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part I: Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch01-Introduction/Lecture-Introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 1: Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch02-Causal-Framework/Lecture-Causal-Framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 2: Causal Inference Framework</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part II: Randomized Experiments</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 3: Experiments: Design and Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 4: Experiments in Practice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 5: When Experiments Go Wrong</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part III: Instrumental Variables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Chapter 6: Instrumental Variables</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part IV: Regression Discontinuity</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 7: Regression Discontinuity</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part V: Panel Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 8: Panel Data and Fixed Effects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 9: Difference-in-Differences</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 10: Synthetic Control</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VI: Selection on Observables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 11: Regression and Matching</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VII: Synthesis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 12: Putting It Together</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading List</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
+  <li><a href="#in-practice-instrumental-variables" id="toc-in-practice-instrumental-variables" class="nav-link" data-scroll-target="#in-practice-instrumental-variables">In Practice: Instrumental Variables</a></li>
+  <li><a href="#from-experiments-to-instruments" id="toc-from-experiments-to-instruments" class="nav-link" data-scroll-target="#from-experiments-to-instruments">From Experiments to Instruments</a>
+  <ul class="collapse">
+  <li><a href="#the-idea" id="toc-the-idea" class="nav-link" data-scroll-target="#the-idea">The Idea</a></li>
+  <li><a href="#where-instruments-come-from" id="toc-where-instruments-come-from" class="nav-link" data-scroll-target="#where-instruments-come-from">Where Instruments Come From</a></li>
+  </ul></li>
+  <li><a href="#the-iv-framework" id="toc-the-iv-framework" class="nav-link" data-scroll-target="#the-iv-framework">The IV Framework</a>
+  <ul class="collapse">
+  <li><a href="#the-assumptions" id="toc-the-assumptions" class="nav-link" data-scroll-target="#the-assumptions">The Assumptions</a></li>
+  <li><a href="#the-estimator" id="toc-the-estimator" class="nav-link" data-scroll-target="#the-estimator">The Estimator</a></li>
+  <li><a href="#what-iv-estimates" id="toc-what-iv-estimates" class="nav-link" data-scroll-target="#what-iv-estimates">What IV Estimates</a></li>
+  </ul></li>
+  <li><a href="#things-that-go-wrong" id="toc-things-that-go-wrong" class="nav-link" data-scroll-target="#things-that-go-wrong">Things That Go Wrong</a>
+  <ul class="collapse">
+  <li><a href="#weak-instruments" id="toc-weak-instruments" class="nav-link" data-scroll-target="#weak-instruments">Weak Instruments</a></li>
+  <li><a href="#defending-the-exclusion-restriction" id="toc-defending-the-exclusion-restriction" class="nav-link" data-scroll-target="#defending-the-exclusion-restriction">Defending the Exclusion Restriction</a></li>
+  <li><a href="#simulation-ols-iv-and-weak-instruments" id="toc-simulation-ols-iv-and-weak-instruments" class="nav-link" data-scroll-target="#simulation-ols-iv-and-weak-instruments">Simulation: OLS, IV, and Weak Instruments</a></li>
+  </ul></li>
+  <li><a href="#case-study-1-the-china-syndrome" id="toc-case-study-1-the-china-syndrome" class="nav-link" data-scroll-target="#case-study-1-the-china-syndrome">Case Study 1: The China Syndrome</a>
+  <ul class="collapse">
+  <li><a href="#case-study-1-import-competition-and-us-jobs" id="toc-case-study-1-import-competition-and-us-jobs" class="nav-link" data-scroll-target="#case-study-1-import-competition-and-us-jobs">Case Study 1: Import Competition and US Jobs</a></li>
+  <li><a href="#case-study-1-why-ols-is-biased-and-the-instrument" id="toc-case-study-1-why-ols-is-biased-and-the-instrument" class="nav-link" data-scroll-target="#case-study-1-why-ols-is-biased-and-the-instrument">Case Study 1: Why OLS Is Biased, and the Instrument</a></li>
+  <li><a href="#case-study-1-results" id="toc-case-study-1-results" class="nav-link" data-scroll-target="#case-study-1-results">Case Study 1: Results</a></li>
+  <li><a href="#case-study-1-threats-and-checks" id="toc-case-study-1-threats-and-checks" class="nav-link" data-scroll-target="#case-study-1-threats-and-checks">Case Study 1: Threats and Checks</a></li>
+  <li><a href="#case-study-1-what-to-copy" id="toc-case-study-1-what-to-copy" class="nav-link" data-scroll-target="#case-study-1-what-to-copy">Case Study 1: What to Copy</a></li>
+  <li><a href="#case-study-1-discussion-questions" id="toc-case-study-1-discussion-questions" class="nav-link" data-scroll-target="#case-study-1-discussion-questions">Case Study 1: Discussion Questions</a></li>
+  </ul></li>
+  <li><a href="#case-study-2-going-public-and-innovation" id="toc-case-study-2-going-public-and-innovation" class="nav-link" data-scroll-target="#case-study-2-going-public-and-innovation">Case Study 2: Going Public and Innovation</a>
+  <ul class="collapse">
+  <li><a href="#case-study-2-does-going-public-change-innovation" id="toc-case-study-2-does-going-public-change-innovation" class="nav-link" data-scroll-target="#case-study-2-does-going-public-change-innovation">Case Study 2: Does Going Public Change Innovation?</a></li>
+  <li><a href="#case-study-2-the-instrument" id="toc-case-study-2-the-instrument" class="nav-link" data-scroll-target="#case-study-2-the-instrument">Case Study 2: The Instrument</a></li>
+  <li><a href="#case-study-2-results" id="toc-case-study-2-results" class="nav-link" data-scroll-target="#case-study-2-results">Case Study 2: Results</a></li>
+  <li><a href="#case-study-2-what-to-copy" id="toc-case-study-2-what-to-copy" class="nav-link" data-scroll-target="#case-study-2-what-to-copy">Case Study 2: What to Copy</a></li>
+  <li><a href="#case-study-2-discussion-questions" id="toc-case-study-2-discussion-questions" class="nav-link" data-scroll-target="#case-study-2-discussion-questions">Case Study 2: Discussion Questions</a></li>
+  </ul></li>
+  <li><a href="#comparing-the-two-designs" id="toc-comparing-the-two-designs" class="nav-link" data-scroll-target="#comparing-the-two-designs">Comparing the Two Designs</a>
+  <ul class="collapse">
+  <li><a href="#comparing-the-two-instruments" id="toc-comparing-the-two-instruments" class="nav-link" data-scroll-target="#comparing-the-two-instruments">Comparing the Two Instruments</a></li>
+  </ul></li>
+  <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a>
+  <ul class="collapse">
+  <li><a href="#iv-checklist" id="toc-iv-checklist" class="nav-link" data-scroll-target="#iv-checklist">IV Checklist</a></li>
+  <li><a href="#common-pitfalls" id="toc-common-pitfalls" class="nav-link" data-scroll-target="#common-pitfalls">Common Pitfalls</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="Lecture-Instrumental-Variables.slides.html"><i class="bi bi-easel2"></i>Slides</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html">Part III: Instrumental Variables</a></li><li class="breadcrumb-item"><a href="../../Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html">Chapter 6: Instrumental Variables</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Instrumental Variables</h1>
+<p class="subtitle lead">Using Outside Shocks to Isolate a Causal Effect</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Instructor</div>
+    <div class="quarto-title-meta-contents">
+             <p>Fei Huang, UNSW Sydney </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="notes">
+<ul>
+<li>Chapter 5 showed that a randomized offer can be used to recover the effect of actually taking a treatment. That offer was an instrument.</li>
+<li>This chapter generalizes the idea to settings with no experiment: an outside shock that moves the treatment, but has no other route to the outcome.</li>
+<li>Two case studies: Chinese import competition and US local labour markets (an instrument built from other countries’ trade), and the effect of going public on firm innovation (an instrument from stock market swings during the IPO process).</li>
+</ul>
+</div>
+<section id="where-this-chapter-fits" class="level3">
+<h3 class="anchored" data-anchor-id="where-this-chapter-fits">Where This Chapter Fits</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Step 2: Does something shift treatment but reach the outcome only through it?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>You arrive here when:</strong> You cannot randomize, but an outside shock nudges some units into treatment (or a randomized offer was not fully taken up, Chapter 5).</li>
+<li><strong>This chapter:</strong> The IV assumptions, two-stage least squares, LATE, weak instruments, and how to defend exclusion.</li>
+<li><strong>Next:</strong> Chapter 7: when a rule assigns treatment at a cutoff. A cutoff that is not followed exactly is an instrument.</li>
+</ul>
+<p>See the design flowchart in Chapter 1.</p>
+</div>
+</div>
+</section>
+<section id="in-practice-instrumental-variables" class="level3">
+<h3 class="anchored" data-anchor-id="in-practice-instrumental-variables">In Practice: Instrumental Variables</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Practitioner Summary
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Use it when:</strong> something outside the units’ control shifts treatment (a randomized offer, a rule, a market shock) and you can argue it has no other route to the outcome</li>
+<li><strong>What you need:</strong> the instrument, treatment, and outcome for the same units; outcomes from before the shock for falsification tests</li>
+<li><strong>What must hold:</strong> relevance, independence, exclusion, and monotonicity</li>
+<li><strong>Checks to run:</strong> first stage and its F-statistic; reduced form; placebo and falsification tests; a description of the compliers</li>
+<li><strong>In R:</strong> <code>feols(y ~ x | fe | d ~ z, data)</code>, <code>fitstat(model, ~ivf)</code> for the first-stage F</li>
+<li><strong>Telling a manager:</strong> “We use only the part of the variation in X caused by Z, which has nothing to do with the outcome otherwise. For units whose X responds to Z, the effect is …”</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="from-experiments-to-instruments" class="level2">
+<h2 class="anchored" data-anchor-id="from-experiments-to-instruments">From Experiments to Instruments</h2>
+<section id="the-idea" class="level3">
+<h3 class="anchored" data-anchor-id="the-idea">The Idea</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Using Variation from Outside the Decision
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The treatment <span class="math inline">D</span> is chosen and therefore confounded. An instrument <span class="math inline">Z</span> is a variable that:</p>
+<ol type="1">
+<li><strong>Moves the treatment</strong> (<span class="math inline">Z \rightarrow D</span>)</li>
+<li>Is as good as randomly assigned with respect to the outcome</li>
+<li>Affects the outcome only through the treatment (<span class="math inline">Z \not\rightarrow Y</span> except via <span class="math inline">D</span>)</li>
+</ol>
+<p><span class="math display">Z \longrightarrow D \longrightarrow Y, \qquad D \longleftarrow U \longrightarrow Y</span></p>
+<p>The confounder <span class="math inline">U</span> biases a regression of <span class="math inline">Y</span> on <span class="math inline">D</span>. The instrument uses only the part of the variation in <span class="math inline">D</span> that comes from <span class="math inline">Z</span>, which <span class="math inline">U</span> does not touch.</p>
+</div>
+</div>
+</section>
+<section id="where-instruments-come-from" class="level3">
+<h3 class="anchored" data-anchor-id="where-instruments-come-from">Where Instruments Come From</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Examples of Natural Instruments
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Instrument</th>
+<th>Treatment it moves</th>
+<th>Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Random offer in an experiment (Chapter 5)</td>
+<td>Using an AI tool</td>
+<td>Productivity</td>
+</tr>
+<tr class="even">
+<td>China’s export growth to <em>other</em> rich countries</td>
+<td>US imports from China</td>
+<td>US manufacturing jobs</td>
+</tr>
+<tr class="odd">
+<td>Stock market swings while a firm’s IPO is pending</td>
+<td>Completing the IPO</td>
+<td>Innovation</td>
+</tr>
+<tr class="even">
+<td>Random assignment of cases to stricter or more lenient judges</td>
+<td>Eviction, bankruptcy relief</td>
+<td>Earnings, health, credit</td>
+</tr>
+<tr class="odd">
+<td>Wind direction</td>
+<td>Air pollution</td>
+<td>Cognitive performance (Chapter 8)</td>
+</tr>
+<tr class="even">
+<td>Policy rules and eligibility thresholds</td>
+<td>Benefit receipt</td>
+<td>Labour supply</td>
+</tr>
+</tbody>
+</table>
+<p>A good instrument comes with a story: why it moves treatment, and why it has no other path to the outcome.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="the-iv-framework" class="level2">
+<h2 class="anchored" data-anchor-id="the-iv-framework">The IV Framework</h2>
+<section id="the-assumptions" class="level3">
+<h3 class="anchored" data-anchor-id="the-assumptions">The Assumptions</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Four Conditions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Assumption</th>
+<th>Meaning</th>
+<th>Testable?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Relevance</strong></td>
+<td><span class="math inline">Z</span> shifts <span class="math inline">D</span>: <span class="math inline">\text{Cov}(Z, D) \neq 0</span></td>
+<td>Yes: the first stage</td>
+</tr>
+<tr class="even">
+<td><strong>Independence</strong></td>
+<td><span class="math inline">Z</span> is as good as random, possibly after controls</td>
+<td>Partly: balance and placebo checks</td>
+</tr>
+<tr class="odd">
+<td><strong>Exclusion</strong></td>
+<td><span class="math inline">Z</span> affects <span class="math inline">Y</span> only through <span class="math inline">D</span></td>
+<td>No: must be argued</td>
+</tr>
+<tr class="even">
+<td><strong>Monotonicity</strong></td>
+<td><span class="math inline">Z</span> never pushes anyone <em>away</em> from treatment (no defiers)</td>
+<td>Rarely; argued</td>
+</tr>
+</tbody>
+</table>
+<p>Relevance is checked with data. The other three are arguments about the setting, supported by indirect evidence.</p>
+</div>
+</div>
+</section>
+<section id="the-estimator" class="level3">
+<h3 class="anchored" data-anchor-id="the-estimator">The Estimator</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Wald Ratio and Two-Stage Least Squares
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>With a single instrument and no controls:</p>
+<p><span class="math display">\hat\beta_{IV} = \frac{\widehat{\text{Cov}}(Y, Z)}{\widehat{\text{Cov}}(D, Z)} = \frac{\text{reduced form (effect of } Z \text{ on } Y)}{\text{first stage (effect of } Z \text{ on } D)}</span></p>
+<p><strong>Two-stage least squares (2SLS)</strong> generalizes this to controls and several instruments:</p>
+<ol type="1">
+<li><strong>First stage:</strong> regress <span class="math inline">D</span> on <span class="math inline">Z</span> and controls <span class="math inline">X</span>; keep the fitted values <span class="math inline">\hat D</span></li>
+<li><strong>Second stage:</strong> regress <span class="math inline">Y</span> on <span class="math inline">\hat D</span> and <span class="math inline">X</span></li>
+</ol>
+<p>Use software for the second stage: running it by hand gives wrong standard errors. In R: <code>feols(y ~ x | fe | d ~ z, data)</code>.</p>
+</div>
+</div>
+</section>
+<section id="what-iv-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="what-iv-estimates">What IV Estimates</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>A Local Effect, for Compliers
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>With heterogeneous effects and a binary treatment, IV estimates the local average treatment effect (LATE): the effect for compliers, the units whose treatment status is changed by the instrument <span class="citation" data-cites="imbens1994identification angrist1996identification">(<a href="#ref-imbens1994identification" role="doc-biblioref">Imbens and Angrist 1994</a>; <a href="#ref-angrist1996identification" role="doc-biblioref">Angrist et al. 1996</a>)</span>.</p>
+<ul>
+<li>Different instruments for the same treatment can identify different LATEs, because they shift different people</li>
+<li>Compliers are often marginal units: firms that would go public in a good market but not a bad one; workers who use a tool only when nudged</li>
+<li>With a continuous treatment, IV is a weighted average of marginal effects, with weights determined by the instrument</li>
+</ul>
+<p>Always ask: who are the compliers, and is their effect the one the policy question needs?</p>
+</div>
+</div>
+</section>
+</section>
+<section id="things-that-go-wrong" class="level2">
+<h2 class="anchored" data-anchor-id="things-that-go-wrong">Things That Go Wrong</h2>
+<section id="weak-instruments" class="level3">
+<h3 class="anchored" data-anchor-id="weak-instruments">Weak Instruments</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>When the First Stage Is Small
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>A weak first stage makes the IV estimate noisy and biased towards OLS, and its usual confidence intervals are too narrow</li>
+<li>It also amplifies any violation of independence or exclusion: a small direct effect of <span class="math inline">Z</span> on <span class="math inline">Y</span> is divided by a small first stage <span class="citation" data-cites="hernan2020causal">(<a href="#ref-hernan2020causal" role="doc-biblioref">Hernán and Robins 2020</a>)</span></li>
+<li><strong>Rule of thumb:</strong> a first-stage F-statistic below 10 signals trouble. Recent work suggests the conventional t-test needs a much larger F (above about 100) to have its nominal size <span class="citation" data-cites="lee2022valid">(<a href="#ref-lee2022valid" role="doc-biblioref">Lee et al. 2022</a>)</span></li>
+<li><strong>Responses:</strong> report the first stage prominently; use weak-instrument-robust inference (e.g., Anderson–Rubin confidence sets); prefer one strong instrument to many weak ones</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="defending-the-exclusion-restriction" class="level3">
+<h3 class="anchored" data-anchor-id="defending-the-exclusion-restriction">Defending the Exclusion Restriction</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Indirect Evidence for an Untestable Assumption
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Name the alternative channels</strong> through which <span class="math inline">Z</span> could affect <span class="math inline">Y</span>, and rule them out one by one</li>
+<li><strong>Placebo tests:</strong> find a setting where <span class="math inline">Z</span> varies but cannot affect <span class="math inline">D</span>. If <span class="math inline">Z</span> still predicts <span class="math inline">Y</span> there, exclusion fails. Bernstein checks NASDAQ returns <em>outside</em> the IPO window</li>
+<li><strong>Falsification on the past:</strong> the instrument should not predict outcomes before treatment. Autor et al.&nbsp;check whether future import exposure predicts manufacturing changes in earlier decades</li>
+<li><strong>Over-identification tests</strong> (several instruments) can only detect instruments that disagree; they cannot validate all of them</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="simulation-ols-iv-and-weak-instruments" class="level3">
+<h3 class="anchored" data-anchor-id="simulation-ols-iv-and-weak-instruments">Simulation: OLS, IV, and Weak Instruments</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setFixest_notes</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>simulate <span class="ot">&lt;-</span> <span class="cf">function</span>(first_stage, <span class="at">n =</span> <span class="dv">1000</span>) {</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)                                   <span class="co"># unobserved confounder</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  z <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)                                   <span class="co"># instrument: random, no direct effect on y</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> first_stage <span class="sc">*</span> z <span class="sc">+</span> u <span class="sc">+</span> <span class="fu">rnorm</span>(n)             <span class="co"># treatment depends on z and on u</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fl">1.0</span> <span class="sc">*</span> d <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> u <span class="sc">+</span> <span class="fu">rnorm</span>(n)                 <span class="co"># true effect of d = 1</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(y, d, z)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">ols =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> d, dat))[<span class="st">"d"</span>]),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">iv  =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> d <span class="sc">~</span> z, dat))[<span class="st">"fit_d"</span>]),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">F   =</span> <span class="fu">fitstat</span>(<span class="fu">feols</span>(d <span class="sc">~</span> z, dat), <span class="st">"f"</span>)<span class="sc">$</span>f<span class="sc">$</span>stat)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>strong <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">500</span>, <span class="fu">simulate</span>(<span class="at">first_stage =</span> <span class="fl">1.0</span>))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>weak   <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">500</span>, <span class="fu">simulate</span>(<span class="at">first_stage =</span> <span class="fl">0.05</span>))</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">rbind</span>(<span class="at">strong_median =</span> <span class="fu">apply</span>(strong, <span class="dv">1</span>, median),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">weak_median   =</span> <span class="fu">apply</span>(weak, <span class="dv">1</span>, median),</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>            <span class="at">weak_IQR_low  =</span> <span class="fu">apply</span>(weak, <span class="dv">1</span>, quantile, <span class="fl">0.25</span>),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">weak_IQR_high =</span> <span class="fu">apply</span>(weak, <span class="dv">1</span>, quantile, <span class="fl">0.75</span>)), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>               ols   iv      F
+strong_median 1.67 1.00 499.73
+weak_median   2.00 1.26   1.23
+weak_IQR_low  1.98 0.27   0.38
+weak_IQR_high 2.02 2.08   3.31</code></pre>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>With a strong instrument, IV centres on the true effect (1) while OLS is biased upwards by the confounder.</li>
+<li>With a weak instrument (first-stage F around 1), IV estimates are widely dispersed and their median drifts towards the OLS estimate.</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="case-study-1-the-china-syndrome" class="level2">
+<h2 class="anchored" data-anchor-id="case-study-1-the-china-syndrome">Case Study 1: The China Syndrome</h2>
+<section id="case-study-1-import-competition-and-us-jobs" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-import-competition-and-us-jobs">Case Study 1: Import Competition and US Jobs</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Autor, Dorn &amp; Hanson (2013), <em>American Economic Review</em> <span class="citation" data-cites="autor2013china">(<a href="#ref-autor2013china" role="doc-biblioref">Autor et al. 2013</a>)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question:</strong> How did rising imports from China between 1990 and 2007 affect US local labour markets: manufacturing jobs, unemployment, wages, and use of government transfers?</p>
+<p><strong>Units:</strong> 722 commuting zones (local labour markets covering the mainland US), observed over two periods (1990–2000, 2000–2007).</p>
+<p><strong>Treatment: import exposure per worker.</strong> Regions differ in exposure because they specialized in different industries before China’s rise:</p>
+<p><span class="math display">\Delta IPW_{it} = \sum_j \frac{L_{ijt}}{L_{ujt}} \cdot \frac{\Delta M_{jt}}{L_{it}}</span></p>
+<p>National growth in Chinese imports in industry <span class="math inline">j</span> (<span class="math inline">\Delta M_{jt}</span>) is allocated to region <span class="math inline">i</span> according to the region’s share of national employment in that industry, per worker.</p>
+</div>
+</div>
+</section>
+<section id="case-study-1-why-ols-is-biased-and-the-instrument" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-why-ols-is-biased-and-the-instrument">Case Study 1: Why OLS Is Biased, and the Instrument</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>The Endogeneity Problem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>US imports from China rise partly because US demand rises. A region with booming demand for, say, furniture sees more imports and more local furniture jobs. Demand shocks therefore push imports and employment in the same direction, making OLS understate the harm from Chinese competition.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>The Instrument: Other Rich Countries’ Imports from China
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Replace US imports with Chinese import growth into eight other high-income countries (Australia, Denmark, Finland, Germany, Japan, New Zealand, Spain, Switzerland), allocated using ten-year-lagged US employment shares.</p>
+<ul>
+<li><strong>Relevance:</strong> China’s productivity gains and WTO entry raised its exports to all rich countries at once</li>
+<li><strong>Exclusion:</strong> demand shocks in Germany or Japan should not directly change employment in a US commuting zone</li>
+<li><strong>Lagged shares</strong> reduce the risk that regions’ industry mix already reflected anticipated Chinese competition</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-1-results" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-results">Case Study 1: Results</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Main Findings
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>IV vs.&nbsp;OLS:</strong> an extra $1,000 of import exposure per worker over a decade lowers manufacturing employment by 0.60 percentage points of the working-age population (2SLS), compared with 0.17 from OLS. About a quarter of the gap reflects measurement error in regional employment; the rest is the correction for endogeneity, in the direction the demand story predicts</li>
+<li><strong>Aggregate importance:</strong> the authors’ conservative estimate, counting only the supply-driven part of Chinese imports, is that import competition explains about 21% of the decline in US manufacturing employment over 1990–2007 (“one-quarter” in the abstract)</li>
+<li><strong>Beyond manufacturing:</strong> more exposed regions see higher unemployment, lower labour force participation, lower wages, and sharp rises in transfer payments (unemployment, disability, retirement, health care)</li>
+<li>Standard errors clustered by state; regressions weighted by regional population</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-1-threats-and-checks" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-threats-and-checks">Case Study 1: Threats and Checks</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Could the Instrument Fail?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Correlated demand shocks across rich countries</strong> (e.g., global demand for electronics): would bias estimates <em>towards zero</em>. The authors confirm results with a gravity-model measure of China’s supply-side gains</li>
+<li><strong>Pre-existing decline:</strong> maybe regions exposed to China were losing manufacturing anyway. Falsification: future import exposure shows little relation to manufacturing changes before the shock (a weak negative relation in the 1980s, a positive one in the 1970s)</li>
+<li><strong>Shift-share structure:</strong> the instrument combines industry shocks with regional shares. Its validity can rest on the shocks being as-good-as-random <span class="citation" data-cites="borusyak2022quasi">(<a href="#ref-borusyak2022quasi" role="doc-biblioref">Borusyak et al. 2022</a>)</span> or on the shares being exogenous <span class="citation" data-cites="goldsmithpinkham2020bartik">(<a href="#ref-goldsmithpinkham2020bartik" role="doc-biblioref">Goldsmith-Pinkham et al. 2020</a>)</span>, two different arguments worth making explicit</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-1-what-to-copy" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-what-to-copy">Case Study 1: What to Copy</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Practices to Reuse
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Build the instrument from the same shock seen elsewhere.</strong> Other rich countries’ imports from China capture China’s supply push without US demand.</li>
+<li><strong>Use lagged exposure shares,</strong> so the measure does not already reflect anticipated competition.</li>
+<li><strong>Run a falsification test on the past:</strong> future exposure should not explain changes before the shock.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-1-discussion-questions" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-discussion-questions">Case Study 1: Discussion Questions</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li>Why does the OLS estimate understate the effect? Draw the causal diagram with the demand shock.</li>
+<li>Why might Australia’s imports from China be a valid instrument for <em>US</em> imports from China? What would make it invalid?</li>
+<li>Why use employment shares from ten years earlier rather than at the start of each period?</li>
+<li>Who are the “compliers” when the instrument is continuous and the units are regions?</li>
+<li>The rise in disability and other transfers is part of the effect. What does that imply for evaluating trade policy?</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Suggested Answers (click to expand)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>A local demand shock raises both imports and local production. It pushes imports and employment up together, hiding part of the negative effect of import competition. The diagram has demand → imports and demand → employment, alongside imports → employment.</li>
+<li>China’s productivity growth and WTO entry raised its exports to all rich countries, which moves US imports (relevance), while Australia’s demand should not affect US employment directly. It fails if demand shocks are correlated across rich countries, or if trade with Australia affects US industries directly.</li>
+<li>Shares at the start of a period may already reflect anticipated Chinese competition, as firms move out of exposed industries. Ten-year-old shares come from before that response.</li>
+<li>With a continuous instrument and continuous treatment, 2SLS averages the effects with weights that are larger where the instrument moves exposure most: regions specialized in the industries where China’s exports grew fastest.</li>
+<li>Costs go beyond lost manufacturing jobs: transfers, lower participation, and lower wages last for years. Evaluating trade policy needs to count these adjustment costs and who bears them, not only the gains to consumers.</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="case-study-2-going-public-and-innovation" class="level2">
+<h2 class="anchored" data-anchor-id="case-study-2-going-public-and-innovation">Case Study 2: Going Public and Innovation</h2>
+<section id="case-study-2-does-going-public-change-innovation" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-does-going-public-change-innovation">Case Study 2: Does Going Public Change Innovation?</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Bernstein (2015), <em>Journal of Finance</em> <span class="citation" data-cites="bernstein2015going">(<a href="#ref-bernstein2015going" role="doc-biblioref">Bernstein 2015</a>)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question:</strong> When a firm goes public, does its innovation change?</p>
+<p><strong>The selection problem:</strong> firms that go public differ from those that stay private. Comparing firms that completed an IPO with firms that filed but withdrew helps, since both wanted to go public, but the decision to withdraw is itself a choice.</p>
+<p><strong>Data:</strong> innovative US firms that filed for an IPO between 1985 and 2003: 1,488 completed and 323 withdrew. Innovation measured with patents for five years after filing: number of patents (scale) and citations per patent (novelty).</p>
+</div>
+</div>
+</section>
+<section id="case-study-2-the-instrument" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-the-instrument">Case Study 2: The Instrument</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Market Swings During the IPO Window
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Instrument:</strong> NASDAQ returns in the two months after the IPO filing, while the firm is marketing its shares (book-building). Firms are more likely to withdraw if the market falls during this window.</p>
+<p><strong>First stage:</strong> a one standard deviation fall in two-month NASDAQ returns lowers the likelihood of completing the IPO by about 8.7%; first-stage F = 47.8.</p>
+<p><strong>Specification:</strong> filing-year and industry fixed effects, plus pre-filing innovation, so firms are compared with others filing in the same year and industry.</p>
+<p><strong>Exclusion argument:</strong> a two-month market swing affects five-year innovation only by changing whether the firm goes public. Placebo: NASDAQ returns outside the book-building window, when the listing decision is already fixed, do not predict innovation.</p>
+</div>
+</div>
+</section>
+<section id="case-study-2-results" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-results">Case Study 2: Results</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Main Findings
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Going public causes about a 40% decline in innovation novelty (citations per patent), with no change in the number of patents: firms shift to more conventional projects</li>
+<li><strong>Inventors:</strong> key inventors are more likely to leave after the IPO, and those who stay become less productive; public firms do attract new inventors</li>
+<li><strong>Buying innovation:</strong> newly public firms acquire more companies; acquired patents make up almost a third of their patent portfolio within five years</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Whose Effect?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The compliers are firms whose IPO depends on market conditions during a two-month window: marginal IPO candidates. The effect for firms that would go public in any market could differ.</p>
+</div>
+</div>
+</section>
+<section id="case-study-2-what-to-copy" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-what-to-copy">Case Study 2: What to Copy</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Practices to Reuse
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Narrow the comparison first.</strong> Comparing firms that filed for an IPO and completed it with those that withdrew removes most differences before the instrument is used.</li>
+<li><strong>Pair the instrument with a placebo window.</strong> Market returns outside book-building should not matter, and they do not.</li>
+<li><strong>Say whose effect it is:</strong> marginal IPO firms whose listing depends on market conditions.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-2-discussion-questions" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-discussion-questions">Case Study 2: Discussion Questions</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li>Why is comparing completed with withdrawn IPO filers better than comparing public with private firms, and why is it still not enough?</li>
+<li>How could a NASDAQ fall affect long-run innovation other than through IPO completion? How does the placebo test address this?</li>
+<li>Why is the first-stage F-statistic reported, and what would you conclude if it were 4?</li>
+<li>Why might the effect on novelty differ for marginal IPO firms compared with firms that would always go public?</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Suggested Answers (click to expand)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Both groups wanted to go public, so they are more alike than public and private firms. But withdrawal is a choice that may reflect bad news about the firm’s prospects, which could also affect innovation.</li>
+<li>A market fall may signal worse investment opportunities or financing conditions that affect innovation directly, whether or not the firm lists. The placebo shows that market returns outside the book-building window, when the listing decision is already fixed, do not predict innovation.</li>
+<li>It shows the instrument moves IPO completion strongly enough for standard inference. With F = 4 the instrument would be weak: the 2SLS estimate would be biased towards OLS and its confidence intervals unreliable, so weak-instrument-robust inference would be needed and conclusions would be fragile.</li>
+<li>Marginal firms list only in good markets; they may be smaller or riskier, with innovation that depends more on private ownership. Firms that would always list may already run more conventional projects, so the change on listing could be smaller.</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="comparing-the-two-designs" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-the-two-designs">Comparing the Two Designs</h2>
+<section id="comparing-the-two-instruments" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-the-two-instruments">Comparing the Two Instruments</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Two Instruments Compared
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Autor, Dorn &amp; Hanson</th>
+<th>Bernstein</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Treatment</strong></td>
+<td>Import exposure (continuous)</td>
+<td>Completing an IPO (binary)</td>
+</tr>
+<tr class="even">
+<td><strong>Instrument</strong></td>
+<td>Chinese imports into other rich countries</td>
+<td>NASDAQ returns during book-building</td>
+</tr>
+<tr class="odd">
+<td><strong>Relevance</strong></td>
+<td>China’s supply shock hit all rich countries</td>
+<td>Falling markets lead firms to withdraw (F = 47.8)</td>
+</tr>
+<tr class="even">
+<td><strong>Exclusion threat</strong></td>
+<td>Global demand shocks</td>
+<td>Market conditions affecting innovation directly</td>
+</tr>
+<tr class="odd">
+<td><strong>Key check</strong></td>
+<td>Pre-period falsification; gravity-based measure</td>
+<td>Placebo returns outside the IPO window</td>
+</tr>
+<tr class="even">
+<td><strong>Whose effect</strong></td>
+<td>Regions, weighted by how strongly the instrument shifts their exposure</td>
+<td>Marginal IPO firms</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="best-practices" class="level2">
+<h2 class="anchored" data-anchor-id="best-practices">Best Practices</h2>
+<section id="iv-checklist" class="level3">
+<h3 class="anchored" data-anchor-id="iv-checklist">IV Checklist</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Report and Argue
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Tell the story</strong> of the instrument: why it moves treatment, and why it has no other path to the outcome</li>
+<li><strong>Show the first stage</strong> (coefficient and F-statistic) and the reduced form (effect of <span class="math inline">Z</span> on <span class="math inline">Y</span>)</li>
+<li><strong>Compare with OLS</strong> and explain the direction of the difference</li>
+<li><strong>Run placebo and falsification tests</strong> for exclusion</li>
+<li><strong>Describe the compliers</strong>: whose effect is identified?</li>
+<li><strong>Use weak-instrument-robust inference</strong> when the first stage is not very strong</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="common-pitfalls" class="level3">
+<h3 class="anchored" data-anchor-id="common-pitfalls">Common Pitfalls</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Mistakes to Avoid
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Treating a significant first stage as proof the instrument is valid (relevance is the easy part)</li>
+<li>Assuming the exclusion restriction without naming alternative channels</li>
+<li><strong>Many weak instruments</strong> instead of one strong one</li>
+<li>Computing the second stage by hand and reporting its standard errors</li>
+<li>Interpreting the IV estimate as an average effect for everyone</li>
+<li>Using a lagged value of the treatment as an instrument without a story for why it is excluded</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="summary" class="level3">
+<h3 class="anchored" data-anchor-id="summary">Summary</h3>
+<div class="incremental">
+<ul class="incremental">
+<li>An instrument shifts treatment but affects the outcome only through it; IV uses only that variation</li>
+<li><strong>Relevance</strong> is tested; independence, exclusion, and monotonicity are argued with indirect evidence</li>
+<li>IV estimates a local effect for compliers</li>
+<li><strong>Weak instruments</strong> produce noisy, biased estimates with misleading confidence intervals</li>
+<li>Strong IV papers combine a convincing story, a strong first stage, and careful placebo and falsification tests</li>
+</ul>
+</div>
+</section>
+<section id="next-steps" class="level3">
+<h3 class="anchored" data-anchor-id="next-steps">Next Steps</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li><strong>Read</strong>: <span class="citation" data-cites="autor2013china">Autor et al. (<a href="#ref-autor2013china" role="doc-biblioref">2013</a>)</span> (introduction, data and empirical strategy, main results); <span class="citation" data-cites="bernstein2015going">Bernstein (<a href="#ref-bernstein2015going" role="doc-biblioref">2015</a>)</span> (identification strategy and main results)</li>
+<li><strong>Practice</strong>: In the simulation, add a direct effect of <span class="math inline">z</span> on <span class="math inline">y</span> (violating exclusion). How does the IV estimate change?</li>
+<li><strong>Next Class</strong>: Regression discontinuity, where a rule decides treatment at a cutoff (Chapter 7)</li>
+</ol>
+</div>
+</section>
+<section id="references" class="level3 scrollable">
+<h3 class="scrollable anchored" data-anchor-id="references">References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-angrist1996identification" class="csl-entry" role="listitem">
+Angrist, Joshua D, Guido W Imbens, and Donald B Rubin. 1996. <span>“Identification of Causal Effects Using Instrumental Variables.”</span> <em>Journal of the American Statistical Association</em> 91 (434): 444–55.
+</div>
+<div id="ref-autor2013china" class="csl-entry" role="listitem">
+Autor, David H, David Dorn, and Gordon H Hanson. 2013. <span>“The China Syndrome: Local Labor Market Effects of Import Competition in the United States.”</span> <em>American Economic Review</em> 103 (6): 2121–68. <a href="https://doi.org/10.1257/aer.103.6.2121">https://doi.org/10.1257/aer.103.6.2121</a>.
+</div>
+<div id="ref-bernstein2015going" class="csl-entry" role="listitem">
+Bernstein, Shai. 2015. <span>“Does Going Public Affect Innovation?”</span> <em>The Journal of Finance</em> 70 (4): 1365–403. <a href="https://doi.org/10.1111/jofi.12275">https://doi.org/10.1111/jofi.12275</a>.
+</div>
+<div id="ref-borusyak2022quasi" class="csl-entry" role="listitem">
+Borusyak, Kirill, Peter Hull, and Xavier Jaravel. 2022. <span>“Quasi-Experimental Shift-Share Research Designs.”</span> <em>Review of Economic Studies</em> 89 (1): 181–213. <a href="https://doi.org/10.1093/restud/rdab030">https://doi.org/10.1093/restud/rdab030</a>.
+</div>
+<div id="ref-goldsmithpinkham2020bartik" class="csl-entry" role="listitem">
+Goldsmith-Pinkham, Paul, Isaac Sorkin, and Henry Swift. 2020. <span>“Bartik Instruments: What, When, Why, and How.”</span> <em>American Economic Review</em> 110 (8): 2586–624. <a href="https://doi.org/10.1257/aer.20181047">https://doi.org/10.1257/aer.20181047</a>.
+</div>
+<div id="ref-hernan2020causal" class="csl-entry" role="listitem">
+Hernán, Miguel A., and James M. Robins. 2020. <em>Causal Inference: What If</em>. Chapman &amp; Hall/CRC. <a href="https://miguelhernan.org/whatifbook">https://miguelhernan.org/whatifbook</a>.
+</div>
+<div id="ref-imbens1994identification" class="csl-entry" role="listitem">
+Imbens, Guido W, and Joshua D Angrist. 1994. <span>“Identification and Estimation of Local Average Treatment Effects.”</span> <em>Econometrica</em> 62 (2): 467–75. <a href="https://doi.org/10.2307/2951620">https://doi.org/10.2307/2951620</a>.
+</div>
+<div id="ref-lee2022valid" class="csl-entry" role="listitem">
+Lee, David S, Justin McCrary, Marcelo J Moreira, and Jack Porter. 2022. <span>“Valid t-Ratio Inference for <span>IV</span>.”</span> <em>American Economic Review</em> 112 (10): 3260–90. <a href="https://doi.org/10.1257/aer.20211063">https://doi.org/10.1257/aer.20211063</a>.
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html" class="pagination-link" aria-label="Chapter 5: When Experiments Go Wrong">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Chapter 5: When Experiments Go Wrong</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.html" class="pagination-link" aria-label="Chapter 7: Regression Discontinuity">
+        <span class="nav-page-text">Chapter 7: Regression Discontinuity</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

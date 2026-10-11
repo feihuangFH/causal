@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2ed7f7ae727038b1aa95f4c24ad3a3a6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
+
+  <meta name="author" content="Fei Huang, UNSW Sydney">
+  <title>Causal Inference for Policy Evaluation – Putting It Together</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #1f1c1b;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #1f1c1b; } /* Normal */
+    code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+    code span.an { color: #ca60ca; } /* Annotation */
+    code span.at { color: #0057ae; } /* Attribute */
+    code span.bn { color: #b08000; } /* BaseN */
+    code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+    code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #924c9d; } /* Char */
+    code span.cn { color: #aa5500; } /* Constant */
+    code span.co { color: #898887; } /* Comment */
+    code span.cv { color: #0095ff; } /* CommentVar */
+    code span.do { color: #607880; } /* Documentation */
+    code span.dt { color: #0057ae; } /* DataType */
+    code span.dv { color: #b08000; } /* DecVal */
+    code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+    code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #b08000; } /* Float */
+    code span.fu { color: #644a9b; } /* Function */
+    code span.im { color: #ff5500; } /* Import */
+    code span.in { color: #b08000; } /* Information */
+    code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+    code span.op { color: #ca60ca; } /* Operator */
+    code span.ot { color: #006e28; } /* Other */
+    code span.pp { color: #006e28; } /* Preprocessor */
+    code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #ff5500; } /* SpecialString */
+    code span.st { color: #bf0303; } /* String */
+    code span.va { color: #0057ae; } /* Variable */
+    code span.vs { color: #bf0303; } /* VerbatimString */
+    code span.wa { color: #bf0303; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-96baaebca6aae0d833d4fea310b664e9.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Putting It Together</h1>
+  <p class="subtitle">Combining Designs, Accumulating Evidence, and Reporting</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Fei Huang, UNSW Sydney 
+</div>
+</div>
+</div>
+
+</section>
+<section class="slide level2 center">
+
+<aside class="notes">
+<ul>
+<li>The final chapter steps back from individual methods. Strong evaluations rarely rely on a single design; strong evidence rarely comes from a single study.</li>
+<li>We look at how the case studies in these notes combined designs, how to combine estimates across studies, what can go wrong at the level of the literature, and how to report an evaluation so that decision-makers can use it.</li>
+<li>The generative AI studies from across the notes serve as a worked example of evidence synthesis.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="where-this-chapter-fits" class="slide level2 center">
+<h2>Where This Chapter Fits</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>After the flowchart</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>You arrive here when:</strong> You have a main design, and want to know how much to trust it and how to report it.</li>
+<li><strong>This chapter:</strong> Combining designs, pooling evidence across studies, external validity, and reporting.</li>
+<li><strong>Next:</strong> Your own evaluation.</li>
+</ul>
+<p>See the design flowchart in Chapter 1.</p>
+</div>
+</div>
+</div>
+</section>
+<section>
+<section id="choosing-and-combining-designs" class="title-slide slide level1 center">
+<h1>Choosing and Combining Designs</h1>
+
+</section>
+<section id="where-each-method-finds-its-counterfactual" class="slide level2 center">
+<h2>Where Each Method Finds Its Counterfactual</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>A Recap of the Toolkit</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>The counterfactual comes from…</th>
+<th>Key assumption</th>
+<th>Chapter</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Randomized experiment</td>
+<td>A lottery</td>
+<td>Random assignment; no spillovers</td>
+<td>3–5</td>
+</tr>
+<tr class="even">
+<td>Instrumental variables</td>
+<td>An outside shock that shifts treatment</td>
+<td>Relevance; independence; exclusion; monotonicity</td>
+<td>6</td>
+</tr>
+<tr class="odd">
+<td>Regression discontinuity</td>
+<td>Units just across a cutoff</td>
+<td>Continuity at the cutoff</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td>Panel fixed effects</td>
+<td>The same unit at other times</td>
+<td>No time-varying confounders (strict exogeneity)</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td>Difference-in-differences</td>
+<td>The change in an untreated group</td>
+<td>Parallel trends</td>
+<td>9</td>
+</tr>
+<tr class="even">
+<td>Synthetic control</td>
+<td>A weighted mix of untreated units</td>
+<td>Pre-treatment fit carries over</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td>Regression, matching</td>
+<td>Similar units, by observed characteristics</td>
+<td>No unmeasured confounders</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<p>The order follows the design flowchart in Chapter 1.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="the-best-papers-combine-designs" class="slide level2 center">
+<h2>The Best Papers Combine Designs</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Triangulation in the Case Studies</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paper</th>
+<th>Main design</th>
+<th>Backed up by</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Goldin et al.&nbsp;(Ch. 3)</td>
+<td>Randomized letters</td>
+<td>IV to scale to the effect of coverage</td>
+</tr>
+<tr class="even">
+<td>Cui et al.&nbsp;(Ch. 4–5)</td>
+<td>Three field experiments</td>
+<td>IV for take-up; fixed effects; pooling across experiments</td>
+</tr>
+<tr class="odd">
+<td>Künn et al.&nbsp;(Ch. 8)</td>
+<td>Player fixed effects</td>
+<td>IV using wind-driven outdoor pollution; replication in another league</td>
+</tr>
+<tr class="even">
+<td>Brynjolfsson et al.&nbsp;(Ch. 8–9)</td>
+<td>Staggered DiD</td>
+<td>Team-level IV; a small randomized pilot; robust estimators</td>
+</tr>
+<tr class="odd">
+<td>Miller et al.&nbsp;(Ch. 9)</td>
+<td>Event-study DiD</td>
+<td>Placebo groups; power analysis; Wald-style scaling</td>
+</tr>
+<tr class="even">
+<td>Demirci et al.&nbsp;(Ch. 9)</td>
+<td>DiD on a common shock</td>
+<td>Synthetic DiD; dose-response with search data; placebo dates</td>
+</tr>
+</tbody>
+</table>
+<p>Each design rests on a different assumption. When designs with different weaknesses agree, the conclusion is much harder to dismiss.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="experimental-and-observational-estimates" class="slide level2 center">
+<h2>Experimental and Observational Estimates</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Checking Designs Against Each Other</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>LaLonde’s benchmark:</strong> standard non-experimental estimates of a job-training program often missed the experimental answer <span class="citation" data-cites="lalonde1986evaluating">(<a href="#/references" role="doc-biblioref" onclick="">LaLonde 1986</a>)</span></li>
+<li><strong>Within one paper:</strong> Cui et al.&nbsp;report both DiD and experimental (IV) estimates for each firm. The DiD estimates are sometimes larger and sometimes smaller: the direction of selection differs across firms</li>
+<li><strong>Across papers:</strong> an AI assistant raised support-agent productivity by about 15% in a staggered rollout (Brynjolfsson et al.), and a coding assistant raised completed tasks by about 26% in randomized experiments (Cui et al.). Different settings and estimands, but the same direction and similar size</li>
+</ul>
+<p><strong>Lesson:</strong> observational designs are most credible when their assumptions can be checked against an experiment, or against a design with different assumptions.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="accumulating-evidence" class="title-slide slide level1 center">
+<h1>Accumulating Evidence</h1>
+
+</section>
+<section id="combining-estimates-across-studies" class="slide level2 center">
+<h2>Combining Estimates Across Studies</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Precision Weighting</strong></p>
+</div>
+<div class="callout-content">
+<p>Given estimates <span class="math inline">\hat\tau_1, \dots, \hat\tau_K</span> with standard errors <span class="math inline">s_1, \dots, s_K</span> of the same estimand:</p>
+<p><span class="math display">\hat\tau_{\text{pooled}} = \frac{\sum_k w_k \hat\tau_k}{\sum_k w_k}, \qquad w_k = \frac{1}{s_k^2}, \qquad SE(\hat\tau_{\text{pooled}}) = \frac{1}{\sqrt{\sum_k w_k}}</span></p>
+<ul>
+<li>Precise studies get more weight</li>
+<li>This is how Cui et al.&nbsp;combine their three noisy experiments into one informative estimate</li>
+<li>If true effects differ across settings, a random-effects model adds a between-study variance <span class="math inline">\tau^2</span>, which widens the pooled interval and shifts weight towards smaller studies</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="pooling-in-r" class="slide level2 center">
+<h2>Pooling in R</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Three hypothetical experiments estimating the same effect (in %)</span></span>
+<span id="cb1-2"><a></a>est <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">firm_A =</span> <span class="dv">22</span>, <span class="at">firm_B =</span> <span class="dv">41</span>, <span class="at">firm_C =</span> <span class="dv">18</span>)</span>
+<span id="cb1-3"><a></a>se  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">firm_A =</span> <span class="dv">12</span>, <span class="at">firm_B =</span> <span class="dv">25</span>, <span class="at">firm_C =</span> <span class="dv">15</span>)</span>
+<span id="cb1-4"><a></a></span>
+<span id="cb1-5"><a></a>w <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> se<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb1-6"><a></a>pooled    <span class="ot">&lt;-</span> <span class="fu">sum</span>(w <span class="sc">*</span> est) <span class="sc">/</span> <span class="fu">sum</span>(w)</span>
+<span id="cb1-7"><a></a>pooled_se <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(w))</span>
+<span id="cb1-8"><a></a></span>
+<span id="cb1-9"><a></a><span class="co"># Test for heterogeneity across studies (Cochran's Q)</span></span>
+<span id="cb1-10"><a></a>Q <span class="ot">&lt;-</span> <span class="fu">sum</span>(w <span class="sc">*</span> (est <span class="sc">-</span> pooled)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb1-11"><a></a></span>
+<span id="cb1-12"><a></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">pooled =</span> pooled, <span class="at">se =</span> pooled_se,</span>
+<span id="cb1-13"><a></a>        <span class="at">lower_95 =</span> pooled <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> pooled_se, <span class="at">upper_95 =</span> pooled <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> pooled_se,</span>
+<span id="cb1-14"><a></a>        <span class="at">Q =</span> Q, <span class="at">p_heterogeneity =</span> <span class="fu">pchisq</span>(Q, <span class="at">df =</span> <span class="fu">length</span>(est) <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         pooled              se        lower_95        upper_95               Q 
+          22.97            8.77            5.77           40.17            0.64 
+p_heterogeneity 
+           0.73 </code></pre>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>None of the three hypothetical experiments is significant on its own at the 5% level, but the pooled estimate is.</li>
+<li>The heterogeneity test has little power with three studies; a non-significant Q does not prove effects are identical.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-goes-wrong-at-the-level-of-a-literature" class="slide level2 center">
+<h2>What Goes Wrong at the Level of a Literature</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Selective Reporting and Publication Bias</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>If studies with significant results are more likely to be published, the published literature overstates effects, even if every individual study is unbiased</li>
+<li>Small studies that happen to find large effects are especially likely to be published</li>
+<li><strong>Symptoms:</strong> many estimates just past the significance threshold; small studies reporting larger effects (an asymmetric “funnel plot”)</li>
+</ul>
+<p><strong>Remedies:</strong> pre-registration (Chapter 4); registered reports; publishing null results; replication packages with data and code; reporting failed experiments (Cui et al.&nbsp;report the abandoned Accenture experiment).</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="from-evidence-to-policy" class="title-slide slide level1 center">
+<h1>From Evidence to Policy</h1>
+
+</section>
+<section id="external-validity" class="slide level2 center">
+<h2>External Validity</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Will It Work Here?</strong></p>
+</div>
+<div class="callout-content">
+<p>Questions to ask before applying a result elsewhere:</p>
+<ul>
+<li><strong>Population:</strong> are the people or firms similar? Compliers in an IV or experiment may differ from the target population</li>
+<li><strong>Setting:</strong> institutions, prices, and alternatives differ across countries and sectors</li>
+<li><strong>Scale:</strong> effects in a pilot may change when everyone is treated (market prices adjust; supply of trainers runs out; others respond)</li>
+<li><strong>Time:</strong> technologies change. An AI tool from 2021 is not the tool of 2026</li>
+<li><strong>Mechanism:</strong> if we know why something works, we can judge whether that reason holds elsewhere</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="synthesis-example-generative-ai-at-work" class="slide level2 center">
+<h2>Synthesis Example: Generative AI at Work</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>What Four Studies, Four Designs, Say Together</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Study</th>
+<th>Design</th>
+<th>Finding</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="citation" data-cites="cui2026effects">Cui et al. (<a href="#/references" role="doc-biblioref" onclick="">2026</a>)</span></td>
+<td>Field experiments (Ch. 4–5)</td>
+<td>Coding assistant raises completed tasks ~26%; larger gains and adoption for newer developers</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="brynjolfsson2025generative">Brynjolfsson et al. (<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span></td>
+<td>Staggered rollout, FE/DiD (Ch. 8–9)</td>
+<td>Support productivity +15%; +30% for less skilled and less experienced agents; small gains for the most experienced</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="demirci2025who">Demirci et al. (<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span></td>
+<td>DiD on ChatGPT’s release (Ch. 9)</td>
+<td>Freelance job posts in writing and coding fall ~21% relative to manual work</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="shaw2026thinking">Shaw and Nave (<a href="#/references" role="doc-biblioref" onclick="">2026</a>)</span> <em>(preprint)</em></td>
+<td>Lab and online experiments (Ch. 4)</td>
+<td>When they consult the AI, people follow its wrong answers ~80% of the time (Study 1)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Consistent pattern:</strong> within firms, AI complements less experienced workers; across markets, it substitutes for some outsourced tasks; and people over-rely on its output. A decision-maker needs all three.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="reporting-an-evaluation" class="slide level2 center scrollable">
+<h2>Reporting an Evaluation</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>A Checklist for the Write-Up</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><strong>Question and estimand:</strong> the effect of what, on what, for whom</li>
+<li><strong>Design:</strong> where the counterfactual comes from, stated in plain language</li>
+<li><strong>Assumptions</strong> and the evidence for them (balance, first stage, pre-trends, placebo tests)</li>
+<li><strong>Main estimate</strong> with uncertainty, in units a decision-maker understands</li>
+<li><strong>Robustness</strong> to alternative specifications and estimators</li>
+<li><strong>Heterogeneity:</strong> who gains and who loses</li>
+<li><strong>Limitations:</strong> what the design cannot rule out; external validity</li>
+<li><strong>Costs and benefits</strong> where possible</li>
+<li><strong>Replication materials:</strong> data access, code, pre-registration</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="communicating-to-decision-makers" class="slide level2 center">
+<h2>Communicating to Decision-Makers</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Translate Estimates into Decisions</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Use meaningful units: “one fewer death for every 1,587 people sent a letter” (Goldin et al.); “about 15,600 deaths averted had all states expanded Medicaid” (Miller et al.)</li>
+<li>Report uncertainty: a range as well as a point estimate</li>
+<li>Say whose effect it is (compliers, treated units, units at a cutoff)</li>
+<li>Separate what the evidence shows from what you recommend</li>
+<li>Be explicit about what is not known</li>
+</ul>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="summary" class="title-slide slide level1 center">
+<h1>Summary</h1>
+
+</section>
+<section id="summary-1" class="slide level2 center">
+<h2>Summary</h2>
+<ul>
+<li class="fragment">Every method in these notes finds a counterfactual in a different place, and rests on a different assumption</li>
+<li class="fragment">Strong studies combine designs whose weaknesses differ; strong conclusions rest on several studies</li>
+<li class="fragment"><strong>Pool</strong> comparable estimates with precision weights; check for heterogeneity</li>
+<li class="fragment">Guard against publication bias with pre-registration, replication, and reporting null and failed results</li>
+<li class="fragment"><strong>External validity</strong> needs as much attention as internal validity</li>
+<li class="fragment">Report evaluations so that a decision-maker can see the estimand, the assumptions, the uncertainty, and the limits</li>
+</ul>
+</section>
+<section id="final-exercise" class="slide level2 center scrollable">
+<h2>Final Exercise</h2>
+<ol type="1">
+<li class="fragment">Choose a policy question you care about (insurance, finance, technology, operations)</li>
+<li class="fragment">Identify the estimand and the assignment mechanism</li>
+<li class="fragment">Propose a primary design and a second design with different assumptions</li>
+<li class="fragment">Write the six questions from Chapter 1 for your own proposal</li>
+<li class="fragment">Draft a one-page summary for a decision-maker</li>
+</ol>
+</section>
+<section id="references" class="slide level2 scrollable smaller">
+<h2>References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-brynjolfsson2025generative" class="csl-entry" role="listitem">
+Brynjolfsson, Erik, Danielle Li, and Lindsey Raymond. 2025. <span>“Generative <span>AI</span> at Work.”</span> <em>The Quarterly Journal of Economics</em> 140 (2): 889–942. <a href="https://doi.org/10.1093/qje/qjae044">https://doi.org/10.1093/qje/qjae044</a>.
+</div>
+<div id="ref-cui2026effects" class="csl-entry" role="listitem">
+Cui, Zheyuan Kevin, Mert Demirer, Sonia Jaffe, Leon Musolff, Sida Peng, and Tobias Salz. 2026. <span>“The Effects of Generative <span>AI</span> on High-Skilled Work: Evidence from Three Field Experiments with Software Developers.”</span> <em>Management Science</em>, ahead of print. <a href="https://doi.org/10.1287/mnsc.2025.00535">https://doi.org/10.1287/mnsc.2025.00535</a>.
+</div>
+<div id="ref-demirci2025who" class="csl-entry" role="listitem">
+Demirci, Ozge, Jonas Hannane, and Xinrong Zhu. 2025. <span>“Who Is <span>AI</span> Replacing? The Impact of Generative <span>AI</span> on Online Freelancing Platforms.”</span> <em>Management Science</em> 71 (10): 8097–108. <a href="https://doi.org/10.1287/mnsc.2024.05420">https://doi.org/10.1287/mnsc.2024.05420</a>.
+</div>
+<div id="ref-lalonde1986evaluating" class="csl-entry" role="listitem">
+LaLonde, Robert J. 1986. <span>“Evaluating the Econometric Evaluations of Training Programs with Experimental Data.”</span> <em>American Economic Review</em> 76 (4): 604–20.
+</div>
+<div id="ref-shaw2026thinking" class="csl-entry" role="listitem">
+Shaw, Steven D, and Gideon Nave. 2026. <em>Thinking—Fast, Slow, and Artificial: How <span>AI</span> Is Reshaping Human Reasoning and the Rise of Cognitive Surrender</em>. SSRN Working Paper 6097646. <a href="https://doi.org/10.2139/ssrn.6097646">https://doi.org/10.2139/ssrn.6097646</a>.
+</div>
+</div>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="../../unsw-logo.png" class="slide-logo"></p>
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': false,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true,"boardmarkerWidth":3,"grid":false},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1000,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Fei Huang, UNSW Sydney">
+
+<title>Putting It Together – Causal Inference for Policy Evaluation</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../references.html" rel="next">
+<link href="../../Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2ed7f7ae727038b1aa95f4c24ad3a3a6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-af98a32a849caa794534a9445d98b5fe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html">Part VII: Synthesis</a></li><li class="breadcrumb-item"><a href="../../Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html">Chapter 12: Putting It Together</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Causal Inference for Policy Evaluation</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part I: Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch01-Introduction/Lecture-Introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 1: Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch02-Causal-Framework/Lecture-Causal-Framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 2: Causal Inference Framework</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part II: Randomized Experiments</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 3: Experiments: Design and Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 4: Experiments in Practice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 5: When Experiments Go Wrong</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part III: Instrumental Variables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 6: Instrumental Variables</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part IV: Regression Discontinuity</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 7: Regression Discontinuity</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part V: Panel Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 8: Panel Data and Fixed Effects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 9: Difference-in-Differences</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 10: Synthetic Control</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VI: Selection on Observables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 11: Regression and Matching</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VII: Synthesis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Chapter 12: Putting It Together</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading List</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
+  <li><a href="#choosing-and-combining-designs" id="toc-choosing-and-combining-designs" class="nav-link" data-scroll-target="#choosing-and-combining-designs">Choosing and Combining Designs</a>
+  <ul class="collapse">
+  <li><a href="#where-each-method-finds-its-counterfactual" id="toc-where-each-method-finds-its-counterfactual" class="nav-link" data-scroll-target="#where-each-method-finds-its-counterfactual">Where Each Method Finds Its Counterfactual</a></li>
+  <li><a href="#the-best-papers-combine-designs" id="toc-the-best-papers-combine-designs" class="nav-link" data-scroll-target="#the-best-papers-combine-designs">The Best Papers Combine Designs</a></li>
+  <li><a href="#experimental-and-observational-estimates" id="toc-experimental-and-observational-estimates" class="nav-link" data-scroll-target="#experimental-and-observational-estimates">Experimental and Observational Estimates</a></li>
+  </ul></li>
+  <li><a href="#accumulating-evidence" id="toc-accumulating-evidence" class="nav-link" data-scroll-target="#accumulating-evidence">Accumulating Evidence</a>
+  <ul class="collapse">
+  <li><a href="#combining-estimates-across-studies" id="toc-combining-estimates-across-studies" class="nav-link" data-scroll-target="#combining-estimates-across-studies">Combining Estimates Across Studies</a></li>
+  <li><a href="#pooling-in-r" id="toc-pooling-in-r" class="nav-link" data-scroll-target="#pooling-in-r">Pooling in R</a></li>
+  <li><a href="#what-goes-wrong-at-the-level-of-a-literature" id="toc-what-goes-wrong-at-the-level-of-a-literature" class="nav-link" data-scroll-target="#what-goes-wrong-at-the-level-of-a-literature">What Goes Wrong at the Level of a Literature</a></li>
+  </ul></li>
+  <li><a href="#from-evidence-to-policy" id="toc-from-evidence-to-policy" class="nav-link" data-scroll-target="#from-evidence-to-policy">From Evidence to Policy</a>
+  <ul class="collapse">
+  <li><a href="#external-validity" id="toc-external-validity" class="nav-link" data-scroll-target="#external-validity">External Validity</a></li>
+  <li><a href="#synthesis-example-generative-ai-at-work" id="toc-synthesis-example-generative-ai-at-work" class="nav-link" data-scroll-target="#synthesis-example-generative-ai-at-work">Synthesis Example: Generative AI at Work</a></li>
+  <li><a href="#reporting-an-evaluation" id="toc-reporting-an-evaluation" class="nav-link" data-scroll-target="#reporting-an-evaluation">Reporting an Evaluation</a></li>
+  <li><a href="#communicating-to-decision-makers" id="toc-communicating-to-decision-makers" class="nav-link" data-scroll-target="#communicating-to-decision-makers">Communicating to Decision-Makers</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a>
+  <ul class="collapse">
+  <li><a href="#summary-1" id="toc-summary-1" class="nav-link" data-scroll-target="#summary-1">Summary</a></li>
+  <li><a href="#final-exercise" id="toc-final-exercise" class="nav-link" data-scroll-target="#final-exercise">Final Exercise</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="Lecture-Putting-It-Together.slides.html"><i class="bi bi-easel2"></i>Slides</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html">Part VII: Synthesis</a></li><li class="breadcrumb-item"><a href="../../Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html">Chapter 12: Putting It Together</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Putting It Together</h1>
+<p class="subtitle lead">Combining Designs, Accumulating Evidence, and Reporting</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Instructor</div>
+    <div class="quarto-title-meta-contents">
+             <p>Fei Huang, UNSW Sydney </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="notes">
+<ul>
+<li>The final chapter steps back from individual methods. Strong evaluations rarely rely on a single design; strong evidence rarely comes from a single study.</li>
+<li>We look at how the case studies in these notes combined designs, how to combine estimates across studies, what can go wrong at the level of the literature, and how to report an evaluation so that decision-makers can use it.</li>
+<li>The generative AI studies from across the notes serve as a worked example of evidence synthesis.</li>
+</ul>
+</div>
+<section id="where-this-chapter-fits" class="level3">
+<h3 class="anchored" data-anchor-id="where-this-chapter-fits">Where This Chapter Fits</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>After the flowchart
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>You arrive here when:</strong> You have a main design, and want to know how much to trust it and how to report it.</li>
+<li><strong>This chapter:</strong> Combining designs, pooling evidence across studies, external validity, and reporting.</li>
+<li><strong>Next:</strong> Your own evaluation.</li>
+</ul>
+<p>See the design flowchart in Chapter 1.</p>
+</div>
+</div>
+</section>
+<section id="choosing-and-combining-designs" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-and-combining-designs">Choosing and Combining Designs</h2>
+<section id="where-each-method-finds-its-counterfactual" class="level3">
+<h3 class="anchored" data-anchor-id="where-each-method-finds-its-counterfactual">Where Each Method Finds Its Counterfactual</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A Recap of the Toolkit
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>The counterfactual comes from…</th>
+<th>Key assumption</th>
+<th>Chapter</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Randomized experiment</td>
+<td>A lottery</td>
+<td>Random assignment; no spillovers</td>
+<td>3–5</td>
+</tr>
+<tr class="even">
+<td>Instrumental variables</td>
+<td>An outside shock that shifts treatment</td>
+<td>Relevance; independence; exclusion; monotonicity</td>
+<td>6</td>
+</tr>
+<tr class="odd">
+<td>Regression discontinuity</td>
+<td>Units just across a cutoff</td>
+<td>Continuity at the cutoff</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td>Panel fixed effects</td>
+<td>The same unit at other times</td>
+<td>No time-varying confounders (strict exogeneity)</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td>Difference-in-differences</td>
+<td>The change in an untreated group</td>
+<td>Parallel trends</td>
+<td>9</td>
+</tr>
+<tr class="even">
+<td>Synthetic control</td>
+<td>A weighted mix of untreated units</td>
+<td>Pre-treatment fit carries over</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td>Regression, matching</td>
+<td>Similar units, by observed characteristics</td>
+<td>No unmeasured confounders</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<p>The order follows the design flowchart in Chapter 1.</p>
+</div>
+</div>
+</section>
+<section id="the-best-papers-combine-designs" class="level3">
+<h3 class="anchored" data-anchor-id="the-best-papers-combine-designs">The Best Papers Combine Designs</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Triangulation in the Case Studies
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paper</th>
+<th>Main design</th>
+<th>Backed up by</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Goldin et al.&nbsp;(Ch. 3)</td>
+<td>Randomized letters</td>
+<td>IV to scale to the effect of coverage</td>
+</tr>
+<tr class="even">
+<td>Cui et al.&nbsp;(Ch. 4–5)</td>
+<td>Three field experiments</td>
+<td>IV for take-up; fixed effects; pooling across experiments</td>
+</tr>
+<tr class="odd">
+<td>Künn et al.&nbsp;(Ch. 8)</td>
+<td>Player fixed effects</td>
+<td>IV using wind-driven outdoor pollution; replication in another league</td>
+</tr>
+<tr class="even">
+<td>Brynjolfsson et al.&nbsp;(Ch. 8–9)</td>
+<td>Staggered DiD</td>
+<td>Team-level IV; a small randomized pilot; robust estimators</td>
+</tr>
+<tr class="odd">
+<td>Miller et al.&nbsp;(Ch. 9)</td>
+<td>Event-study DiD</td>
+<td>Placebo groups; power analysis; Wald-style scaling</td>
+</tr>
+<tr class="even">
+<td>Demirci et al.&nbsp;(Ch. 9)</td>
+<td>DiD on a common shock</td>
+<td>Synthetic DiD; dose-response with search data; placebo dates</td>
+</tr>
+</tbody>
+</table>
+<p>Each design rests on a different assumption. When designs with different weaknesses agree, the conclusion is much harder to dismiss.</p>
+</div>
+</div>
+</section>
+<section id="experimental-and-observational-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="experimental-and-observational-estimates">Experimental and Observational Estimates</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Checking Designs Against Each Other
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>LaLonde’s benchmark:</strong> standard non-experimental estimates of a job-training program often missed the experimental answer <span class="citation" data-cites="lalonde1986evaluating">(<a href="#ref-lalonde1986evaluating" role="doc-biblioref">LaLonde 1986</a>)</span></li>
+<li><strong>Within one paper:</strong> Cui et al.&nbsp;report both DiD and experimental (IV) estimates for each firm. The DiD estimates are sometimes larger and sometimes smaller: the direction of selection differs across firms</li>
+<li><strong>Across papers:</strong> an AI assistant raised support-agent productivity by about 15% in a staggered rollout (Brynjolfsson et al.), and a coding assistant raised completed tasks by about 26% in randomized experiments (Cui et al.). Different settings and estimands, but the same direction and similar size</li>
+</ul>
+<p><strong>Lesson:</strong> observational designs are most credible when their assumptions can be checked against an experiment, or against a design with different assumptions.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="accumulating-evidence" class="level2">
+<h2 class="anchored" data-anchor-id="accumulating-evidence">Accumulating Evidence</h2>
+<section id="combining-estimates-across-studies" class="level3">
+<h3 class="anchored" data-anchor-id="combining-estimates-across-studies">Combining Estimates Across Studies</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Precision Weighting
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Given estimates <span class="math inline">\hat\tau_1, \dots, \hat\tau_K</span> with standard errors <span class="math inline">s_1, \dots, s_K</span> of the same estimand:</p>
+<p><span class="math display">\hat\tau_{\text{pooled}} = \frac{\sum_k w_k \hat\tau_k}{\sum_k w_k}, \qquad w_k = \frac{1}{s_k^2}, \qquad SE(\hat\tau_{\text{pooled}}) = \frac{1}{\sqrt{\sum_k w_k}}</span></p>
+<ul>
+<li>Precise studies get more weight</li>
+<li>This is how Cui et al.&nbsp;combine their three noisy experiments into one informative estimate</li>
+<li>If true effects differ across settings, a random-effects model adds a between-study variance <span class="math inline">\tau^2</span>, which widens the pooled interval and shifts weight towards smaller studies</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="pooling-in-r" class="level3">
+<h3 class="anchored" data-anchor-id="pooling-in-r">Pooling in R</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Three hypothetical experiments estimating the same effect (in %)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">firm_A =</span> <span class="dv">22</span>, <span class="at">firm_B =</span> <span class="dv">41</span>, <span class="at">firm_C =</span> <span class="dv">18</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>se  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">firm_A =</span> <span class="dv">12</span>, <span class="at">firm_B =</span> <span class="dv">25</span>, <span class="at">firm_C =</span> <span class="dv">15</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> se<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>pooled    <span class="ot">&lt;-</span> <span class="fu">sum</span>(w <span class="sc">*</span> est) <span class="sc">/</span> <span class="fu">sum</span>(w)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>pooled_se <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(w))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Test for heterogeneity across studies (Cochran's Q)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> <span class="fu">sum</span>(w <span class="sc">*</span> (est <span class="sc">-</span> pooled)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">pooled =</span> pooled, <span class="at">se =</span> pooled_se,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">lower_95 =</span> pooled <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> pooled_se, <span class="at">upper_95 =</span> pooled <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> pooled_se,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">Q =</span> Q, <span class="at">p_heterogeneity =</span> <span class="fu">pchisq</span>(Q, <span class="at">df =</span> <span class="fu">length</span>(est) <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         pooled              se        lower_95        upper_95               Q 
+          22.97            8.77            5.77           40.17            0.64 
+p_heterogeneity 
+           0.73 </code></pre>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>None of the three hypothetical experiments is significant on its own at the 5% level, but the pooled estimate is.</li>
+<li>The heterogeneity test has little power with three studies; a non-significant Q does not prove effects are identical.</li>
+</ul>
+</div>
+</section>
+<section id="what-goes-wrong-at-the-level-of-a-literature" class="level3">
+<h3 class="anchored" data-anchor-id="what-goes-wrong-at-the-level-of-a-literature">What Goes Wrong at the Level of a Literature</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Selective Reporting and Publication Bias
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>If studies with significant results are more likely to be published, the published literature overstates effects, even if every individual study is unbiased</li>
+<li>Small studies that happen to find large effects are especially likely to be published</li>
+<li><strong>Symptoms:</strong> many estimates just past the significance threshold; small studies reporting larger effects (an asymmetric “funnel plot”)</li>
+</ul>
+<p><strong>Remedies:</strong> pre-registration (Chapter 4); registered reports; publishing null results; replication packages with data and code; reporting failed experiments (Cui et al.&nbsp;report the abandoned Accenture experiment).</p>
+</div>
+</div>
+</section>
+</section>
+<section id="from-evidence-to-policy" class="level2">
+<h2 class="anchored" data-anchor-id="from-evidence-to-policy">From Evidence to Policy</h2>
+<section id="external-validity" class="level3">
+<h3 class="anchored" data-anchor-id="external-validity">External Validity</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Will It Work Here?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Questions to ask before applying a result elsewhere:</p>
+<ul>
+<li><strong>Population:</strong> are the people or firms similar? Compliers in an IV or experiment may differ from the target population</li>
+<li><strong>Setting:</strong> institutions, prices, and alternatives differ across countries and sectors</li>
+<li><strong>Scale:</strong> effects in a pilot may change when everyone is treated (market prices adjust; supply of trainers runs out; others respond)</li>
+<li><strong>Time:</strong> technologies change. An AI tool from 2021 is not the tool of 2026</li>
+<li><strong>Mechanism:</strong> if we know why something works, we can judge whether that reason holds elsewhere</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="synthesis-example-generative-ai-at-work" class="level3">
+<h3 class="anchored" data-anchor-id="synthesis-example-generative-ai-at-work">Synthesis Example: Generative AI at Work</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>What Four Studies, Four Designs, Say Together
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Study</th>
+<th>Design</th>
+<th>Finding</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="citation" data-cites="cui2026effects">Cui et al. (<a href="#ref-cui2026effects" role="doc-biblioref">2026</a>)</span></td>
+<td>Field experiments (Ch. 4–5)</td>
+<td>Coding assistant raises completed tasks ~26%; larger gains and adoption for newer developers</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="brynjolfsson2025generative">Brynjolfsson et al. (<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">2025</a>)</span></td>
+<td>Staggered rollout, FE/DiD (Ch. 8–9)</td>
+<td>Support productivity +15%; +30% for less skilled and less experienced agents; small gains for the most experienced</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="demirci2025who">Demirci et al. (<a href="#ref-demirci2025who" role="doc-biblioref">2025</a>)</span></td>
+<td>DiD on ChatGPT’s release (Ch. 9)</td>
+<td>Freelance job posts in writing and coding fall ~21% relative to manual work</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="shaw2026thinking">Shaw and Nave (<a href="#ref-shaw2026thinking" role="doc-biblioref">2026</a>)</span> <em>(preprint)</em></td>
+<td>Lab and online experiments (Ch. 4)</td>
+<td>When they consult the AI, people follow its wrong answers ~80% of the time (Study 1)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Consistent pattern:</strong> within firms, AI complements less experienced workers; across markets, it substitutes for some outsourced tasks; and people over-rely on its output. A decision-maker needs all three.</p>
+</div>
+</div>
+</section>
+<section id="reporting-an-evaluation" class="level3">
+<h3 class="anchored" data-anchor-id="reporting-an-evaluation">Reporting an Evaluation</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>A Checklist for the Write-Up
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Question and estimand:</strong> the effect of what, on what, for whom</li>
+<li><strong>Design:</strong> where the counterfactual comes from, stated in plain language</li>
+<li><strong>Assumptions</strong> and the evidence for them (balance, first stage, pre-trends, placebo tests)</li>
+<li><strong>Main estimate</strong> with uncertainty, in units a decision-maker understands</li>
+<li><strong>Robustness</strong> to alternative specifications and estimators</li>
+<li><strong>Heterogeneity:</strong> who gains and who loses</li>
+<li><strong>Limitations:</strong> what the design cannot rule out; external validity</li>
+<li><strong>Costs and benefits</strong> where possible</li>
+<li><strong>Replication materials:</strong> data access, code, pre-registration</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="communicating-to-decision-makers" class="level3">
+<h3 class="anchored" data-anchor-id="communicating-to-decision-makers">Communicating to Decision-Makers</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Translate Estimates into Decisions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Use meaningful units: “one fewer death for every 1,587 people sent a letter” (Goldin et al.); “about 15,600 deaths averted had all states expanded Medicaid” (Miller et al.)</li>
+<li>Report uncertainty: a range as well as a point estimate</li>
+<li>Say whose effect it is (compliers, treated units, units at a cutoff)</li>
+<li>Separate what the evidence shows from what you recommend</li>
+<li>Be explicit about what is not known</li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<section id="summary-1" class="level3">
+<h3 class="anchored" data-anchor-id="summary-1">Summary</h3>
+<div class="incremental">
+<ul class="incremental">
+<li>Every method in these notes finds a counterfactual in a different place, and rests on a different assumption</li>
+<li>Strong studies combine designs whose weaknesses differ; strong conclusions rest on several studies</li>
+<li><strong>Pool</strong> comparable estimates with precision weights; check for heterogeneity</li>
+<li>Guard against publication bias with pre-registration, replication, and reporting null and failed results</li>
+<li><strong>External validity</strong> needs as much attention as internal validity</li>
+<li>Report evaluations so that a decision-maker can see the estimand, the assumptions, the uncertainty, and the limits</li>
+</ul>
+</div>
+</section>
+<section id="final-exercise" class="level3">
+<h3 class="anchored" data-anchor-id="final-exercise">Final Exercise</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li>Choose a policy question you care about (insurance, finance, technology, operations)</li>
+<li>Identify the estimand and the assignment mechanism</li>
+<li>Propose a primary design and a second design with different assumptions</li>
+<li>Write the six questions from Chapter 1 for your own proposal</li>
+<li>Draft a one-page summary for a decision-maker</li>
+</ol>
+</div>
+</section>
+<section id="references" class="level3 scrollable">
+<h3 class="scrollable anchored" data-anchor-id="references">References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-brynjolfsson2025generative" class="csl-entry" role="listitem">
+Brynjolfsson, Erik, Danielle Li, and Lindsey Raymond. 2025. <span>“Generative <span>AI</span> at Work.”</span> <em>The Quarterly Journal of Economics</em> 140 (2): 889–942. <a href="https://doi.org/10.1093/qje/qjae044">https://doi.org/10.1093/qje/qjae044</a>.
+</div>
+<div id="ref-cui2026effects" class="csl-entry" role="listitem">
+Cui, Zheyuan Kevin, Mert Demirer, Sonia Jaffe, Leon Musolff, Sida Peng, and Tobias Salz. 2026. <span>“The Effects of Generative <span>AI</span> on High-Skilled Work: Evidence from Three Field Experiments with Software Developers.”</span> <em>Management Science</em>, ahead of print. <a href="https://doi.org/10.1287/mnsc.2025.00535">https://doi.org/10.1287/mnsc.2025.00535</a>.
+</div>
+<div id="ref-demirci2025who" class="csl-entry" role="listitem">
+Demirci, Ozge, Jonas Hannane, and Xinrong Zhu. 2025. <span>“Who Is <span>AI</span> Replacing? The Impact of Generative <span>AI</span> on Online Freelancing Platforms.”</span> <em>Management Science</em> 71 (10): 8097–108. <a href="https://doi.org/10.1287/mnsc.2024.05420">https://doi.org/10.1287/mnsc.2024.05420</a>.
+</div>
+<div id="ref-lalonde1986evaluating" class="csl-entry" role="listitem">
+LaLonde, Robert J. 1986. <span>“Evaluating the Econometric Evaluations of Training Programs with Experimental Data.”</span> <em>American Economic Review</em> 76 (4): 604–20.
+</div>
+<div id="ref-shaw2026thinking" class="csl-entry" role="listitem">
+Shaw, Steven D, and Gideon Nave. 2026. <em>Thinking—Fast, Slow, and Artificial: How <span>AI</span> Is Reshaping Human Reasoning and the Rise of Cognitive Surrender</em>. SSRN Working Paper 6097646. <a href="https://doi.org/10.2139/ssrn.6097646">https://doi.org/10.2139/ssrn.6097646</a>.
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.html" class="pagination-link" aria-label="Chapter 11: Regression and Matching">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Chapter 11: Regression and Matching</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../references.html" class="pagination-link" aria-label="Reading List">
+        <span class="nav-page-text">Reading List</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

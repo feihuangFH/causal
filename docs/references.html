@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Fei Huang, UNSW Sydney">
+
+<title>Reading List – Causal Inference for Policy Evaluation</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2ed7f7ae727038b1aa95f4c24ad3a3a6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-af98a32a849caa794534a9445d98b5fe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./references.html">Reading List</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Causal Inference for Policy Evaluation</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part I: Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch01-Introduction/Lecture-Introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 1: Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch02-Causal-Framework/Lecture-Causal-Framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 2: Causal Inference Framework</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part II: Randomized Experiments</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 3: Experiments: Design and Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 4: Experiments in Practice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 5: When Experiments Go Wrong</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part III: Instrumental Variables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 6: Instrumental Variables</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part IV: Regression Discontinuity</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 7: Regression Discontinuity</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part V: Panel Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 8: Panel Data and Fixed Effects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 9: Difference-in-Differences</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 10: Synthetic Control</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VI: Selection on Observables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 11: Regression and Matching</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VII: Synthesis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 12: Putting It Together</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Reading List</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#chapter-1-introduction-to-policy-evaluation-and-causal-inference" id="toc-chapter-1-introduction-to-policy-evaluation-and-causal-inference" class="nav-link active" data-scroll-target="#chapter-1-introduction-to-policy-evaluation-and-causal-inference">Chapter 1: Introduction to Policy Evaluation and Causal Inference</a></li>
+  <li><a href="#chapter-2-causal-inference-framework" id="toc-chapter-2-causal-inference-framework" class="nav-link" data-scroll-target="#chapter-2-causal-inference-framework">Chapter 2: Causal Inference Framework</a></li>
+  <li><a href="#chapter-3-randomized-experiments-design-and-inference" id="toc-chapter-3-randomized-experiments-design-and-inference" class="nav-link" data-scroll-target="#chapter-3-randomized-experiments-design-and-inference">Chapter 3: Randomized Experiments: Design and Inference</a></li>
+  <li><a href="#chapter-4-experiments-in-practice" id="toc-chapter-4-experiments-in-practice" class="nav-link" data-scroll-target="#chapter-4-experiments-in-practice">Chapter 4: Experiments in Practice</a></li>
+  <li><a href="#chapter-5-when-experiments-go-wrong" id="toc-chapter-5-when-experiments-go-wrong" class="nav-link" data-scroll-target="#chapter-5-when-experiments-go-wrong">Chapter 5: When Experiments Go Wrong</a></li>
+  <li><a href="#chapter-6-instrumental-variables" id="toc-chapter-6-instrumental-variables" class="nav-link" data-scroll-target="#chapter-6-instrumental-variables">Chapter 6: Instrumental Variables</a></li>
+  <li><a href="#chapter-7-regression-discontinuity-design" id="toc-chapter-7-regression-discontinuity-design" class="nav-link" data-scroll-target="#chapter-7-regression-discontinuity-design">Chapter 7: Regression Discontinuity Design</a></li>
+  <li><a href="#chapter-8-panel-data-and-fixed-effects" id="toc-chapter-8-panel-data-and-fixed-effects" class="nav-link" data-scroll-target="#chapter-8-panel-data-and-fixed-effects">Chapter 8: Panel Data and Fixed Effects</a></li>
+  <li><a href="#chapter-9-difference-in-differences" id="toc-chapter-9-difference-in-differences" class="nav-link" data-scroll-target="#chapter-9-difference-in-differences">Chapter 9: Difference-in-Differences</a></li>
+  <li><a href="#chapter-10-synthetic-control" id="toc-chapter-10-synthetic-control" class="nav-link" data-scroll-target="#chapter-10-synthetic-control">Chapter 10: Synthetic Control</a></li>
+  <li><a href="#chapter-11-regression-and-matching" id="toc-chapter-11-regression-and-matching" class="nav-link" data-scroll-target="#chapter-11-regression-and-matching">Chapter 11: Regression and Matching</a></li>
+  <li><a href="#chapter-12-putting-it-together" id="toc-chapter-12-putting-it-together" class="nav-link" data-scroll-target="#chapter-12-putting-it-together">Chapter 12: Putting It Together</a></li>
+  <li><a href="#full-bibliography" id="toc-full-bibliography" class="nav-link" data-scroll-target="#full-bibliography">Full Bibliography</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Reading List</h1>
+<p class="subtitle lead">Causal Inference for Policy Evaluation</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Instructor</div>
+    <div class="quarto-title-meta-contents">
+             <p>Fei Huang, UNSW Sydney </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The readings below are the papers and books cited in each chapter: the <strong>case studies</strong> worked through in the chapter, and <strong>methods</strong> references for going further. The full bibliography follows.</p>
+<p><em>This page is generated from the chapters by <code>tools/build_reading_list.py</code>; edit the chapters, not this page.</em></p>
+<section id="chapter-1-introduction-to-policy-evaluation-and-causal-inference" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1-introduction-to-policy-evaluation-and-causal-inference">Chapter 1: <a href="Lectures/Ch01-Introduction/Lecture-Introduction.html">Introduction to Policy Evaluation and Causal Inference</a></h3>
+<p><strong>Methods and further reading</strong></p>
+<ul>
+<li><span class="citation" data-cites="holland1986statistics">Holland (<a href="#ref-holland1986statistics" role="doc-biblioref">1986</a>)</span>: <em>Statistics and Causal Inference</em></li>
+<li><span class="citation" data-cites="angrist2010credibility">Angrist and Pischke (<a href="#ref-angrist2010credibility" role="doc-biblioref">2010</a>)</span>: <em>The Credibility Revolution in Empirical Economics: How Better Research Design Is Taking the Con out of Econometrics</em></li>
+</ul>
+</section>
+<section id="chapter-2-causal-inference-framework" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2-causal-inference-framework">Chapter 2: <a href="Lectures/Ch02-Causal-Framework/Lecture-Causal-Framework.html">Causal Inference Framework</a></h3>
+<p><strong>Methods and further reading</strong></p>
+<ul>
+<li><span class="citation" data-cites="cinelli2024crash">Cinelli et al. (<a href="#ref-cinelli2024crash" role="doc-biblioref">2024</a>)</span>: <em>A Crash Course in Good and Bad Controls</em></li>
+<li><span class="citation" data-cites="holland1986statistics">Holland (<a href="#ref-holland1986statistics" role="doc-biblioref">1986</a>)</span>: <em>Statistics and Causal Inference</em></li>
+</ul>
+</section>
+<section id="chapter-3-randomized-experiments-design-and-inference" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3-randomized-experiments-design-and-inference">Chapter 3: <a href="Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html">Randomized Experiments: Design and Inference</a></h3>
+<p><strong>Case studies</strong></p>
+<ul>
+<li><span class="citation" data-cites="goldin2021health">Goldin et al. (<a href="#ref-goldin2021health" role="doc-biblioref">2021</a>)</span>: <em>Health Insurance and Mortality: Experimental Evidence from Taxpayer Outreach</em></li>
+</ul>
+<p><strong>Methods and further reading</strong></p>
+<ul>
+<li><span class="citation" data-cites="lin2013agnostic">Lin (<a href="#ref-lin2013agnostic" role="doc-biblioref">2013</a>)</span>: <em>Agnostic Notes on Regression Adjustments to Experimental Data: Reexamining Freedman’s Critique</em></li>
+</ul>
+</section>
+<section id="chapter-4-experiments-in-practice" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-4-experiments-in-practice">Chapter 4: <a href="Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.html">Experiments in Practice</a></h3>
+<p><strong>Case studies</strong></p>
+<ul>
+<li><span class="citation" data-cites="shaw2026thinking">Shaw and Nave (<a href="#ref-shaw2026thinking" role="doc-biblioref">2026</a>)</span>: <em>Thinking—Fast, Slow, and Artificial: How AI is Reshaping Human Reasoning and the Rise of Cognitive Surrender</em></li>
+<li><span class="citation" data-cites="cui2026effects">Cui et al. (<a href="#ref-cui2026effects" role="doc-biblioref">2026</a>)</span>: <em>The Effects of Generative AI on High-Skilled Work: Evidence from Three Field Experiments with Software Developers</em></li>
+</ul>
+</section>
+<section id="chapter-5-when-experiments-go-wrong" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-5-when-experiments-go-wrong">Chapter 5: <a href="Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html">When Experiments Go Wrong</a></h3>
+<p><strong>Case studies</strong></p>
+<ul>
+<li><span class="citation" data-cites="cui2026effects">Cui et al. (<a href="#ref-cui2026effects" role="doc-biblioref">2026</a>)</span>: <em>The Effects of Generative AI on High-Skilled Work: Evidence from Three Field Experiments with Software Developers</em></li>
+</ul>
+<p><strong>Methods and further reading</strong></p>
+<ul>
+<li><span class="citation" data-cites="hernan2020causal">Hernán and Robins (<a href="#ref-hernan2020causal" role="doc-biblioref">2020</a>)</span>: <em>Causal Inference: What If</em></li>
+<li><span class="citation" data-cites="lee2009training">Lee (<a href="#ref-lee2009training" role="doc-biblioref">2009</a>)</span>: <em>Training, Wages, and Sample Selection: Estimating Sharp Bounds on Treatment Effects</em></li>
+</ul>
+</section>
+<section id="chapter-6-instrumental-variables" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-6-instrumental-variables">Chapter 6: <a href="Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html">Instrumental Variables</a></h3>
+<p><strong>Case studies</strong></p>
+<ul>
+<li><span class="citation" data-cites="autor2013china">Autor et al. (<a href="#ref-autor2013china" role="doc-biblioref">2013</a>)</span>: <em>The China Syndrome: Local Labor Market Effects of Import Competition in the United States</em></li>
+<li><span class="citation" data-cites="bernstein2015going">Bernstein (<a href="#ref-bernstein2015going" role="doc-biblioref">2015</a>)</span>: <em>Does Going Public Affect Innovation?</em></li>
+</ul>
+<p><strong>Methods and further reading</strong></p>
+<ul>
+<li><span class="citation" data-cites="imbens1994identification">Imbens and Angrist (<a href="#ref-imbens1994identification" role="doc-biblioref">1994</a>)</span>: <em>Identification and Estimation of Local Average Treatment Effects</em></li>
+<li><span class="citation" data-cites="angrist1996identification">Angrist et al. (<a href="#ref-angrist1996identification" role="doc-biblioref">1996</a>)</span>: <em>Identification of causal effects using instrumental variables</em></li>
+<li><span class="citation" data-cites="hernan2020causal">Hernán and Robins (<a href="#ref-hernan2020causal" role="doc-biblioref">2020</a>)</span>: <em>Causal Inference: What If</em></li>
+<li><span class="citation" data-cites="lee2022valid">Lee et al. (<a href="#ref-lee2022valid" role="doc-biblioref">2022</a>)</span>: <em>Valid t-Ratio Inference for IV</em></li>
+<li><span class="citation" data-cites="borusyak2022quasi">Borusyak et al. (<a href="#ref-borusyak2022quasi" role="doc-biblioref">2022</a>)</span>: <em>Quasi-Experimental Shift-Share Research Designs</em></li>
+<li><span class="citation" data-cites="goldsmithpinkham2020bartik">Goldsmith-Pinkham et al. (<a href="#ref-goldsmithpinkham2020bartik" role="doc-biblioref">2020</a>)</span>: <em>Bartik Instruments: What, When, Why, and How</em></li>
+</ul>
+</section>
+<section id="chapter-7-regression-discontinuity-design" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-7-regression-discontinuity-design">Chapter 7: <a href="Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.html">Regression Discontinuity Design</a></h3>
+<p><strong>Case studies</strong></p>
+<ul>
+<li><span class="citation" data-cites="finkelstein2019subsidizing">Finkelstein et al. (<a href="#ref-finkelstein2019subsidizing" role="doc-biblioref">2019</a>)</span>: <em>Subsidizing Health Insurance for Low-Income Adults: Evidence from Massachusetts</em></li>
+<li><span class="citation" data-cites="agarwal2018banks">Agarwal et al. (<a href="#ref-agarwal2018banks" role="doc-biblioref">2018</a>)</span>: <em>Do Banks Pass through Credit Expansions to Consumers Who Want to Borrow?</em></li>
+</ul>
+<p><strong>Methods and further reading</strong></p>
+<ul>
+<li><span class="citation" data-cites="imbens2012optimal">Imbens and Kalyanaraman (<a href="#ref-imbens2012optimal" role="doc-biblioref">2012</a>)</span>: <em>Optimal Bandwidth Choice for the Regression Discontinuity Estimator</em></li>
+<li><span class="citation" data-cites="calonico2014robust">Calonico et al. (<a href="#ref-calonico2014robust" role="doc-biblioref">2014</a>)</span>: <em>Robust Nonparametric Confidence Intervals for Regression-Discontinuity Designs</em></li>
+<li><span class="citation" data-cites="gelman2019high">Gelman and Imbens (<a href="#ref-gelman2019high" role="doc-biblioref">2019</a>)</span>: <em>Why High-Order Polynomials Should Not Be Used in Regression Discontinuity Designs</em></li>
+<li><span class="citation" data-cites="mccrary2008manipulation">McCrary (<a href="#ref-mccrary2008manipulation" role="doc-biblioref">2008</a>)</span>: <em>Manipulation of the Running Variable in the Regression Discontinuity Design: A Density Test</em></li>
+<li><span class="citation" data-cites="cattaneo2020simple">Cattaneo et al. (<a href="#ref-cattaneo2020simple" role="doc-biblioref">2020</a>)</span>: <em>Simple Local Polynomial Density Estimators</em></li>
+<li><span class="citation" data-cites="lee2010regression">Lee and Lemieux (<a href="#ref-lee2010regression" role="doc-biblioref">2010</a>)</span>: <em>Regression Discontinuity Designs in Economics</em></li>
+</ul>
+</section>
+<section id="chapter-8-panel-data-and-fixed-effects" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-8-panel-data-and-fixed-effects">Chapter 8: <a href="Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html">Panel Data and Fixed Effects</a></h3>
+<p><strong>Case studies</strong></p>
+<ul>
+<li><span class="citation" data-cites="kunn2023indoor">Künn et al. (<a href="#ref-kunn2023indoor" role="doc-biblioref">2023</a>)</span>: <em>Indoor Air Quality and Strategic Decision Making</em></li>
+<li><span class="citation" data-cites="ardia2023climate">Ardia et al. (<a href="#ref-ardia2023climate" role="doc-biblioref">2023</a>)</span>: <em>Climate Change Concerns and the Performance of Green vs.&nbsp;Brown Stocks</em></li>
+<li><span class="citation" data-cites="brynjolfsson2025generative">Brynjolfsson et al. (<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">2025</a>)</span>: <em>Generative AI at Work</em></li>
+<li><span class="citation" data-cites="park2020heat">Park et al. (<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span>: <em>Heat and Learning</em></li>
+<li><span class="citation" data-cites="ireland2023heat">Ireland et al. (<a href="#ref-ireland2023heat" role="doc-biblioref">2023</a>)</span>: <em>Heat and Worker Health</em></li>
+</ul>
+<p><strong>Methods and further reading</strong></p>
+<ul>
+<li><span class="citation" data-cites="goodmanbacon2021difference">Goodman-Bacon (<a href="#ref-goodmanbacon2021difference" role="doc-biblioref">2021</a>)</span>: <em>Difference-in-Differences with Variation in Treatment Timing</em></li>
+<li><span class="citation" data-cites="dechaisemartin2020two">Chaisemartin and D’Haultfœuille (<a href="#ref-dechaisemartin2020two" role="doc-biblioref">2020</a>)</span>: <em>Two-Way Fixed Effects Estimators with Heterogeneous Treatment Effects</em></li>
+<li><span class="citation" data-cites="nickell1981biases">Nickell (<a href="#ref-nickell1981biases" role="doc-biblioref">1981</a>)</span>: <em>Biases in Dynamic Models with Fixed Effects</em></li>
+<li><span class="citation" data-cites="dell2014what">Dell et al. (<a href="#ref-dell2014what" role="doc-biblioref">2014</a>)</span>: <em>What Do We Learn from the Weather? The New Climate-Economy Literature</em></li>
+<li><span class="citation" data-cites="hsiang2016climate">Hsiang (<a href="#ref-hsiang2016climate" role="doc-biblioref">2016</a>)</span>: <em>Climate Econometrics</em></li>
+<li><span class="citation" data-cites="abadie2023when">Abadie et al. (<a href="#ref-abadie2023when" role="doc-biblioref">2023</a>)</span>: <em>When Should You Adjust Standard Errors for Clustering?</em></li>
+<li><span class="citation" data-cites="conley1999gmm">Conley (<a href="#ref-conley1999gmm" role="doc-biblioref">1999</a>)</span>: <em>GMM Estimation with Cross Sectional Dependence</em></li>
+<li><span class="citation" data-cites="cameron2008bootstrap">Cameron et al. (<a href="#ref-cameron2008bootstrap" role="doc-biblioref">2008</a>)</span>: <em>Bootstrap-Based Improvements for Inference with Clustered Errors</em></li>
+<li><span class="citation" data-cites="wooldridge1999distribution">Wooldridge (<a href="#ref-wooldridge1999distribution" role="doc-biblioref">1999</a>)</span>: <em>Distribution-Free Estimation of Some Nonlinear Panel Data Models</em></li>
+<li><span class="citation" data-cites="pastor2021sustainable">Pástor et al. (<a href="#ref-pastor2021sustainable" role="doc-biblioref">2021</a>)</span>: <em>Sustainable Investing in Equilibrium</em></li>
+<li><span class="citation" data-cites="mundlak1978pooling">Mundlak (<a href="#ref-mundlak1978pooling" role="doc-biblioref">1978</a>)</span>: <em>On the Pooling of Time Series and Cross Section Data</em></li>
+</ul>
+</section>
+<section id="chapter-9-difference-in-differences" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-9-difference-in-differences">Chapter 9: <a href="Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.html">Difference-in-Differences</a></h3>
+<p><strong>Case studies</strong></p>
+<ul>
+<li><span class="citation" data-cites="miller2021medicaid">Miller et al. (<a href="#ref-miller2021medicaid" role="doc-biblioref">2021</a>)</span>: <em>Medicaid and Mortality: New Evidence from Linked Survey and Administrative Data</em></li>
+<li><span class="citation" data-cites="brynjolfsson2025generative">Brynjolfsson et al. (<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">2025</a>)</span>: <em>Generative AI at Work</em></li>
+<li><span class="citation" data-cites="demirci2025who">Demirci et al. (<a href="#ref-demirci2025who" role="doc-biblioref">2025</a>)</span>: <em>Who Is AI Replacing? The Impact of Generative AI on Online Freelancing Platforms</em></li>
+</ul>
+<p><strong>Methods and further reading</strong></p>
+<ul>
+<li><span class="citation" data-cites="roth2023when">Roth and Sant’Anna (<a href="#ref-roth2023when" role="doc-biblioref">2023</a>)</span>: <em>When Is Parallel Trends Sensitive to Functional Form?</em></li>
+<li><span class="citation" data-cites="roth2022pretest">Roth (<a href="#ref-roth2022pretest" role="doc-biblioref">2022</a>)</span>: <em>Pretest with Caution: Event-Study Estimates after Testing for Parallel Trends</em></li>
+<li><span class="citation" data-cites="rambachan2023more">Rambachan and Roth (<a href="#ref-rambachan2023more" role="doc-biblioref">2023</a>)</span>: <em>A More Credible Approach to Parallel Trends</em></li>
+<li><span class="citation" data-cites="goodmanbacon2021difference">Goodman-Bacon (<a href="#ref-goodmanbacon2021difference" role="doc-biblioref">2021</a>)</span>: <em>Difference-in-Differences with Variation in Treatment Timing</em></li>
+<li><span class="citation" data-cites="dechaisemartin2020two">Chaisemartin and D’Haultfœuille (<a href="#ref-dechaisemartin2020two" role="doc-biblioref">2020</a>)</span>: <em>Two-Way Fixed Effects Estimators with Heterogeneous Treatment Effects</em></li>
+<li><span class="citation" data-cites="callaway2021difference">Callaway and Sant’Anna (<a href="#ref-callaway2021difference" role="doc-biblioref">2021</a>)</span>: <em>Difference-in-Differences with Multiple Time Periods</em></li>
+<li><span class="citation" data-cites="sun2021estimating">Sun and Abraham (<a href="#ref-sun2021estimating" role="doc-biblioref">2021</a>)</span>: <em>Estimating Dynamic Treatment Effects in Event Studies with Heterogeneous Treatment Effects</em></li>
+<li><span class="citation" data-cites="borusyak2024revisiting">Borusyak et al. (<a href="#ref-borusyak2024revisiting" role="doc-biblioref">2024</a>)</span>: <em>Revisiting Event-Study Designs: Robust and Efficient Estimation</em></li>
+<li><span class="citation" data-cites="arkhangelsky2021synthetic">Arkhangelsky et al. (<a href="#ref-arkhangelsky2021synthetic" role="doc-biblioref">2021</a>)</span>: <em>Synthetic Difference-in-Differences</em></li>
+<li><span class="citation" data-cites="bertrand2004how">Bertrand et al. (<a href="#ref-bertrand2004how" role="doc-biblioref">2004</a>)</span>: <em>How much should we trust differences-in-differences estimates?</em></li>
+<li><span class="citation" data-cites="chen2024logs">Chen and Roth (<a href="#ref-chen2024logs" role="doc-biblioref">2024</a>)</span>: <em>Logs with Zeros? Some Problems and Solutions</em></li>
+</ul>
+</section>
+<section id="chapter-10-synthetic-control" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-10-synthetic-control">Chapter 10: <a href="Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.html">Synthetic Control</a></h3>
+<p><strong>Case studies</strong></p>
+<ul>
+<li><span class="citation" data-cites="abadie2003economic">Abadie and Gardeazabal (<a href="#ref-abadie2003economic" role="doc-biblioref">2003</a>)</span>: <em>The Economic Costs of Conflict: A Case Study of the Basque Country</em></li>
+<li><span class="citation" data-cites="acemoglu2016value">Acemoglu et al. (<a href="#ref-acemoglu2016value" role="doc-biblioref">2016</a>)</span>: <em>The Value of Connections in Turbulent Times: Evidence from the United States</em></li>
+</ul>
+<p><strong>Methods and further reading</strong></p>
+<ul>
+<li><span class="citation" data-cites="abadie2021using">Abadie (<a href="#ref-abadie2021using" role="doc-biblioref">2021</a>)</span>: <em>Using Synthetic Controls: Feasibility, Data Requirements, and Methodological Aspects</em></li>
+<li><span class="citation" data-cites="abadie2010synthetic">Abadie et al. (<a href="#ref-abadie2010synthetic" role="doc-biblioref">2010</a>)</span>: <em>Synthetic control methods for comparative case studies: Estimating the effect of California’s tobacco control program</em></li>
+<li><span class="citation" data-cites="arkhangelsky2021synthetic">Arkhangelsky et al. (<a href="#ref-arkhangelsky2021synthetic" role="doc-biblioref">2021</a>)</span>: <em>Synthetic Difference-in-Differences</em></li>
+<li><span class="citation" data-cites="benmichael2021augmented">Ben-Michael et al. (<a href="#ref-benmichael2021augmented" role="doc-biblioref">2021</a>)</span>: <em>The Augmented Synthetic Control Method</em></li>
+</ul>
+</section>
+<section id="chapter-11-regression-and-matching" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-11-regression-and-matching">Chapter 11: <a href="Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.html">Regression and Matching</a></h3>
+<p><strong>Case studies</strong></p>
+<ul>
+<li><span class="citation" data-cites="lalonde1986evaluating">LaLonde (<a href="#ref-lalonde1986evaluating" role="doc-biblioref">1986</a>)</span>: <em>Evaluating the Econometric Evaluations of Training Programs with Experimental Data</em></li>
+<li><span class="citation" data-cites="rishika2013effect">Rishika et al. (<a href="#ref-rishika2013effect" role="doc-biblioref">2013</a>)</span>: <em>The Effect of Customers’ Social Media Participation on Customer Visit Frequency and Profitability: An Empirical Investigation</em></li>
+</ul>
+<p><strong>Methods and further reading</strong></p>
+<ul>
+<li><span class="citation" data-cites="rosenbaum1983central">Rosenbaum and Rubin (<a href="#ref-rosenbaum1983central" role="doc-biblioref">1983</a>)</span>: <em>The central role of the propensity score in observational studies for causal effects</em></li>
+<li><span class="citation" data-cites="dehejia1999causal">Dehejia and Wahba (<a href="#ref-dehejia1999causal" role="doc-biblioref">1999</a>)</span>: <em>Causal effects in nonexperimental studies: Reevaluating the evaluation of training programs</em></li>
+<li><span class="citation" data-cites="cinelli2020making">Cinelli and Hazlett (<a href="#ref-cinelli2020making" role="doc-biblioref">2020</a>)</span>: <em>Making Sense of Sensitivity: Extending Omitted Variable Bias</em></li>
+<li><span class="citation" data-cites="oster2019unobservable">Oster (<a href="#ref-oster2019unobservable" role="doc-biblioref">2019</a>)</span>: <em>Unobservable Selection and Coefficient Stability: Theory and Evidence</em></li>
+<li><span class="citation" data-cites="smith2005does">Smith and Todd (<a href="#ref-smith2005does" role="doc-biblioref">2005</a>)</span>: <em>Does Matching Overcome LaLonde’s Critique of Nonexperimental Estimators?</em></li>
+</ul>
+</section>
+<section id="chapter-12-putting-it-together" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-12-putting-it-together">Chapter 12: <a href="Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html">Putting It Together</a></h3>
+<p><strong>Methods and further reading</strong></p>
+<ul>
+<li><span class="citation" data-cites="lalonde1986evaluating">LaLonde (<a href="#ref-lalonde1986evaluating" role="doc-biblioref">1986</a>)</span>: <em>Evaluating the Econometric Evaluations of Training Programs with Experimental Data</em></li>
+<li><span class="citation" data-cites="cui2026effects">Cui et al. (<a href="#ref-cui2026effects" role="doc-biblioref">2026</a>)</span>: <em>The Effects of Generative AI on High-Skilled Work: Evidence from Three Field Experiments with Software Developers</em></li>
+<li><span class="citation" data-cites="brynjolfsson2025generative">Brynjolfsson et al. (<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">2025</a>)</span>: <em>Generative AI at Work</em></li>
+<li><span class="citation" data-cites="demirci2025who">Demirci et al. (<a href="#ref-demirci2025who" role="doc-biblioref">2025</a>)</span>: <em>Who Is AI Replacing? The Impact of Generative AI on Online Freelancing Platforms</em></li>
+<li><span class="citation" data-cites="shaw2026thinking">Shaw and Nave (<a href="#ref-shaw2026thinking" role="doc-biblioref">2026</a>)</span>: <em>Thinking—Fast, Slow, and Artificial: How AI is Reshaping Human Reasoning and the Rise of Cognitive Surrender</em></li>
+</ul>
+</section>
+<section id="full-bibliography" class="level3">
+<h3 class="anchored" data-anchor-id="full-bibliography">Full Bibliography</h3>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-abadie2021using" class="csl-entry" role="listitem">
+Abadie, Alberto. 2021. <span>“Using Synthetic Controls: Feasibility, Data Requirements, and Methodological Aspects.”</span> <em>Journal of Economic Literature</em> 59 (2): 391–425. <a href="https://doi.org/10.1257/jel.20191450">https://doi.org/10.1257/jel.20191450</a>.
+</div>
+<div id="ref-abadie2023when" class="csl-entry" role="listitem">
+Abadie, Alberto, Susan Athey, Guido W Imbens, and Jeffrey M Wooldridge. 2023. <span>“When Should You Adjust Standard Errors for Clustering?”</span> <em>The Quarterly Journal of Economics</em> 138 (1): 1–35.
+</div>
+<div id="ref-abadie2010synthetic" class="csl-entry" role="listitem">
+Abadie, Alberto, Alexis Diamond, and Jens Hainmueller. 2010. <span>“Synthetic Control Methods for Comparative Case Studies: Estimating the Effect of California’s Tobacco Control Program.”</span> <em>Journal of the American Statistical Association</em> 105 (490): 493–505.
+</div>
+<div id="ref-abadie2003economic" class="csl-entry" role="listitem">
+Abadie, Alberto, and Javier Gardeazabal. 2003. <span>“The Economic Costs of Conflict: A Case Study of the <span>Basque Country</span>.”</span> <em>American Economic Review</em> 93 (1): 113–32. <a href="https://doi.org/10.1257/000282803321455188">https://doi.org/10.1257/000282803321455188</a>.
+</div>
+<div id="ref-acemoglu2016value" class="csl-entry" role="listitem">
+Acemoglu, Daron, Simon Johnson, Amir Kermani, James Kwak, and Todd Mitton. 2016. <span>“The Value of Connections in Turbulent Times: Evidence from the <span>United States</span>.”</span> <em>Journal of Financial Economics</em> 121 (2): 368–91. <a href="https://doi.org/10.1016/j.jfineco.2015.10.001">https://doi.org/10.1016/j.jfineco.2015.10.001</a>.
+</div>
+<div id="ref-agarwal2018banks" class="csl-entry" role="listitem">
+Agarwal, Sumit, Souphala Chomsisengphet, Neale Mahoney, and Johannes Stroebel. 2018. <span>“Do Banks Pass Through Credit Expansions to Consumers Who Want to Borrow?”</span> <em>The Quarterly Journal of Economics</em> 133 (1): 129–90. <a href="https://doi.org/10.1093/qje/qjx027">https://doi.org/10.1093/qje/qjx027</a>.
+</div>
+<div id="ref-angrist1996identification" class="csl-entry" role="listitem">
+Angrist, Joshua D, Guido W Imbens, and Donald B Rubin. 1996. <span>“Identification of Causal Effects Using Instrumental Variables.”</span> <em>Journal of the American Statistical Association</em> 91 (434): 444–55.
+</div>
+<div id="ref-angrist2010credibility" class="csl-entry" role="listitem">
+Angrist, Joshua D, and Jörn-Steffen Pischke. 2010. <span>“The Credibility Revolution in Empirical Economics: How Better Research Design Is Taking the Con Out of Econometrics.”</span> <em>Journal of Economic Perspectives</em> 24 (2): 3–30. <a href="https://doi.org/10.1257/jep.24.2.3">https://doi.org/10.1257/jep.24.2.3</a>.
+</div>
+<div id="ref-ardia2023climate" class="csl-entry" role="listitem">
+Ardia, David, Keven Bluteau, Kris Boudt, and Koen Inghelbrecht. 2023. <span>“Climate Change Concerns and the Performance of Green Vs. Brown Stocks.”</span> <em>Management Science</em> 69 (12): 7607–32. <a href="https://doi.org/10.1287/mnsc.2022.4636">https://doi.org/10.1287/mnsc.2022.4636</a>.
+</div>
+<div id="ref-arkhangelsky2021synthetic" class="csl-entry" role="listitem">
+Arkhangelsky, Dmitry, Susan Athey, David A Hirshberg, Guido W Imbens, and Stefan Wager. 2021. <span>“Synthetic Difference-in-Differences.”</span> <em>American Economic Review</em> 111 (12): 4088–118. <a href="https://doi.org/10.1257/aer.20190159">https://doi.org/10.1257/aer.20190159</a>.
+</div>
+<div id="ref-autor2013china" class="csl-entry" role="listitem">
+Autor, David H, David Dorn, and Gordon H Hanson. 2013. <span>“The China Syndrome: Local Labor Market Effects of Import Competition in the United States.”</span> <em>American Economic Review</em> 103 (6): 2121–68. <a href="https://doi.org/10.1257/aer.103.6.2121">https://doi.org/10.1257/aer.103.6.2121</a>.
+</div>
+<div id="ref-benmichael2021augmented" class="csl-entry" role="listitem">
+Ben-Michael, Eli, Avi Feller, and Jesse Rothstein. 2021. <span>“The Augmented Synthetic Control Method.”</span> <em>Journal of the American Statistical Association</em> 116 (536): 1789–803. <a href="https://doi.org/10.1080/01621459.2021.1929245">https://doi.org/10.1080/01621459.2021.1929245</a>.
+</div>
+<div id="ref-bernstein2015going" class="csl-entry" role="listitem">
+Bernstein, Shai. 2015. <span>“Does Going Public Affect Innovation?”</span> <em>The Journal of Finance</em> 70 (4): 1365–403. <a href="https://doi.org/10.1111/jofi.12275">https://doi.org/10.1111/jofi.12275</a>.
+</div>
+<div id="ref-bertrand2004how" class="csl-entry" role="listitem">
+Bertrand, Marianne, Esther Duflo, and Sendhil Mullainathan. 2004. <span>“How Much Should We Trust Differences-in-Differences Estimates?”</span> <em>The Quarterly Journal of Economics</em> 119 (1): 249–75.
+</div>
+<div id="ref-borusyak2022quasi" class="csl-entry" role="listitem">
+Borusyak, Kirill, Peter Hull, and Xavier Jaravel. 2022. <span>“Quasi-Experimental Shift-Share Research Designs.”</span> <em>Review of Economic Studies</em> 89 (1): 181–213. <a href="https://doi.org/10.1093/restud/rdab030">https://doi.org/10.1093/restud/rdab030</a>.
+</div>
+<div id="ref-borusyak2024revisiting" class="csl-entry" role="listitem">
+Borusyak, Kirill, Xavier Jaravel, and Jann Spiess. 2024. <span>“Revisiting Event-Study Designs: Robust and Efficient Estimation.”</span> <em>Review of Economic Studies</em> 91 (6): 3253–85. <a href="https://doi.org/10.1093/restud/rdae007">https://doi.org/10.1093/restud/rdae007</a>.
+</div>
+<div id="ref-brynjolfsson2025generative" class="csl-entry" role="listitem">
+Brynjolfsson, Erik, Danielle Li, and Lindsey Raymond. 2025. <span>“Generative <span>AI</span> at Work.”</span> <em>The Quarterly Journal of Economics</em> 140 (2): 889–942. <a href="https://doi.org/10.1093/qje/qjae044">https://doi.org/10.1093/qje/qjae044</a>.
+</div>
+<div id="ref-callaway2021difference" class="csl-entry" role="listitem">
+Callaway, Brantly, and Pedro H C Sant’Anna. 2021. <span>“Difference-in-Differences with Multiple Time Periods.”</span> <em>Journal of Econometrics</em> 225 (2): 200–230. <a href="https://doi.org/10.1016/j.jeconom.2020.12.001">https://doi.org/10.1016/j.jeconom.2020.12.001</a>.
+</div>
+<div id="ref-calonico2014robust" class="csl-entry" role="listitem">
+Calonico, Sebastian, Matias D Cattaneo, and Rocio Titiunik. 2014. <span>“Robust Nonparametric Confidence Intervals for Regression-Discontinuity Designs.”</span> <em>Econometrica</em> 82 (6): 2295–326. <a href="https://doi.org/10.3982/ECTA11757">https://doi.org/10.3982/ECTA11757</a>.
+</div>
+<div id="ref-cameron2008bootstrap" class="csl-entry" role="listitem">
+Cameron, A Colin, Jonah B Gelbach, and Douglas L Miller. 2008. <span>“Bootstrap-Based Improvements for Inference with Clustered Errors.”</span> <em>The Review of Economics and Statistics</em> 90 (3): 414–27.
+</div>
+<div id="ref-cattaneo2020simple" class="csl-entry" role="listitem">
+Cattaneo, Matias D, Michael Jansson, and Xinwei Ma. 2020. <span>“Simple Local Polynomial Density Estimators.”</span> <em>Journal of the American Statistical Association</em> 115 (531): 1449–55. <a href="https://doi.org/10.1080/01621459.2019.1635480">https://doi.org/10.1080/01621459.2019.1635480</a>.
+</div>
+<div id="ref-dechaisemartin2020two" class="csl-entry" role="listitem">
+Chaisemartin, Clément de, and Xavier D’Haultfœuille. 2020. <span>“Two-Way Fixed Effects Estimators with Heterogeneous Treatment Effects.”</span> <em>American Economic Review</em> 110 (9): 2964–96. <a href="https://doi.org/10.1257/aer.20181169">https://doi.org/10.1257/aer.20181169</a>.
+</div>
+<div id="ref-chen2024logs" class="csl-entry" role="listitem">
+Chen, Jiafeng, and Jonathan Roth. 2024. <span>“Logs with Zeros? Some Problems and Solutions.”</span> <em>The Quarterly Journal of Economics</em> 139 (2): 891–936. <a href="https://doi.org/10.1093/qje/qjad054">https://doi.org/10.1093/qje/qjad054</a>.
+</div>
+<div id="ref-cinelli2024crash" class="csl-entry" role="listitem">
+Cinelli, Carlos, Andrew Forney, and Judea Pearl. 2024. <span>“A Crash Course in Good and Bad Controls.”</span> <em>Sociological Methods &amp; Research</em> 53 (3): 1071–104. <a href="https://doi.org/10.1177/00491241221099552">https://doi.org/10.1177/00491241221099552</a>.
+</div>
+<div id="ref-cinelli2020making" class="csl-entry" role="listitem">
+Cinelli, Carlos, and Chad Hazlett. 2020. <span>“Making Sense of Sensitivity: Extending Omitted Variable Bias.”</span> <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 82 (1): 39–67. <a href="https://doi.org/10.1111/rssb.12348">https://doi.org/10.1111/rssb.12348</a>.
+</div>
+<div id="ref-conley1999gmm" class="csl-entry" role="listitem">
+Conley, Timothy G. 1999. <span>“GMM Estimation with Cross Sectional Dependence.”</span> <em>Journal of Econometrics</em> 92 (1): 1–45.
+</div>
+<div id="ref-cui2026effects" class="csl-entry" role="listitem">
+Cui, Zheyuan Kevin, Mert Demirer, Sonia Jaffe, Leon Musolff, Sida Peng, and Tobias Salz. 2026. <span>“The Effects of Generative <span>AI</span> on High-Skilled Work: Evidence from Three Field Experiments with Software Developers.”</span> <em>Management Science</em>, ahead of print. <a href="https://doi.org/10.1287/mnsc.2025.00535">https://doi.org/10.1287/mnsc.2025.00535</a>.
+</div>
+<div id="ref-dehejia1999causal" class="csl-entry" role="listitem">
+Dehejia, Rajeev H, and Sadek Wahba. 1999. <span>“Causal Effects in Nonexperimental Studies: Reevaluating the Evaluation of Training Programs.”</span> <em>Journal of the American Statistical Association</em> 94 (448): 1053–62.
+</div>
+<div id="ref-dell2014what" class="csl-entry" role="listitem">
+Dell, Melissa, Benjamin F Jones, and Benjamin A Olken. 2014. <span>“What Do We Learn from the Weather? The New Climate-Economy Literature.”</span> <em>Journal of Economic Literature</em> 52 (3): 740–98.
+</div>
+<div id="ref-demirci2025who" class="csl-entry" role="listitem">
+Demirci, Ozge, Jonas Hannane, and Xinrong Zhu. 2025. <span>“Who Is <span>AI</span> Replacing? The Impact of Generative <span>AI</span> on Online Freelancing Platforms.”</span> <em>Management Science</em> 71 (10): 8097–108. <a href="https://doi.org/10.1287/mnsc.2024.05420">https://doi.org/10.1287/mnsc.2024.05420</a>.
+</div>
+<div id="ref-finkelstein2019subsidizing" class="csl-entry" role="listitem">
+Finkelstein, Amy, Nathaniel Hendren, and Mark Shepard. 2019. <span>“Subsidizing Health Insurance for Low-Income Adults: Evidence from <span>Massachusetts</span>.”</span> <em>American Economic Review</em> 109 (4): 1530–67. <a href="https://doi.org/10.1257/aer.20171455">https://doi.org/10.1257/aer.20171455</a>.
+</div>
+<div id="ref-gelman2019high" class="csl-entry" role="listitem">
+Gelman, Andrew, and Guido Imbens. 2019. <span>“Why High-Order Polynomials Should Not Be Used in Regression Discontinuity Designs.”</span> <em>Journal of Business &amp; Economic Statistics</em> 37 (3): 447–56. <a href="https://doi.org/10.1080/07350015.2017.1366909">https://doi.org/10.1080/07350015.2017.1366909</a>.
+</div>
+<div id="ref-goldin2021health" class="csl-entry" role="listitem">
+Goldin, Jacob, Ithai Z Lurie, and Janet McCubbin. 2021. <span>“Health Insurance and Mortality: Experimental Evidence from Taxpayer Outreach.”</span> <em>The Quarterly Journal of Economics</em> 136 (1): 1–49. <a href="https://doi.org/10.1093/qje/qjaa029">https://doi.org/10.1093/qje/qjaa029</a>.
+</div>
+<div id="ref-goldsmithpinkham2020bartik" class="csl-entry" role="listitem">
+Goldsmith-Pinkham, Paul, Isaac Sorkin, and Henry Swift. 2020. <span>“Bartik Instruments: What, When, Why, and How.”</span> <em>American Economic Review</em> 110 (8): 2586–624. <a href="https://doi.org/10.1257/aer.20181047">https://doi.org/10.1257/aer.20181047</a>.
+</div>
+<div id="ref-goodmanbacon2021difference" class="csl-entry" role="listitem">
+Goodman-Bacon, Andrew. 2021. <span>“Difference-in-Differences with Variation in Treatment Timing.”</span> <em>Journal of Econometrics</em> 225 (2): 254–77.
+</div>
+<div id="ref-hernan2020causal" class="csl-entry" role="listitem">
+Hernán, Miguel A., and James M. Robins. 2020. <em>Causal Inference: What If</em>. Chapman &amp; Hall/CRC. <a href="https://miguelhernan.org/whatifbook">https://miguelhernan.org/whatifbook</a>.
+</div>
+<div id="ref-holland1986statistics" class="csl-entry" role="listitem">
+Holland, Paul W. 1986. <span>“Statistics and Causal Inference.”</span> <em>Journal of the American Statistical Association</em> 81 (396): 945–60. <a href="https://doi.org/10.1080/01621459.1986.10478354">https://doi.org/10.1080/01621459.1986.10478354</a>.
+</div>
+<div id="ref-hsiang2016climate" class="csl-entry" role="listitem">
+Hsiang, Solomon. 2016. <span>“Climate Econometrics.”</span> <em>Annual Review of Resource Economics</em> 8: 43–75.
+</div>
+<div id="ref-imbens1994identification" class="csl-entry" role="listitem">
+Imbens, Guido W, and Joshua D Angrist. 1994. <span>“Identification and Estimation of Local Average Treatment Effects.”</span> <em>Econometrica</em> 62 (2): 467–75. <a href="https://doi.org/10.2307/2951620">https://doi.org/10.2307/2951620</a>.
+</div>
+<div id="ref-imbens2012optimal" class="csl-entry" role="listitem">
+Imbens, Guido, and Karthik Kalyanaraman. 2012. <span>“Optimal Bandwidth Choice for the Regression Discontinuity Estimator.”</span> <em>Review of Economic Studies</em> 79 (3): 933–59. <a href="https://doi.org/10.1093/restud/rdr043">https://doi.org/10.1093/restud/rdr043</a>.
+</div>
+<div id="ref-ireland2023heat" class="csl-entry" role="listitem">
+Ireland, Andrew, David Johnston, and Rachel Knott. 2023. <span>“Heat and Worker Health.”</span> <em>Journal of Health Economics</em> 91: 102800. <a href="https://doi.org/10.1016/j.jhealeco.2023.102800">https://doi.org/10.1016/j.jhealeco.2023.102800</a>.
+</div>
+<div id="ref-kunn2023indoor" class="csl-entry" role="listitem">
+Künn, Steffen, Juan Palacios, and Nico Pestel. 2023. <span>“Indoor Air Quality and Strategic Decision Making.”</span> <em>Management Science</em> 69 (9): 5354–77. <a href="https://doi.org/10.1287/mnsc.2022.4643">https://doi.org/10.1287/mnsc.2022.4643</a>.
+</div>
+<div id="ref-lalonde1986evaluating" class="csl-entry" role="listitem">
+LaLonde, Robert J. 1986. <span>“Evaluating the Econometric Evaluations of Training Programs with Experimental Data.”</span> <em>American Economic Review</em> 76 (4): 604–20.
+</div>
+<div id="ref-lee2009training" class="csl-entry" role="listitem">
+Lee, David S. 2009. <span>“Training, Wages, and Sample Selection: Estimating Sharp Bounds on Treatment Effects.”</span> <em>Review of Economic Studies</em> 76 (3): 1071–102. <a href="https://doi.org/10.1111/j.1467-937X.2009.00536.x">https://doi.org/10.1111/j.1467-937X.2009.00536.x</a>.
+</div>
+<div id="ref-lee2010regression" class="csl-entry" role="listitem">
+Lee, David S, and Thomas Lemieux. 2010. <span>“Regression Discontinuity Designs in Economics.”</span> <em>Journal of Economic Literature</em> 48 (2): 281–355. <a href="https://doi.org/10.1257/jel.48.2.281">https://doi.org/10.1257/jel.48.2.281</a>.
+</div>
+<div id="ref-lee2022valid" class="csl-entry" role="listitem">
+Lee, David S, Justin McCrary, Marcelo J Moreira, and Jack Porter. 2022. <span>“Valid t-Ratio Inference for <span>IV</span>.”</span> <em>American Economic Review</em> 112 (10): 3260–90. <a href="https://doi.org/10.1257/aer.20211063">https://doi.org/10.1257/aer.20211063</a>.
+</div>
+<div id="ref-lin2013agnostic" class="csl-entry" role="listitem">
+Lin, Winston. 2013. <span>“Agnostic Notes on Regression Adjustments to Experimental Data: Reexamining <span class="nocase">Freedman’s</span> Critique.”</span> <em>The Annals of Applied Statistics</em> 7 (1): 295–318. <a href="https://doi.org/10.1214/12-AOAS583">https://doi.org/10.1214/12-AOAS583</a>.
+</div>
+<div id="ref-mccrary2008manipulation" class="csl-entry" role="listitem">
+McCrary, Justin. 2008. <span>“Manipulation of the Running Variable in the Regression Discontinuity Design: A Density Test.”</span> <em>Journal of Econometrics</em> 142 (2): 698–714. <a href="https://doi.org/10.1016/j.jeconom.2007.05.005">https://doi.org/10.1016/j.jeconom.2007.05.005</a>.
+</div>
+<div id="ref-miller2021medicaid" class="csl-entry" role="listitem">
+Miller, Sarah, Norman Johnson, and Laura R Wherry. 2021. <span>“Medicaid and Mortality: New Evidence from Linked Survey and Administrative Data.”</span> <em>The Quarterly Journal of Economics</em> 136 (3): 1783–829. <a href="https://doi.org/10.1093/qje/qjab004">https://doi.org/10.1093/qje/qjab004</a>.
+</div>
+<div id="ref-mundlak1978pooling" class="csl-entry" role="listitem">
+Mundlak, Yair. 1978. <span>“On the Pooling of Time Series and Cross Section Data.”</span> <em>Econometrica</em> 46 (1): 69–85.
+</div>
+<div id="ref-nickell1981biases" class="csl-entry" role="listitem">
+Nickell, Stephen. 1981. <span>“Biases in Dynamic Models with Fixed Effects.”</span> <em>Econometrica</em> 49 (6): 1417–26.
+</div>
+<div id="ref-oster2019unobservable" class="csl-entry" role="listitem">
+Oster, Emily. 2019. <span>“Unobservable Selection and Coefficient Stability: Theory and Evidence.”</span> <em>Journal of Business &amp; Economic Statistics</em> 37 (2): 187–204. <a href="https://doi.org/10.1080/07350015.2016.1227711">https://doi.org/10.1080/07350015.2016.1227711</a>.
+</div>
+<div id="ref-park2020heat" class="csl-entry" role="listitem">
+Park, R. Jisung, Joshua Goodman, Michael Hurwitz, and Jonathan Smith. 2020. <span>“Heat and Learning.”</span> <em>American Economic Journal: Economic Policy</em> 12 (2): 306–39. <a href="https://doi.org/10.1257/pol.20180612">https://doi.org/10.1257/pol.20180612</a>.
+</div>
+<div id="ref-pastor2021sustainable" class="csl-entry" role="listitem">
+Pástor, Ľuboš, Robert F Stambaugh, and Lucian A Taylor. 2021. <span>“Sustainable Investing in Equilibrium.”</span> <em>Journal of Financial Economics</em> 142 (2): 550–71.
+</div>
+<div id="ref-rambachan2023more" class="csl-entry" role="listitem">
+Rambachan, Ashesh, and Jonathan Roth. 2023. <span>“A More Credible Approach to Parallel Trends.”</span> <em>Review of Economic Studies</em> 90 (5): 2555–91. <a href="https://doi.org/10.1093/restud/rdad018">https://doi.org/10.1093/restud/rdad018</a>.
+</div>
+<div id="ref-rishika2013effect" class="csl-entry" role="listitem">
+Rishika, Rishika, Ashish Kumar, Ramkumar Janakiraman, and Ram Bezawada. 2013. <span>“The Effect of Customers’ Social Media Participation on Customer Visit Frequency and Profitability: An Empirical Investigation.”</span> <em>Information Systems Research</em> 24 (1): 108–27. <a href="https://doi.org/10.1287/isre.1120.0460">https://doi.org/10.1287/isre.1120.0460</a>.
+</div>
+<div id="ref-rosenbaum1983central" class="csl-entry" role="listitem">
+Rosenbaum, Paul R, and Donald B Rubin. 1983. <span>“The Central Role of the Propensity Score in Observational Studies for Causal Effects.”</span> <em>Biometrika</em> 70 (1): 41–55.
+</div>
+<div id="ref-roth2022pretest" class="csl-entry" role="listitem">
+Roth, Jonathan. 2022. <span>“Pretest with Caution: Event-Study Estimates After Testing for Parallel Trends.”</span> <em>American Economic Review: Insights</em> 4 (3): 305–22. <a href="https://doi.org/10.1257/aeri.20210236">https://doi.org/10.1257/aeri.20210236</a>.
+</div>
+<div id="ref-roth2023when" class="csl-entry" role="listitem">
+Roth, Jonathan, and Pedro H C Sant’Anna. 2023. <span>“When Is Parallel Trends Sensitive to Functional Form?”</span> <em>Econometrica</em> 91 (2): 737–47. <a href="https://doi.org/10.3982/ECTA19402">https://doi.org/10.3982/ECTA19402</a>.
+</div>
+<div id="ref-shaw2026thinking" class="csl-entry" role="listitem">
+Shaw, Steven D, and Gideon Nave. 2026. <em>Thinking—Fast, Slow, and Artificial: How <span>AI</span> Is Reshaping Human Reasoning and the Rise of Cognitive Surrender</em>. SSRN Working Paper 6097646. <a href="https://doi.org/10.2139/ssrn.6097646">https://doi.org/10.2139/ssrn.6097646</a>.
+</div>
+<div id="ref-smith2005does" class="csl-entry" role="listitem">
+Smith, Jeffrey A, and Petra E Todd. 2005. <span>“Does Matching Overcome <span class="nocase">LaLonde’s</span> Critique of Nonexperimental Estimators?”</span> <em>Journal of Econometrics</em> 125 (1–2): 305–53. <a href="https://doi.org/10.1016/j.jeconom.2004.04.011">https://doi.org/10.1016/j.jeconom.2004.04.011</a>.
+</div>
+<div id="ref-sun2021estimating" class="csl-entry" role="listitem">
+Sun, Liyang, and Sarah Abraham. 2021. <span>“Estimating Dynamic Treatment Effects in Event Studies with Heterogeneous Treatment Effects.”</span> <em>Journal of Econometrics</em> 225 (2): 175–99. <a href="https://doi.org/10.1016/j.jeconom.2020.09.006">https://doi.org/10.1016/j.jeconom.2020.09.006</a>.
+</div>
+<div id="ref-wooldridge1999distribution" class="csl-entry" role="listitem">
+Wooldridge, Jeffrey M. 1999. <span>“Distribution-Free Estimation of Some Nonlinear Panel Data Models.”</span> <em>Journal of Econometrics</em> 90 (1): 77–97.
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html" class="pagination-link" aria-label="Chapter 12: Putting It Together">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Chapter 12: Putting It Together</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

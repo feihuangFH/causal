@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Fei Huang, UNSW Sydney">
+
+<title>Experiments in Practice – Causal Inference for Policy Evaluation</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html" rel="next">
+<link href="../../Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2ed7f7ae727038b1aa95f4c24ad3a3a6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-af98a32a849caa794534a9445d98b5fe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html">Part II: Randomized Experiments</a></li><li class="breadcrumb-item"><a href="../../Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.html">Chapter 4: Experiments in Practice</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Causal Inference for Policy Evaluation</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part I: Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch01-Introduction/Lecture-Introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 1: Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch02-Causal-Framework/Lecture-Causal-Framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 2: Causal Inference Framework</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part II: Randomized Experiments</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 3: Experiments: Design and Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Chapter 4: Experiments in Practice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 5: When Experiments Go Wrong</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part III: Instrumental Variables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 6: Instrumental Variables</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part IV: Regression Discontinuity</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 7: Regression Discontinuity</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part V: Panel Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 8: Panel Data and Fixed Effects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 9: Difference-in-Differences</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 10: Synthetic Control</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VI: Selection on Observables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 11: Regression and Matching</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VII: Synthesis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 12: Putting It Together</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading List</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
+  <li><a href="#in-practice-running-an-experiment" id="toc-in-practice-running-an-experiment" class="nav-link" data-scroll-target="#in-practice-running-an-experiment">In Practice: Running an Experiment</a></li>
+  <li><a href="#where-experiments-happen" id="toc-where-experiments-happen" class="nav-link" data-scroll-target="#where-experiments-happen">Where Experiments Happen</a>
+  <ul class="collapse">
+  <li><a href="#lab-online-field" id="toc-lab-online-field" class="nav-link" data-scroll-target="#lab-online-field">Lab, Online, Field</a></li>
+  <li><a href="#experiments-inside-firms" id="toc-experiments-inside-firms" class="nav-link" data-scroll-target="#experiments-inside-firms">Experiments Inside Firms</a></li>
+  </ul></li>
+  <li><a href="#planning-an-experiment" id="toc-planning-an-experiment" class="nav-link" data-scroll-target="#planning-an-experiment">Planning an Experiment</a>
+  <ul class="collapse">
+  <li><a href="#pre-registration-and-pre-analysis-plans" id="toc-pre-registration-and-pre-analysis-plans" class="nav-link" data-scroll-target="#pre-registration-and-pre-analysis-plans">Pre-Registration and Pre-Analysis Plans</a></li>
+  <li><a href="#measuring-outcomes" id="toc-measuring-outcomes" class="nav-link" data-scroll-target="#measuring-outcomes">Measuring Outcomes</a></li>
+  <li><a href="#testing-mechanisms" id="toc-testing-mechanisms" class="nav-link" data-scroll-target="#testing-mechanisms">Testing Mechanisms</a></li>
+  <li><a href="#between--and-within-subject-designs" id="toc-between--and-within-subject-designs" class="nav-link" data-scroll-target="#between--and-within-subject-designs">Between- and Within-Subject Designs</a></li>
+  <li><a href="#ethics-of-experimentation" id="toc-ethics-of-experimentation" class="nav-link" data-scroll-target="#ethics-of-experimentation">Ethics of Experimentation</a></li>
+  </ul></li>
+  <li><a href="#case-study-1-cognitive-surrender" id="toc-case-study-1-cognitive-surrender" class="nav-link" data-scroll-target="#case-study-1-cognitive-surrender">Case Study 1: Cognitive Surrender</a>
+  <ul class="collapse">
+  <li><a href="#case-study-1-do-people-stop-thinking-when-ai-is-available" id="toc-case-study-1-do-people-stop-thinking-when-ai-is-available" class="nav-link" data-scroll-target="#case-study-1-do-people-stop-thinking-when-ai-is-available">Case Study 1: Do People Stop Thinking When AI Is Available?</a></li>
+  <li><a href="#case-study-1-the-design" id="toc-case-study-1-the-design" class="nav-link" data-scroll-target="#case-study-1-the-design">Case Study 1: The Design</a></li>
+  <li><a href="#case-study-1-results" id="toc-case-study-1-results" class="nav-link" data-scroll-target="#case-study-1-results">Case Study 1: Results</a></li>
+  <li><a href="#case-study-1-lessons-and-limits" id="toc-case-study-1-lessons-and-limits" class="nav-link" data-scroll-target="#case-study-1-lessons-and-limits">Case Study 1: Lessons and Limits</a></li>
+  <li><a href="#case-study-1-what-to-copy" id="toc-case-study-1-what-to-copy" class="nav-link" data-scroll-target="#case-study-1-what-to-copy">Case Study 1: What to Copy</a></li>
+  <li><a href="#case-study-1-discussion-questions" id="toc-case-study-1-discussion-questions" class="nav-link" data-scroll-target="#case-study-1-discussion-questions">Case Study 1: Discussion Questions</a></li>
+  </ul></li>
+  <li><a href="#case-study-2-experiments-inside-firms" id="toc-case-study-2-experiments-inside-firms" class="nav-link" data-scroll-target="#case-study-2-experiments-inside-firms">Case Study 2: Experiments Inside Firms</a>
+  <ul class="collapse">
+  <li><a href="#case-study-2-generative-ai-and-software-developers" id="toc-case-study-2-generative-ai-and-software-developers" class="nav-link" data-scroll-target="#case-study-2-generative-ai-and-software-developers">Case Study 2: Generative AI and Software Developers</a></li>
+  <li><a href="#case-study-2-three-experiments-three-designs" id="toc-case-study-2-three-experiments-three-designs" class="nav-link" data-scroll-target="#case-study-2-three-experiments-three-designs">Case Study 2: Three Experiments, Three Designs</a></li>
+  <li><a href="#case-study-2-results-and-lessons" id="toc-case-study-2-results-and-lessons" class="nav-link" data-scroll-target="#case-study-2-results-and-lessons">Case Study 2: Results and Lessons</a></li>
+  <li><a href="#case-study-2-what-to-copy" id="toc-case-study-2-what-to-copy" class="nav-link" data-scroll-target="#case-study-2-what-to-copy">Case Study 2: What to Copy</a></li>
+  <li><a href="#case-study-2-discussion-questions" id="toc-case-study-2-discussion-questions" class="nav-link" data-scroll-target="#case-study-2-discussion-questions">Case Study 2: Discussion Questions</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a>
+  <ul class="collapse">
+  <li><a href="#summary-1" id="toc-summary-1" class="nav-link" data-scroll-target="#summary-1">Summary</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="Lecture-Experiments-Practice.slides.html"><i class="bi bi-easel2"></i>Slides</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html">Part II: Randomized Experiments</a></li><li class="breadcrumb-item"><a href="../../Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.html">Chapter 4: Experiments in Practice</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Experiments in Practice</h1>
+<p class="subtitle lead">From the Lab to the Firm</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Instructor</div>
+    <div class="quarto-title-meta-contents">
+             <p>Fei Huang, UNSW Sydney </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="notes">
+<ul>
+<li>Chapter 3 covered the statistics of experiments. This chapter covers the decisions that come before and around them: where to run the experiment, what to measure, how to commit to an analysis in advance, and how to do it ethically.</li>
+<li>Two case studies on generative AI: a set of pre-registered lab and online experiments on “cognitive surrender” to AI, and field experiments run inside three large firms.</li>
+</ul>
+</div>
+<section id="where-this-chapter-fits" class="level3">
+<h3 class="anchored" data-anchor-id="where-this-chapter-fits">Where This Chapter Fits</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Step 1: Can you randomly assign who is treated?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>You arrive here when:</strong> You can randomize, and now need to plan and run the experiment.</li>
+<li><strong>This chapter:</strong> Where experiments happen, pre-registration, outcomes, mechanisms, and ethics.</li>
+<li><strong>Next:</strong> Chapter 5: what to do when the experiment does not go to plan.</li>
+</ul>
+<p>See the design flowchart in Chapter 1.</p>
+</div>
+</div>
+</section>
+<section id="in-practice-running-an-experiment" class="level3">
+<h3 class="anchored" data-anchor-id="in-practice-running-an-experiment">In Practice: Running an Experiment</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Practitioner Summary
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Use it when:</strong> you have agreement to randomize and must decide where to run it, what to measure, and how to analyze it</li>
+<li><strong>What you need:</strong> a primary outcome defined in advance, measured from records or systems rather than surveys where possible</li>
+<li><strong>What must hold:</strong> the reported analysis is the one planned; participants and setting resemble the people and decisions you care about</li>
+<li><strong>Checks to run:</strong> pre-registration filed before outcomes are seen; a check that the treatment was delivered as intended; quality as well as quantity of output</li>
+<li><strong>In R:</strong> <code>power.t.test()</code> and <code>power.prop.test()</code> for sample sizes; the same estimators as Chapter 3</li>
+<li><strong>Telling a manager:</strong> “We fixed the measure and the analysis before seeing any results, so this finding was not fished for.”</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="where-experiments-happen" class="level2">
+<h2 class="anchored" data-anchor-id="where-experiments-happen">Where Experiments Happen</h2>
+<section id="lab-online-field" class="level3">
+<h3 class="anchored" data-anchor-id="lab-online-field">Lab, Online, Field</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A Spectrum of Control and Realism
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Example</th>
+<th>Strength</th>
+<th>Weakness</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Lab</strong></td>
+<td>Participants solve puzzles with or without an AI assistant in a university lab</td>
+<td>Tight control; mechanisms can be isolated</td>
+<td>Artificial tasks and stakes</td>
+</tr>
+<tr class="even">
+<td><strong>Online</strong></td>
+<td>The same task on a survey platform such as Prolific</td>
+<td>Cheap, fast, large samples</td>
+<td>Attention and sample quality</td>
+</tr>
+<tr class="odd">
+<td><strong>Field, run by government</strong></td>
+<td>IRS letters randomized across 4.5 million tax returns (Chapter 3)</td>
+<td>Real decisions, real outcomes</td>
+<td>Limited control over what else happens</td>
+</tr>
+<tr class="even">
+<td><strong>Field, run by firms</strong></td>
+<td>Companies randomize access to an AI coding tool</td>
+<td>Real work at scale</td>
+<td>Firms’ priorities shape the design</td>
+</tr>
+</tbody>
+</table>
+<p>The same question (does AI help people think and work?) can be studied at every point on this spectrum. Results that agree across settings are more convincing than any single study.</p>
+</div>
+</div>
+</section>
+<section id="experiments-inside-firms" class="level3">
+<h3 class="anchored" data-anchor-id="experiments-inside-firms">Experiments Inside Firms</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Randomization as a Business Tool
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Digital firms run thousands of A/B tests a year on prices, interfaces, recommendations, and messages</li>
+<li>Firms also randomize internal changes: tools, training, incentives, schedules</li>
+<li>These experiments are run to make a decision, not to publish a paper:
+<ul>
+<li>the control group is often treated once a decision is made</li>
+<li>treatment may be an offer or encouragement, not a mandate</li>
+<li>outcomes are whatever the firm already measures</li>
+</ul></li>
+</ul>
+<p>These features shape what the experiment can identify (Chapter 5).</p>
+</div>
+</div>
+</section>
+</section>
+<section id="planning-an-experiment" class="level2">
+<h2 class="anchored" data-anchor-id="planning-an-experiment">Planning an Experiment</h2>
+<section id="pre-registration-and-pre-analysis-plans" class="level3">
+<h3 class="anchored" data-anchor-id="pre-registration-and-pre-analysis-plans">Pre-Registration and Pre-Analysis Plans</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Record the Plan Before Seeing the Data
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A pre-registration records the hypotheses, design, primary outcomes, and planned analysis in a public registry (AEA RCT Registry, OSF, AsPredicted) before the data are analyzed.</p>
+<p><strong>Why:</strong> with many outcomes, subgroups, controls, and specifications, it is easy to find a significant result by chance and report only that one (the “garden of forking paths”).</p>
+<p><strong>What to include:</strong> primary and secondary outcomes; the estimator and controls; how to handle attrition and outliers; subgroups; multiple-testing corrections.</p>
+<p><strong>What it does not do:</strong> forbid exploration. It separates confirmatory results from exploratory ones, and deviations are reported rather than hidden.</p>
+</div>
+</div>
+</section>
+<section id="measuring-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="measuring-outcomes">Measuring Outcomes</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>The Outcome Defines What You Learn
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Administrative records</strong> (tax filings, death records, claims, code repositories) avoid attrition and self-report bias, but measure only what the system records</li>
+<li><strong>Surveys</strong> capture attitudes and well-being, but suffer from non-response and reporting bias</li>
+<li><strong>Behavioral measures</strong> (decisions, clicks, completed tasks) are objective, but may be proxies: “pull requests completed” is not the same as “useful software written”</li>
+<li><strong>Quality as well as quantity:</strong> if a treatment raises output, check whether it lowers quality</li>
+<li>Decide the primary outcome in advance; everything else is secondary</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="testing-mechanisms" class="level3">
+<h3 class="anchored" data-anchor-id="testing-mechanisms">Testing Mechanisms</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Design Arms to Learn <em>Why</em>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Vary features of the treatment:</strong> personalized vs.&nbsp;generic letters; early vs.&nbsp;late mailing (Chapter 3)</li>
+<li><strong>Vary the context:</strong> add time pressure, or incentives for accuracy, and see whether the effect changes</li>
+<li><strong>Randomize the treatment’s quality:</strong> make an AI assistant right on some questions and wrong on others to see how much people rely on it</li>
+<li><strong>Measure intermediate outcomes</strong> (take-up, usage, acceptance of suggestions) to trace the path from treatment to outcome</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="between--and-within-subject-designs" class="level3">
+<h3 class="anchored" data-anchor-id="between--and-within-subject-designs">Between- and Within-Subject Designs</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Who Is Compared with Whom?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Design</th>
+<th>Comparison</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Between-subject</strong></td>
+<td>Different people in treatment and control</td>
+<td>No carry-over between conditions</td>
+<td>Needs larger samples</td>
+</tr>
+<tr class="even">
+<td><strong>Within-subject</strong></td>
+<td>The same person under different conditions (e.g., different trials)</td>
+<td>Usually more precise; each person is their own control</td>
+<td>Carry-over, learning, and demand effects</td>
+</tr>
+</tbody>
+</table>
+<p>Many modern experiments mix both: randomize access between people, and randomize features within people.</p>
+</div>
+</div>
+</section>
+<section id="ethics-of-experimentation" class="level3">
+<h3 class="anchored" data-anchor-id="ethics-of-experimentation">Ethics of Experimentation</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Questions to Answer Before Randomizing
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Review and consent:</strong> ethics board approval; informed consent where feasible; debriefing after any deception</li>
+<li><strong>Deception:</strong> an AI assistant secretly programmed to give wrong answers is deception, justified only if necessary, harmless, and followed by debriefing</li>
+<li><strong>Withholding benefits:</strong> is it acceptable to deny the control group something valuable? Easier when supply is limited anyway, or when the benefit is genuinely uncertain</li>
+<li><strong>Experiments on employees and customers:</strong> firms have power over the people they experiment on; outcomes such as performance reviews must not be harmed by assignment</li>
+<li><strong>Privacy:</strong> linking records requires secure handling and minimal data</li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="case-study-1-cognitive-surrender" class="level2">
+<h2 class="anchored" data-anchor-id="case-study-1-cognitive-surrender">Case Study 1: Cognitive Surrender</h2>
+<section id="case-study-1-do-people-stop-thinking-when-ai-is-available" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-do-people-stop-thinking-when-ai-is-available">Case Study 1: Do People Stop Thinking When AI Is Available?</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Shaw &amp; Nave (2026), SSRN working paper <span class="citation" data-cites="shaw2026thinking">(<a href="#ref-shaw2026thinking" role="doc-biblioref">Shaw and Nave 2026</a>)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Status:</strong> a working paper on SSRN, not yet published in a journal at the time of writing. Included as a supplementary case because its design shows how to isolate a mechanism experimentally.</p>
+<p><strong>Question:</strong> When people can consult a generative AI assistant while reasoning, do they check its answers, or adopt them with little scrutiny (“cognitive surrender”)?</p>
+<p><strong>Task:</strong> seven reasoning puzzles adapted from the Cognitive Reflection Test, each with an intuitive wrong answer and a correct answer that requires deliberation.</p>
+<p><strong>Scale:</strong> three pre-registered experiments; 1,372 participants; 9,593 puzzle attempts; lab and online (Prolific) samples.</p>
+</div>
+</div>
+</section>
+<section id="case-study-1-the-design" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-the-design">Case Study 1: The Design</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Two Layers of Randomization
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Between subjects (Study 1, N = 359):</strong> randomly assigned to Brain-Only (no AI; n = 121) or AI-Assisted (n = 238), oversampling the AI group 2:1.</p>
+<p><strong>Within subjects:</strong> for AI-Assisted participants, each puzzle was randomly set so the assistant gave either the correct answer or a confident intuitive error, using hidden instructions to the AI. Participants did not know which.</p>
+<p><strong>Moderators (Studies 2–3):</strong> a 30-second time limit per puzzle; incentives ($0.20 per correct answer plus a lottery) with item-level feedback.</p>
+<p><strong>Why this design works:</strong> whether to <em>consult</em> the AI is the participant’s choice, so consulters may differ from non-consulters. But the AI’s accuracy is randomized within person, so comparing accurate and faulty trials isolates how much people rely on what the AI says.</p>
+</div>
+</div>
+</section>
+<section id="case-study-1-results" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-results">Case Study 1: Results</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Main Findings (Study 1)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Condition</th>
+<th style="text-align: center;">Share of puzzles answered correctly</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Brain-Only</td>
+<td style="text-align: center;">45.8%</td>
+</tr>
+<tr class="even">
+<td>AI-Assisted, AI correct</td>
+<td style="text-align: center;">71.0%</td>
+</tr>
+<tr class="odd">
+<td>AI-Assisted, AI wrong</td>
+<td style="text-align: center;">31.5%</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Participants consulted the AI on just over half the puzzles</li>
+<li>When they consulted it, they followed a wrong answer about 80% of the time</li>
+<li>AI access raised confidence by 11.7 points, even though half its answers were wrong</li>
+<li>Time pressure and incentives changed baseline accuracy but did not remove the pattern</li>
+<li>Reliance was stronger for people with more trust in AI and lower need for cognition</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-1-lessons-and-limits" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-lessons-and-limits">Case Study 1: Lessons and Limits</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Internal and External Validity
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Internal validity:</strong> randomized access and randomized accuracy give clean causal comparisons</li>
+<li><strong>Mechanism by design:</strong> the within-person accuracy manipulation isolates reliance on AI from the benefit of having a tool</li>
+<li><strong>External validity:</strong> puzzles with known answers differ from real decisions; stakes and repeated use with feedback are missing (the authors list these limitations themselves)</li>
+<li><strong>Ethics:</strong> deception (a deliberately faulty AI) required debriefing</li>
+<li><strong>Status:</strong> results from an unpublished working paper should be treated as provisional</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-1-what-to-copy" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-what-to-copy">Case Study 1: What to Copy</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Practices to Reuse
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Randomize the quality of the tool as well as access to it.</strong> Making the AI right on some puzzles and wrong on others isolates how much people rely on it.</li>
+<li><strong>Keep a no-tool baseline.</strong> Only the Brain-Only group shows that a faulty AI leaves people worse than no AI (31.5% vs.&nbsp;45.8% correct).</li>
+<li><strong>Pre-register, then vary the context.</strong> Time pressure and incentives test whether the pattern survives conditions that should weaken it.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-1-discussion-questions" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-discussion-questions">Case Study 1: Discussion Questions</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li>Why compare AI-correct and AI-wrong trials, rather than people who chose to consult the AI with people who did not?</li>
+<li>The Brain-Only group is smaller (2:1 allocation). Why might the researchers accept less precision for that comparison?</li>
+<li>What does a 31.5% accuracy rate with a faulty AI, below the 45.8% Brain-Only rate, tell a firm deploying AI tools?</li>
+<li>Design a field version of this experiment inside a firm. What would you randomize, and what would you measure?</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Suggested Answers (click to expand)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>People choose whether to consult the AI, so consulters and non-consulters may differ in ability or motivation. Whether the AI is right is randomized within person, so the accurate–faulty contrast compares like with like.</li>
+<li>The central questions are within the AI group: how accuracy, time pressure, and incentives change reliance. Putting more participants there makes those comparisons more precise; the Brain-Only group is needed only as a baseline.</li>
+<li>A tool that is sometimes wrong can leave people worse off than no tool if they stop checking it. Firms should measure error rates, design checks into the workflow, and train staff to verify outputs, not just provide access.</li>
+<li>For example, randomize which employees get an AI assistant and, within users, randomly seed some suggestions with known errors in a safe test task. Measure accuracy, time, the share of errors caught, and confidence. Ethics review and debriefing are needed.</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="case-study-2-experiments-inside-firms" class="level2">
+<h2 class="anchored" data-anchor-id="case-study-2-experiments-inside-firms">Case Study 2: Experiments Inside Firms</h2>
+<section id="case-study-2-generative-ai-and-software-developers" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-generative-ai-and-software-developers">Case Study 2: Generative AI and Software Developers</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Cui, Demirer, Jaffe, Musolff, Peng &amp; Salz (2026), <em>Management Science</em> <span class="citation" data-cites="cui2026effects">(<a href="#ref-cui2026effects" role="doc-biblioref">Cui et al. 2026</a>)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question:</strong> Does an AI coding assistant (GitHub Copilot) make professional software developers more productive?</p>
+<p><strong>The opportunity:</strong> three companies randomized access to Copilot “in the ordinary course of business”, to decide whether to adopt it, and shared the data.</p>
+<p><strong>Outcomes:</strong> from the companies’ version-control systems (GitHub): completed pull requests (units of finished work), commits, builds, and build success.</p>
+</div>
+</div>
+</section>
+<section id="case-study-2-three-experiments-three-designs" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-three-experiments-three-designs">Case Study 2: Three Experiments, Three Designs</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>The Same Question, Different Business Constraints
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Microsoft</th>
+<th>Accenture</th>
+<th>Anonymous Fortune 100 firm</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>When</strong></td>
+<td>Sept 2022 – Apr 2023</td>
+<td>Jul – Dec 2023</td>
+<td>Sept – Oct 2023</td>
+</tr>
+<tr class="even">
+<td><strong>Developers</strong></td>
+<td>1,746 (mainly US)</td>
+<td>320 (Southeast Asia)</td>
+<td>3,054</td>
+</tr>
+<tr class="odd">
+<td><strong>Randomized</strong></td>
+<td>Individuals and teams</td>
+<td>Individuals</td>
+<td>Teams</td>
+</tr>
+<tr class="even">
+<td><strong>Design</strong></td>
+<td>Treatment vs.&nbsp;control</td>
+<td>Treatment vs.&nbsp;control</td>
+<td>Staggered: random order of access over six weeks</td>
+</tr>
+<tr class="odd">
+<td><strong>Encouragement</strong></td>
+<td>Email</td>
+<td>Email, training, manager nudges</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>The designs differ across firms: Microsoft mixed individual and team randomization; at the anonymous firm every team was invited within about six weeks, and only the order of invitation was randomized.</li>
+</ul>
+</div>
+</section>
+<section id="case-study-2-results-and-lessons" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-results-and-lessons">Case Study 2: Results and Lessons</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Main Findings
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Pooling the three experiments (4,867 developers), using Copilot raises completed pull requests by 26.1% (standard error 10.3%); commits +13.6% and builds +38.4%</li>
+<li>Each experiment on its own is noisy: many developer-weeks have zero pull requests</li>
+<li><strong>Newer</strong> developers were more likely to adopt the tool (82% vs.&nbsp;72% for longer-tenured developers) and gained more</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Lessons for Business Experiments
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Firms’ decisions shape the design: encouragement rather than mandates; control groups that get access when the decision is made</li>
+<li><strong>Pooling</strong> several imperfect experiments can deliver a precise answer that none provides alone</li>
+<li>Only about 60–70% of developers ever tried the tool, so the effect of <em>access</em> is much smaller than the effect of <em>use</em>. Chapter 5 shows how the authors handle this</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-2-what-to-copy" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-what-to-copy">Case Study 2: What to Copy</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Practices to Reuse
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Turn a business rollout into an experiment.</strong> When a permanent control group is unacceptable, randomize the order of access.</li>
+<li><strong>Use outcomes the systems already log.</strong> Pull requests, commits, and builds came straight from version control.</li>
+<li><strong>Run several experiments and pool them.</strong> Each was noisy; pooled, they give +26.1% (SE 10.3%).</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-2-discussion-questions" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-discussion-questions">Case Study 2: Discussion Questions</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li>Why might a firm prefer a staggered rollout (everyone eventually treated, in random order) over a permanent control group?</li>
+<li>Microsoft randomized some developers by team. What spillovers within teams might that design be guarding against?</li>
+<li>“Pull requests completed” is the primary outcome. What could make it a misleading measure of productivity?</li>
+<li>The lab study (Case 1) finds people follow faulty AI answers; the field study finds productivity gains. How can both be true?</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Suggested Answers (click to expand)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Everyone gets the tool within weeks, which is easier to justify to managers and staff, while the random order still creates a valid comparison between early and late groups during the rollout.</li>
+<li>Developers in a team share code, review each other’s work, and divide tasks. A treated developer could pass on prompts or AI-written code, or take on different tasks, so untreated teammates would not be a clean control.</li>
+<li>Pull requests vary in size and difficulty. AI could encourage more, smaller requests, or lower quality that shows up later as bugs or rework. Counts also ignore design, review, and mentoring work.</li>
+<li>They measure different things in different settings. The lab study isolates reliance when the AI is wrong on reasoning puzzles; in real coding, suggestions are often right and errors can be caught by tests and review. Average gains can coexist with over-reliance on bad suggestions.</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<section id="summary-1" class="level3">
+<h3 class="anchored" data-anchor-id="summary-1">Summary</h3>
+<div class="incremental">
+<ul class="incremental">
+<li>Experiments range from the lab to the field; each setting trades control for realism</li>
+<li><strong>Firms</strong> increasingly run experiments to make decisions, which shapes their designs</li>
+<li><strong>Pre-registration</strong> separates confirmatory from exploratory findings</li>
+<li><strong>Outcomes</strong> and arms should be chosen to answer the policy question and reveal mechanisms</li>
+<li><strong>Ethics</strong> (consent, deception, withholding benefits, power over participants) is part of design, not an afterthought</li>
+<li>Field experiments find productivity gains from generative AI, concentrated among less experienced workers; lab experiments show people over-rely on AI output when it is wrong</li>
+</ul>
+</div>
+</section>
+<section id="next-steps" class="level3">
+<h3 class="anchored" data-anchor-id="next-steps">Next Steps</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li><strong>Read</strong>: <span class="citation" data-cites="cui2026effects">Cui et al. (<a href="#ref-cui2026effects" role="doc-biblioref">2026</a>)</span> Sections 1–3; <span class="citation" data-cites="shaw2026thinking">Shaw and Nave (<a href="#ref-shaw2026thinking" role="doc-biblioref">2026</a>)</span> (Study 1)</li>
+<li><strong>Practice</strong>: Write a one-page pre-analysis plan for an experiment giving an AI assistant to half of a company’s analysts</li>
+<li><strong>Next Class</strong>: When experiments go wrong: non-compliance, attrition, and spillovers (Chapter 5)</li>
+</ol>
+</div>
+</section>
+<section id="references" class="level3 scrollable">
+<h3 class="scrollable anchored" data-anchor-id="references">References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-cui2026effects" class="csl-entry" role="listitem">
+Cui, Zheyuan Kevin, Mert Demirer, Sonia Jaffe, Leon Musolff, Sida Peng, and Tobias Salz. 2026. <span>“The Effects of Generative <span>AI</span> on High-Skilled Work: Evidence from Three Field Experiments with Software Developers.”</span> <em>Management Science</em>, ahead of print. <a href="https://doi.org/10.1287/mnsc.2025.00535">https://doi.org/10.1287/mnsc.2025.00535</a>.
+</div>
+<div id="ref-shaw2026thinking" class="csl-entry" role="listitem">
+Shaw, Steven D, and Gideon Nave. 2026. <em>Thinking—Fast, Slow, and Artificial: How <span>AI</span> Is Reshaping Human Reasoning and the Rise of Cognitive Surrender</em>. SSRN Working Paper 6097646. <a href="https://doi.org/10.2139/ssrn.6097646">https://doi.org/10.2139/ssrn.6097646</a>.
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html" class="pagination-link" aria-label="Chapter 3: Experiments: Design and Inference">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Chapter 3: Experiments: Design and Inference</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html" class="pagination-link" aria-label="Chapter 5: When Experiments Go Wrong">
+        <span class="nav-page-text">Chapter 5: When Experiments Go Wrong</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

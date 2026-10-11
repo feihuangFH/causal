@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2ed7f7ae727038b1aa95f4c24ad3a3a6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
+
+  <meta name="author" content="Fei Huang, UNSW Sydney">
+  <title>Causal Inference for Policy Evaluation – Regression and Matching</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #1f1c1b;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #1f1c1b; } /* Normal */
+    code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+    code span.an { color: #ca60ca; } /* Annotation */
+    code span.at { color: #0057ae; } /* Attribute */
+    code span.bn { color: #b08000; } /* BaseN */
+    code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+    code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #924c9d; } /* Char */
+    code span.cn { color: #aa5500; } /* Constant */
+    code span.co { color: #898887; } /* Comment */
+    code span.cv { color: #0095ff; } /* CommentVar */
+    code span.do { color: #607880; } /* Documentation */
+    code span.dt { color: #0057ae; } /* DataType */
+    code span.dv { color: #b08000; } /* DecVal */
+    code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+    code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #b08000; } /* Float */
+    code span.fu { color: #644a9b; } /* Function */
+    code span.im { color: #ff5500; } /* Import */
+    code span.in { color: #b08000; } /* Information */
+    code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+    code span.op { color: #ca60ca; } /* Operator */
+    code span.ot { color: #006e28; } /* Other */
+    code span.pp { color: #006e28; } /* Preprocessor */
+    code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #ff5500; } /* SpecialString */
+    code span.st { color: #bf0303; } /* String */
+    code span.va { color: #0057ae; } /* Variable */
+    code span.vs { color: #bf0303; } /* VerbatimString */
+    code span.wa { color: #bf0303; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-96baaebca6aae0d833d4fea310b664e9.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Regression and Matching</h1>
+  <p class="subtitle">Selection on Observables</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Fei Huang, UNSW Sydney 
+</div>
+</div>
+</div>
+
+</section>
+<section class="slide level2 center">
+
+<aside class="notes">
+<ul>
+<li>This is the last step of the design flowchart: units chose their treatment, we observe them only once (or have no credible variation over time), and we must argue that we observe every factor that drives both treatment and outcome.</li>
+<li>Regression, matching, and propensity scores all rest on that same assumption. They differ in how they use the observed characteristics, not in what they assume.</li>
+<li>Two case studies: LaLonde’s comparison of non-experimental estimates with an experiment (the classic warning), and a study of customers who join a retailer’s social media page (matching combined with difference-in-differences).</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="where-this-chapter-fits" class="slide level2 center">
+<h2>Where This Chapter Fits</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Step 5: Do you observe every factor that drives both treatment and the outcome?</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>You arrive here when:</strong> Units chose their treatment, you observe them only once, and you can argue that all confounders are measured.</li>
+<li><strong>This chapter:</strong> Selection on observables, regression adjustment, matching, propensity scores, balance checks, and sensitivity analysis.</li>
+<li><strong>Next:</strong> Chapter 12: backing up any single design with others that have different weaknesses.</li>
+</ul>
+<p>See the design flowchart in Chapter 1.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="in-practice-regression-and-matching" class="slide level2 center">
+<h2>In Practice: Regression and Matching</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Practitioner Summary</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Use it when:</strong> no design-based source of variation exists, and you can argue you observe what drove treatment</li>
+<li><strong>What you need:</strong> rich pre-treatment covariates, especially past outcomes, and untreated units similar to the treated ones</li>
+<li><strong>What must hold:</strong> no unmeasured confounders, and overlap</li>
+<li><strong>Checks to run:</strong> an overlap plot; standardized differences before and after (below 0.1); several estimators; a sensitivity analysis</li>
+<li><strong>In R:</strong> <code>MatchIt::matchit()</code> and <code>match.data()</code>, <code>sensemakr</code> for sensitivity</li>
+<li><strong>Telling a manager:</strong> “Among customers with the same purchase history, joiners visited 5% more. A hidden factor would need to be this strong to explain that away.”</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section>
+<section id="selection-on-observables" class="title-slide slide level1 center">
+<h1>Selection on Observables</h1>
+
+</section>
+<section id="the-assumption" class="slide level2 center">
+<h2>The Assumption</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Conditional Independence and Overlap</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>Conditional independence (no unmeasured confounders):</strong> among units with the same observed characteristics <span class="math inline">X</span>, treatment is as good as random</p>
+<p><span class="math display">\big(Y_i(0), Y_i(1)\big) \perp D_i \mid X_i</span></p>
+<p><strong>Overlap (common support):</strong> for every value of <span class="math inline">X</span>, there are both treated and untreated units: <span class="math inline">0 &lt; P(D_i = 1 \mid X_i) &lt; 1</span>. For the ATT it is enough that every treated unit has comparable untreated units: <span class="math inline">P(D_i = 1 \mid X_i) &lt; 1</span>, and <span class="math inline">Y_i(0) \perp D_i \mid X_i</span></p>
+<p>Under both, the effect is identified by comparing like with like and averaging:</p>
+<p><span class="math display">\text{ATT} = E\big[\, E[Y \mid D=1, X] - E[Y \mid D=0, X] \;\big|\; D = 1 \big]</span></p>
+</div>
+</div>
+</div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The Strongest Untestable Assumption in These Notes</strong></p>
+</div>
+<div class="callout-content">
+<p>Every other design in these notes uses a source of variation in treatment (a lottery, a shock, a cutoff, timing). Here, the claim is simply that we have measured everything that matters. Data cannot confirm that claim, so the case must be made with knowledge of how treatment was chosen.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="when-is-it-plausible" class="slide level2 center">
+<h2>When Is It Plausible?</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Arguments That Help</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Treatment was assigned by a known process based on recorded information (an underwriting rule, a targeting algorithm, a caseworker’s checklist)</li>
+<li><strong>Rich pre-treatment data</strong>, especially past values of the outcome, which capture much of what drives future outcomes</li>
+<li><strong>Institutional knowledge</strong> of why some units were treated and others not</li>
+<li>Results are insensitive to adding or removing controls, and survive formal sensitivity analysis</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Signs of Trouble</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Units chose treatment based on private information (motivation, health, expected gains) that is not in the data</li>
+<li>Treated and untreated units look very different on observables, suggesting they differ on unobservables too</li>
+<li>Estimates move a lot as controls are added</li>
+</ul>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="three-ways-to-compare-like-with-like" class="title-slide slide level1 center">
+<h1>Three Ways to Compare Like with Like</h1>
+
+</section>
+<section id="regression-adjustment" class="slide level2 center">
+<h2>Regression Adjustment</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Controlling for <span class="math inline">X</span> in a Regression</strong></p>
+</div>
+<div class="callout-content">
+<p><span class="math display">Y_i = \alpha + \tau D_i + X_i'\beta + \varepsilon_i</span></p>
+<ul>
+<li>Simple and easy to check; the default first step</li>
+<li>Assumes the outcome depends on <span class="math inline">X</span> in the specified form (usually linear)</li>
+<li>Where treated and untreated units do not overlap, regression extrapolates from the functional form without warning</li>
+<li>With heterogeneous effects and a dummy for every value of <span class="math inline">X</span>, OLS weights each covariate group by the variance of treatment within it, <span class="math inline">P(D=1 \mid X)\,[1 - P(D=1 \mid X)]</span>, which need not give the ATT or ATE. With other specifications the weights are harder to describe, and can be negative</li>
+<li>Only control for pre-treatment variables (Chapter 2: no mediators, no colliders)</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="matching" class="slide level2 center">
+<h2>Matching</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Pair Each Treated Unit with Similar Untreated Units</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>Idea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Exact matching</strong></td>
+<td>Match on identical values of <span class="math inline">X</span> (feasible with few, discrete covariates)</td>
+</tr>
+<tr class="even">
+<td><strong>Coarsened exact matching</strong></td>
+<td>Bin continuous variables, then match exactly on the bins</td>
+</tr>
+<tr class="odd">
+<td><strong>Nearest-neighbour matching</strong></td>
+<td>Match each treated unit to the closest untreated unit(s) by a distance on <span class="math inline">X</span></td>
+</tr>
+<tr class="even">
+<td><strong>Caliper</strong></td>
+<td>Discard matches that are farther apart than a set tolerance</td>
+</tr>
+<tr class="odd">
+<td><strong>With or without replacement</strong></td>
+<td>Reusing controls gives closer matches but higher variance</td>
+</tr>
+</tbody>
+</table>
+<p>Matching makes overlap visible: treated units without good matches are dropped, and the estimand becomes the effect for the units that remain.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="the-propensity-score" class="slide level2 center">
+<h2>The Propensity Score</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Collapsing Many Covariates into One Number</strong></p>
+</div>
+<div class="callout-content">
+<p>The propensity score is the probability of treatment given covariates: <span class="math inline">e(X_i) = P(D_i = 1 \mid X_i)</span>.</p>
+<p><strong>Key result:</strong> if treatment is as good as random given <span class="math inline">X</span>, it is also as good as random given <span class="math inline">e(X)</span> <span class="citation" data-cites="rosenbaum1983central">(<a href="#/references" role="doc-biblioref" onclick="">Rosenbaum and Rubin 1983</a>)</span>. So we can match or weight on a single score instead of many covariates.</p>
+<p><strong>Ways to use it:</strong></p>
+<ul>
+<li><strong>Matching</strong> treated and untreated units with similar scores</li>
+<li><strong>Inverse probability weighting (IPW):</strong> weight untreated units by <span class="math inline">e(X) / (1 - e(X))</span> to estimate the ATT</li>
+<li><strong>Doubly robust</strong> estimators combine a propensity model with an outcome regression; consistent if either model is right</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="diagnostics-overlap-and-balance" class="slide level2 center">
+<h2>Diagnostics: Overlap and Balance</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Check, Then Estimate</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Overlap:</strong> plot the propensity score distributions for treated and untreated units; trim units outside the common range</li>
+<li><strong>Balance:</strong> after matching or weighting, compare covariates using standardized mean differences (difference in means divided by the pooled standard deviation). A common rule of thumb is below 0.1</li>
+<li><strong>Variance ratios</strong> near 1 for continuous covariates</li>
+<li><strong>Do not</strong> judge balance with p-values: they shrink with sample size and say nothing about bias</li>
+<li>Balance on observables is necessary, not sufficient: it tells us nothing about unobservables</li>
+</ul>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="simulation" class="title-slide slide level1 center">
+<h1>Simulation</h1>
+
+</section>
+<section id="matching-and-weighting-in-r" class="slide level2 center">
+<h2>Matching and Weighting in R</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(MatchIt))</span>
+<span id="cb1-2"><a></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb1-3"><a></a>n <span class="ot">&lt;-</span> <span class="dv">4000</span></span>
+<span id="cb1-4"><a></a></span>
+<span id="cb1-5"><a></a><span class="co"># Customers decide whether to join a retailer's loyalty app.</span></span>
+<span id="cb1-6"><a></a><span class="co"># Frequent and loyal customers are more likely to join, and visit more anyway.</span></span>
+<span id="cb1-7"><a></a>past_visits <span class="ot">&lt;-</span> <span class="fu">rpois</span>(n, <span class="dv">6</span>)</span>
+<span id="cb1-8"><a></a>loyalty     <span class="ot">&lt;-</span> <span class="fu">runif</span>(n)</span>
+<span id="cb1-9"><a></a>join   <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> loyalty))</span>
+<span id="cb1-10"><a></a>visits <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> loyalty <span class="sc">+</span> <span class="fl">1.0</span> <span class="sc">*</span> join <span class="sc">+</span> <span class="fu">rnorm</span>(n)   <span class="co"># true effect = 1</span></span>
+<span id="cb1-11"><a></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(visits, join, past_visits, loyalty)</span>
+<span id="cb1-12"><a></a></span>
+<span id="cb1-13"><a></a><span class="co"># Nearest-neighbour propensity score matching with a caliper</span></span>
+<span id="cb1-14"><a></a>m  <span class="ot">&lt;-</span> <span class="fu">matchit</span>(join <span class="sc">~</span> past_visits <span class="sc">+</span> loyalty, <span class="at">data =</span> dat, <span class="at">method =</span> <span class="st">"nearest"</span>,</span>
+<span id="cb1-15"><a></a>              <span class="at">distance =</span> <span class="st">"glm"</span>, <span class="at">caliper =</span> <span class="fl">0.1</span>)</span>
+<span id="cb1-16"><a></a>md <span class="ot">&lt;-</span> <span class="fu">match.data</span>(m)</span>
+<span id="cb1-17"><a></a></span>
+<span id="cb1-18"><a></a><span class="co"># Inverse probability weighting for the ATT</span></span>
+<span id="cb1-19"><a></a>ps <span class="ot">&lt;-</span> <span class="fu">glm</span>(join <span class="sc">~</span> past_visits <span class="sc">+</span> loyalty, <span class="at">family =</span> binomial, <span class="at">data =</span> dat)<span class="sc">$</span>fitted</span>
+<span id="cb1-20"><a></a>w  <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(dat<span class="sc">$</span>join <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span>, ps <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> ps))</span>
+<span id="cb1-21"><a></a></span>
+<span id="cb1-22"><a></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">true_effect =</span> <span class="dv">1</span>,</span>
+<span id="cb1-23"><a></a>        <span class="at">naive       =</span> <span class="fu">mean</span>(visits[join <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(visits[join <span class="sc">==</span> <span class="dv">0</span>]),</span>
+<span id="cb1-24"><a></a>        <span class="at">regression  =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(visits <span class="sc">~</span> join <span class="sc">+</span> past_visits <span class="sc">+</span> loyalty, dat))[<span class="st">"join"</span>]),</span>
+<span id="cb1-25"><a></a>        <span class="at">PS_matching =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(visits <span class="sc">~</span> join, md, <span class="at">weights =</span> weights))[<span class="st">"join"</span>]),</span>
+<span id="cb1-26"><a></a>        <span class="at">IPW         =</span> <span class="fu">weighted.mean</span>(visits[join <span class="sc">==</span> <span class="dv">1</span>], w[join <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span></span>
+<span id="cb1-27"><a></a>                      <span class="fu">weighted.mean</span>(visits[join <span class="sc">==</span> <span class="dv">0</span>], w[join <span class="sc">==</span> <span class="dv">0</span>])), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>true_effect       naive  regression PS_matching         IPW 
+       1.00        2.64        1.02        1.09        1.08 </code></pre>
+</div>
+</div>
+</section>
+<section id="checking-balance" class="slide level2 center">
+<h2>Checking Balance</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>smd <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">before =</span> <span class="fu">summary</span>(m)<span class="sc">$</span>sum.all[, <span class="st">"Std. Mean Diff."</span>],</span>
+<span id="cb3-2"><a></a>             <span class="at">after  =</span> <span class="fu">summary</span>(m)<span class="sc">$</span>sum.matched[, <span class="st">"Std. Mean Diff."</span>])</span>
+<span id="cb3-3"><a></a><span class="fu">round</span>(smd, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            before after
+distance      0.83  0.05
+past_visits   0.63  0.05
+loyalty       0.47  0.01</code></pre>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Before matching, joiners differ from non-joiners by about half a standard deviation or more on past visits and loyalty. After matching, the differences are below 0.1.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="when-the-assumption-fails" class="slide level2 center">
+<h2>When the Assumption Fails</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># Now an unobserved trait (enthusiasm) drives both joining and visiting</span></span>
+<span id="cb5-2"><a></a>enthusiasm <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb5-3"><a></a>join2   <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> loyalty <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> enthusiasm))</span>
+<span id="cb5-4"><a></a>visits2 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> loyalty <span class="sc">+</span> <span class="fl">1.0</span> <span class="sc">*</span> join2 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> enthusiasm <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb5-5"><a></a>dat2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">visits =</span> visits2, <span class="at">join =</span> join2, past_visits, loyalty)</span>
+<span id="cb5-6"><a></a></span>
+<span id="cb5-7"><a></a>m2 <span class="ot">&lt;-</span> <span class="fu">matchit</span>(join <span class="sc">~</span> past_visits <span class="sc">+</span> loyalty, <span class="at">data =</span> dat2, <span class="at">method =</span> <span class="st">"nearest"</span>,</span>
+<span id="cb5-8"><a></a>              <span class="at">distance =</span> <span class="st">"glm"</span>, <span class="at">caliper =</span> <span class="fl">0.1</span>)</span>
+<span id="cb5-9"><a></a><span class="fu">c</span>(<span class="at">true_effect =</span> <span class="dv">1</span>,</span>
+<span id="cb5-10"><a></a>  <span class="at">PS_matching =</span> <span class="fu">round</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(visits <span class="sc">~</span> join, <span class="fu">match.data</span>(m2), <span class="at">weights =</span> weights))[<span class="st">"join"</span>]), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>true_effect PS_matching 
+       1.00        2.54 </code></pre>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Balance on past visits and loyalty can look perfect, and the estimate is still badly biased: matching cannot balance what it cannot see.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="real-data" class="title-slide slide level1 center">
+<h1>Real Data</h1>
+
+</section>
+<section id="real-data-can-matching-recover-the-experiment" class="slide level2 center">
+<h2>Real Data: Can Matching Recover the Experiment?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">data</span>(<span class="st">"lalonde"</span>, <span class="at">package =</span> <span class="st">"MatchIt"</span>)   <span class="co"># 185 NSW trainees and 429 comparison men from a national survey (PSID)</span></span>
+<span id="cb7-2"><a></a>f <span class="ot">&lt;-</span> treat <span class="sc">~</span> age <span class="sc">+</span> educ <span class="sc">+</span> race <span class="sc">+</span> married <span class="sc">+</span> nodegree <span class="sc">+</span> re74 <span class="sc">+</span> re75</span>
+<span id="cb7-3"><a></a></span>
+<span id="cb7-4"><a></a>m_ll <span class="ot">&lt;-</span> <span class="fu">matchit</span>(f, <span class="at">data =</span> lalonde, <span class="at">method =</span> <span class="st">"nearest"</span>, <span class="at">distance =</span> <span class="st">"glm"</span>, <span class="at">caliper =</span> <span class="fl">0.1</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-5"><a></a>md_ll <span class="ot">&lt;-</span> <span class="fu">match.data</span>(m_ll)</span>
+<span id="cb7-6"><a></a></span>
+<span id="cb7-7"><a></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">experimental_benchmark =</span> <span class="dv">1794</span>,   <span class="co"># Dehejia &amp; Wahba (1999), same 185 trainees</span></span>
+<span id="cb7-8"><a></a>        <span class="at">naive      =</span> <span class="fu">with</span>(lalonde, <span class="fu">mean</span>(re78[treat <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(re78[treat <span class="sc">==</span> <span class="dv">0</span>])),</span>
+<span id="cb7-9"><a></a>        <span class="at">regression =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(<span class="fu">update</span>(f, re78 <span class="sc">~</span> treat <span class="sc">+</span> .), lalonde))[<span class="st">"treat"</span>]),</span>
+<span id="cb7-10"><a></a>        <span class="at">PS_matching =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(re78 <span class="sc">~</span> treat, md_ll, <span class="at">weights =</span> weights))[<span class="st">"treat"</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>experimental_benchmark                  naive             regression 
+                  1794                   -635                   1548 
+           PS_matching 
+                  2039 </code></pre>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
+<p>The raw comparison says training lowered 1978 earnings by about $600, because the survey men earned far more to begin with. Controlling for earnings in 1974 and 1975 moves the estimate close to the experimental $1,794; matching does as well. The experiment is what tells us so: with observational data alone, we could not have known which estimate to trust <span class="citation" data-cites="dehejia1999causal">(<a href="#/references" role="doc-biblioref" onclick="">Dehejia and Wahba 1999</a>)</span>.</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li><code>lalonde</code> ships with <code>MatchIt</code>. Note the effective sample: 183 of 185 trainees are matched, but only a few dozen distinct comparison men are used, because matching is with replacement.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sensitivity-analysis" class="title-slide slide level1 center">
+<h1>Sensitivity Analysis</h1>
+
+</section>
+<section id="how-strong-would-a-hidden-confounder-have-to-be" class="slide level2 center">
+<h2>How Strong Would a Hidden Confounder Have to Be?</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Measuring Sensitivity to Hidden Confounding</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Rosenbaum bounds:</strong> how much could an unobserved factor change the odds of treatment, between otherwise matched units, before the conclusion changes?</li>
+<li><strong>Omitted variable bias benchmarks:</strong> how strongly would an unobserved confounder need to be related to treatment and outcome, compared with an observed covariate, to explain away the estimate? <span class="citation" data-cites="cinelli2020making">(<a href="#/references" role="doc-biblioref" onclick="">Cinelli and Hazlett 2020</a>)</span></li>
+<li><strong>Coefficient stability:</strong> how much do estimates move as controls are added, relative to how much explanatory power they add? <span class="citation" data-cites="oster2019unobservable">(<a href="#/references" role="doc-biblioref" onclick="">Oster 2019</a>)</span></li>
+</ul>
+<p>A result that survives only a very weak hidden confounder should not be presented as causal.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="combining-matching-with-other-designs" class="slide level2 center">
+<h2>Combining Matching with Other Designs</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Matching Is Often Most Useful as a Helper</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Matching + difference-in-differences:</strong> match treated units to similar untreated units before treatment, then compare changes. Fixed differences on unobservables cancel out (Chapter 9); matching makes parallel trends more plausible</li>
+<li><strong>Matching within an RDD bandwidth or an IV sample</strong> to improve balance and precision</li>
+<li><strong>Synthetic control</strong> (Chapter 10) is itself a form of matching on the pre-treatment path of the outcome</li>
+</ul>
+<p>Case Study 2 uses this combination.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="case-study-1-the-lalonde-benchmark" class="title-slide slide level1 center">
+<h1>Case Study 1: The LaLonde Benchmark</h1>
+
+</section>
+<section id="case-study-1-can-non-experimental-methods-recover-an-experiment" class="slide level2 center">
+<h2>Case Study 1: Can Non-Experimental Methods Recover an Experiment?</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>LaLonde (1986), <em>American Economic Review</em> <span class="citation" data-cites="lalonde1986evaluating">(<a href="#/references" role="doc-biblioref" onclick="">LaLonde 1986</a>)</span></strong></p>
+</div>
+<div class="callout-content">
+<p><strong>Setting:</strong> the National Supported Work (NSW) demonstration, a US job-training program in the 1970s for disadvantaged workers (women receiving welfare benefits, and disadvantaged men), run as a randomized experiment.</p>
+<p><strong>The test:</strong> keep the treated group, but replace the randomized control group with comparison groups drawn from national surveys (the Panel Study of Income Dynamics and the Current Population Survey). Then apply standard non-experimental methods and compare their estimates with the experimental benchmark.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="case-study-1-what-lalonde-found" class="slide level2 center">
+<h2>Case Study 1: What LaLonde Found</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Non-Experimental Estimates Often Missed</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>The survey comparison groups were very different from program participants. In 1979, women in the experiment’s control group earned about $3,800; women in the broadest survey comparison group earned about $8,000</li>
+<li><strong>Many</strong> standard estimators (regressions with controls, before–after comparisons, two-step selection models) produced estimates far from the experimental result</li>
+<li><strong>Specification tests</strong> did not reliably flag which estimates were wrong</li>
+</ul>
+<p><strong>The lesson:</strong> without a design, controlling for observables can leave large biases, and the data may not tell you so.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="case-study-1-the-debate-that-followed" class="slide level2 center">
+<h2>Case Study 1: The Debate That Followed</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Can Propensity Scores Do Better?</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><span class="citation" data-cites="dehejia1999causal">Dehejia and Wahba (<a href="#/references" role="doc-biblioref" onclick="">1999</a>)</span> showed that propensity score methods, with careful attention to overlap (dropping comparison units unlike any participant) and to pre-program earnings, came much closer to the experimental benchmark</li>
+<li><span class="citation" data-cites="smith2005does">Smith and Todd (<a href="#/references" role="doc-biblioref" onclick="">2005</a>)</span> found that this success was sensitive to the sample and specification, and that difference-in-differences matching performed more reliably</li>
+<li><strong>Synthesis:</strong> matching helps when you have the right covariates (especially lagged outcomes) and enforce overlap; it cannot rescue a comparison group drawn from a different population</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="case-study-1-what-to-copy" class="slide level2 center">
+<h2>Case Study 1: What to Copy</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Practices to Reuse</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Benchmark against an experiment when you can.</strong> It is the only direct test of whether an observational method works in your setting.</li>
+<li><strong>Draw comparison units from the same population,</strong> and drop those with no comparable treated unit.</li>
+<li><strong>Condition on past outcomes</strong> (earnings before the program); demographics alone are not enough.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="case-study-1-discussion-questions" class="slide level2 center scrollable">
+<h2>Case Study 1: Discussion Questions</h2>
+<ol type="1">
+<li class="fragment">Why does replacing the experimental control group with a national survey sample create such large differences in earnings?</li>
+<li class="fragment">Why are pre-program earnings so important as covariates in job-training evaluations?</li>
+<li class="fragment">What does “specification tests did not flag the problem” imply for applied work?</li>
+<li class="fragment">Why might matching on changes in earnings (DiD matching) be more robust than matching on levels?</li>
+</ol>
+</section>
+<section id="case-study-1-suggested-answers-13" class="slide level2 center scrollable">
+<h2>Case Study 1: Suggested Answers (1–3)</h2>
+<ol type="1">
+<li class="fragment">The national surveys sample the wider population: older, more often employed, and with much higher earnings than the disadvantaged people the program enrolled. Those differences dwarf the program’s effect.</li>
+<li class="fragment">Past earnings are the strongest predictor of future earnings, and people often enter training after an earnings drop. Without earnings history, comparisons confuse this dip and recovery with the program’s effect.</li>
+<li class="fragment">Passing standard specification tests does not show an estimate is right. Applied work needs a design argument, benchmarks where possible, and sensitivity analysis.</li>
+</ol>
+</section>
+<section id="case-study-1-suggested-answers-4" class="slide level2 center scrollable">
+<h2>Case Study 1: Suggested Answers (4)</h2>
+<ol start="4" type="1">
+<li class="fragment">Differencing removes fixed differences in earning ability that matching on observed characteristics misses, so only differences in earnings growth remain.</li>
+</ol>
+</section></section>
+<section>
+<section id="case-study-2-social-media-and-customer-value" class="title-slide slide level1 center">
+<h1>Case Study 2: Social Media and Customer Value</h1>
+
+</section>
+<section id="case-study-2-does-joining-a-brands-social-media-page-change-customers" class="slide level2 center">
+<h2>Case Study 2: Does Joining a Brand’s Social Media Page Change Customers?</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Rishika, Kumar, Janakiraman &amp; Bezawada (2013), <em>Information Systems Research</em> <span class="citation" data-cites="rishika2013effect">(<a href="#/references" role="doc-biblioref" onclick="">Rishika et al. 2013</a>)</span></strong></p>
+</div>
+<div class="callout-content">
+<p><strong>Question:</strong> Do customers who join a retailer’s social media page (becoming a Facebook “fan”) visit more often and become more profitable?</p>
+<p><strong>Setting:</strong> a wine retailer in the northeastern United States that launched a Facebook page.</p>
+<p><strong>Data:</strong> transaction records for each customer from January 2008 to March 2011, linked to social media participation. Participants were identified through a customer survey (sent to 5,000 customers) and matched to the firm’s records of page members: 394 participants with enough data.</p>
+<p><strong>The selection problem:</strong> customers choose to join. Loyal, frequent buyers are more likely to join, and would visit often anyway.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="case-study-2-the-design" class="slide level2 center scrollable">
+<h2>Case Study 2: The Design</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Propensity Score Matching, Then Difference-in-Differences</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><strong>Propensity score:</strong> a logit model of joining, using 82 weeks of transaction and demographic data from before the page launched</li>
+<li><strong>Optimal pair matching:</strong> each participant paired with a similar non-participant; 287 matched pairs</li>
+<li><strong>Diagnostics:</strong> overlap of propensity scores (histograms and a Kolmogorov–Smirnov test); covariate balance before and after matching; Rosenbaum sensitivity analysis for hidden bias</li>
+<li><strong>Difference-in-differences</strong> on the matched sample, with customer fixed effects: compare the change in monthly visits after joining for participants with the change for their matched non-participants</li>
+</ol>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>This is the “matching as a helper” idea: matching makes the comparison group similar on observables; the DiD and customer fixed effects then remove any remaining fixed differences.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="case-study-2-results-and-checks" class="slide level2 center">
+<h2>Case Study 2: Results and Checks</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Main Findings</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Joining the page raises visit frequency by about 5.2% relative to matched non-participants</li>
+<li><strong>Profits</strong> per customer rise by a similar proportion (an estimated elasticity of about 5.6%)</li>
+<li>Effects are larger when the page is more active, and for customers who are more loyal, buy premium products, and are less deal-sensitive</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Robustness</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Estimates are positive and significant when the post-period is restricted to 3, 6, 9, 12, or 15 months, and converge towards the full-period estimate</li>
+<li>Alternative matching methods give similar results</li>
+<li><strong>Placebo launch dates</strong> within the 18 months before the real launch give estimates indistinguishable from zero</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="case-study-2-threats" class="slide level2 center">
+<h2>Case Study 2: Threats</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>What Matching Plus DiD Cannot Rule Out</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Time-varying unobservables:</strong> a customer whose enthusiasm for wine is <em>rising</em> may both join the page and start visiting more; DiD removes fixed differences, not changing ones</li>
+<li><strong>Who is in the sample:</strong> participants were identified through a survey (about a quarter of the 5,000 customers surveyed responded), so the matched sample may not represent all page members</li>
+<li><strong>Single retailer and category:</strong> effects for a wine retailer may differ elsewhere</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="case-study-2-what-to-copy" class="slide level2 center">
+<h2>Case Study 2: What to Copy</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Practices to Reuse</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Draw controls from the same firm’s customers</strong> and match on long pre-period behaviour (82 weeks).</li>
+<li><strong>Follow matching with difference-in-differences</strong> to remove remaining fixed differences.</li>
+<li><strong>Add placebo launch dates and a Rosenbaum sensitivity analysis.</strong></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="case-study-2-discussion-questions" class="slide level2 center scrollable">
+<h2>Case Study 2: Discussion Questions</h2>
+<ol type="1">
+<li class="fragment">Why match on 82 weeks of pre-launch behaviour rather than only on demographics?</li>
+<li class="fragment">What does the DiD step add after matching? What would remain if the authors had only compared matched customers after launch?</li>
+<li class="fragment">Describe a confounder that would survive both matching and DiD.</li>
+<li class="fragment">How would you design an experiment to answer the same question? What would it cost the retailer?</li>
+</ol>
+</section>
+<section id="case-study-2-suggested-answers-13" class="slide level2 center scrollable">
+<h2>Case Study 2: Suggested Answers (1–3)</h2>
+<ol type="1">
+<li class="fragment">Past buying shows loyalty, interest in wine, and how often a customer visits, which drive both joining the page and future visits. Demographics capture these only weakly.</li>
+<li class="fragment">DiD removes any remaining differences that are constant over time. A comparison of matched customers after launch only would still include differences that matching did not balance, such as unobserved loyalty.</li>
+<li class="fragment">A change that starts around the time of joining, such as a new interest in wine, higher income, or moving closer to a store, could raise both joining and visits.</li>
+</ol>
+</section>
+<section id="case-study-2-suggested-answers-4" class="slide level2 center scrollable">
+<h2>Case Study 2: Suggested Answers (4)</h2>
+<ol start="4" type="1">
+<li class="fragment">Randomly invite customers to join the page, for example by email with a small incentive, and use the invitation as an instrument for joining. Costs include the incentives, reaching fewer customers through the page during the test, and a large sample because take-up would be low.</li>
+</ol>
+</section></section>
+<section>
+<section id="comparing-the-two-case-studies" class="title-slide slide level1 center">
+<h1>Comparing the Two Case Studies</h1>
+
+</section>
+<section id="two-lessons-about-observables" class="slide level2 center">
+<h2>Two Lessons About Observables</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>What the Two Studies Show</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>LaLonde (1986)</th>
+<th>Rishika et al.&nbsp;(2013)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Role</strong></td>
+<td>Benchmark against an experiment</td>
+<td>Applied study without an experiment</td>
+</tr>
+<tr class="even">
+<td><strong>Comparison group</strong></td>
+<td>National survey samples</td>
+<td>Matched customers of the same retailer</td>
+</tr>
+<tr class="odd">
+<td><strong>Key covariates</strong></td>
+<td>Demographics, some earnings history</td>
+<td>82 weeks of transaction history</td>
+</tr>
+<tr class="even">
+<td><strong>Design</strong></td>
+<td>Regression, difference-in-differences, and selection models</td>
+<td>Propensity score matching + DiD</td>
+</tr>
+<tr class="odd">
+<td><strong>Lesson</strong></td>
+<td>Observables-only estimates can be far off</td>
+<td>Same population, rich history, and DiD make matching more credible</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="best-practices" class="title-slide slide level1 center">
+<h1>Best Practices</h1>
+
+</section>
+<section id="selection-on-observables-checklist" class="slide level2 center scrollable">
+<h2>Selection-on-Observables Checklist</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Before and After Estimating</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><strong>Explain how treatment was chosen</strong> and why the observed covariates capture it</li>
+<li>Use only pre-treatment covariates, including past outcomes where possible</li>
+<li><strong>Check overlap</strong> and trim units without comparable counterparts; say how the estimand changes</li>
+<li><strong>Report balance</strong> with standardized differences, before and after</li>
+<li><strong>Compare estimators</strong> (regression, matching, weighting, doubly robust); large disagreements signal problems</li>
+<li>Run a sensitivity analysis for unobserved confounding</li>
+<li>Where possible, combine with a design that uses another source of variation (DiD, an instrument, a cutoff)</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="common-pitfalls" class="slide level2 center">
+<h2>Common Pitfalls</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Mistakes to Avoid</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Treating good balance on observables as evidence of no hidden bias</li>
+<li><strong>Controlling for post-treatment</strong> variables (mediators) or colliders</li>
+<li>Ignoring lack of overlap and letting regression extrapolate</li>
+<li>Searching over covariates and matching settings until the estimate is significant</li>
+<li>Judging balance with p-values</li>
+<li>Presenting an observables-only estimate as causal without sensitivity analysis</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="summary" class="slide level2 center">
+<h2>Summary</h2>
+<ul>
+<li class="fragment">Regression, matching, and propensity scores share one assumption: no unmeasured confounders, plus overlap</li>
+<li class="fragment">They differ in how they use covariates: functional form (regression), similar units (matching), a single score (propensity), or weights</li>
+<li class="fragment"><strong>Check overlap and balance</strong>; quantify how strong hidden confounding would have to be</li>
+<li class="fragment">The LaLonde benchmark is the standing warning: observables-only estimates can be badly wrong</li>
+<li class="fragment">Matching is most credible as a helper to designs with another source of variation</li>
+</ul>
+</section>
+<section id="next-steps" class="slide level2 center scrollable">
+<h2>Next Steps</h2>
+<ol type="1">
+<li class="fragment"><strong>Read</strong>: <span class="citation" data-cites="lalonde1986evaluating">LaLonde (<a href="#/references" role="doc-biblioref" onclick="">1986</a>)</span> Sections I–III; <span class="citation" data-cites="rishika2013effect">Rishika et al. (<a href="#/references" role="doc-biblioref" onclick="">2013</a>)</span> Sections 3–6 and 8</li>
+<li class="fragment"><strong>Practice</strong>: In the simulation, drop <code>loyalty</code> from the matching model. How much bias appears, and does the balance table warn you?</li>
+<li class="fragment"><strong>Next Class</strong>: Putting it together: combining designs, accumulating evidence, and reporting (Chapter 12)</li>
+</ol>
+</section>
+<section id="references" class="slide level2 scrollable smaller">
+<h2>References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-cinelli2020making" class="csl-entry" role="listitem">
+Cinelli, Carlos, and Chad Hazlett. 2020. <span>“Making Sense of Sensitivity: Extending Omitted Variable Bias.”</span> <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 82 (1): 39–67. <a href="https://doi.org/10.1111/rssb.12348">https://doi.org/10.1111/rssb.12348</a>.
+</div>
+<div id="ref-dehejia1999causal" class="csl-entry" role="listitem">
+Dehejia, Rajeev H, and Sadek Wahba. 1999. <span>“Causal Effects in Nonexperimental Studies: Reevaluating the Evaluation of Training Programs.”</span> <em>Journal of the American Statistical Association</em> 94 (448): 1053–62.
+</div>
+<div id="ref-lalonde1986evaluating" class="csl-entry" role="listitem">
+LaLonde, Robert J. 1986. <span>“Evaluating the Econometric Evaluations of Training Programs with Experimental Data.”</span> <em>American Economic Review</em> 76 (4): 604–20.
+</div>
+<div id="ref-oster2019unobservable" class="csl-entry" role="listitem">
+Oster, Emily. 2019. <span>“Unobservable Selection and Coefficient Stability: Theory and Evidence.”</span> <em>Journal of Business &amp; Economic Statistics</em> 37 (2): 187–204. <a href="https://doi.org/10.1080/07350015.2016.1227711">https://doi.org/10.1080/07350015.2016.1227711</a>.
+</div>
+<div id="ref-rishika2013effect" class="csl-entry" role="listitem">
+Rishika, Rishika, Ashish Kumar, Ramkumar Janakiraman, and Ram Bezawada. 2013. <span>“The Effect of Customers’ Social Media Participation on Customer Visit Frequency and Profitability: An Empirical Investigation.”</span> <em>Information Systems Research</em> 24 (1): 108–27. <a href="https://doi.org/10.1287/isre.1120.0460">https://doi.org/10.1287/isre.1120.0460</a>.
+</div>
+<div id="ref-rosenbaum1983central" class="csl-entry" role="listitem">
+Rosenbaum, Paul R, and Donald B Rubin. 1983. <span>“The Central Role of the Propensity Score in Observational Studies for Causal Effects.”</span> <em>Biometrika</em> 70 (1): 41–55.
+</div>
+<div id="ref-smith2005does" class="csl-entry" role="listitem">
+Smith, Jeffrey A, and Petra E Todd. 2005. <span>“Does Matching Overcome <span class="nocase">LaLonde’s</span> Critique of Nonexperimental Estimators?”</span> <em>Journal of Econometrics</em> 125 (1–2): 305–53. <a href="https://doi.org/10.1016/j.jeconom.2004.04.011">https://doi.org/10.1016/j.jeconom.2004.04.011</a>.
+</div>
+</div>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="../../unsw-logo.png" class="slide-logo"></p>
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': false,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true,"boardmarkerWidth":3,"grid":false},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1000,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 560" width="1024" height="560" font-family="Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Choosing a design: who or what decided who was treated?</title>
+  <desc id="d">A left-to-right decision flow. Start by defining the question (Part I). Then ask in turn whether you can randomize (experiments, Part II), whether an outside shock shifts treatment (instrumental variables, Part III), whether a cutoff rule decides treatment (regression discontinuity, Part IV), whether the same units are observed before and after (panel methods, Part V), and whether every confounder is observed (regression and matching, Part VI). If none applies, no credible design is available yet. Finally, combine designs and report (Part VII).</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <style>
+      .q { fill:#ffffff; stroke:#1565c0; stroke-width:2; }
+      .m { fill:#e8f1fb; stroke:#1565c0; stroke-width:1.5; }
+      .grp { fill:#f1f5f9; stroke:#94a3b8; stroke-width:1; stroke-dasharray:4 3; }
+      .band { fill:#0f2a4a; }
+      .bandtxt { fill:#ffffff; font-size:15px; }
+      .qt { fill:#0f172a; font-size:14.5px; font-weight:600; }
+      .mt { fill:#0d47a1; font-size:15px; font-weight:700; }
+      .ch { fill:#334155; font-size:13px; font-weight:600; }
+      .nt { fill:#475569; font-size:12.5px; font-style:italic; }
+      .lab { fill:#475569; font-size:13px; font-weight:700; }
+      .step { fill:#1565c0; font-size:12px; font-weight:700; }
+      .ln { stroke:#475569; stroke-width:1.6; fill:none; }
+      .stop { fill:#fff7ed; stroke:#c2410c; stroke-width:1.5; }
+      .stoptxt { fill:#9a3412; font-size:13px; }
+    </style>
+  </defs>
+
+  <!-- Part I band -->
+  <rect class="band" x="8" y="8" width="1008" height="44" rx="8"/>
+  <text class="bandtxt" x="512" y="35" text-anchor="middle"><tspan font-weight="700">Part I · Start here:</tspan> define treatment, outcome and estimand, then ask <tspan font-weight="700">who or what decided who was treated?</tspan> (Ch. 1–2)</text>
+  <line class="ln" x1="96" y1="52" x2="96" y2="74" marker-end="url(#arr)"/>
+
+  <!-- Questions row -->
+  <g>
+    <rect class="q" x="8" y="76" width="176" height="118" rx="10"/>
+    <text class="step" x="20" y="96">1 · THE RESEARCHER?</text>
+    <text class="qt" x="20" y="120"><tspan x="20">Can you randomly</tspan><tspan x="20" dy="19">assign who is</tspan><tspan x="20" dy="19">treated?</tspan></text>
+
+    <rect class="q" x="208" y="76" width="176" height="118" rx="10"/>
+    <text class="step" x="220" y="96">2 · AN OUTSIDE SHOCK?</text>
+    <text class="qt" x="220" y="120"><tspan x="220">Does something shift</tspan><tspan x="220" dy="19">treatment but reach</tspan><tspan x="220" dy="19">the outcome only</tspan><tspan x="220" dy="19">through it?</tspan></text>
+
+    <rect class="q" x="408" y="76" width="176" height="118" rx="10"/>
+    <text class="step" x="420" y="96">3 · A RULE?</text>
+    <text class="qt" x="420" y="120"><tspan x="420">Is treatment decided</tspan><tspan x="420" dy="19">by a cutoff on a</tspan><tspan x="420" dy="19">score?</tspan></text>
+
+    <rect class="q" x="608" y="76" width="176" height="118" rx="10"/>
+    <text class="step" x="620" y="96">4 · TIME?</text>
+    <text class="qt" x="620" y="120"><tspan x="620">Do you observe the</tspan><tspan x="620" dy="19">same units before</tspan><tspan x="620" dy="19">and after treatment?</tspan></text>
+
+    <rect class="q" x="808" y="76" width="184" height="118" rx="10"/>
+    <text class="step" x="820" y="96">5 · OBSERVABLES ONLY?</text>
+    <text class="qt" x="820" y="120"><tspan x="820">Do you observe every</tspan><tspan x="820" dy="19">factor that drives both</tspan><tspan x="820" dy="19">treatment and the</tspan><tspan x="820" dy="19">outcome?</tspan></text>
+  </g>
+
+  <!-- No arrows between questions -->
+  <line class="ln" x1="184" y1="135" x2="206" y2="135" marker-end="url(#arr)"/>
+  <line class="ln" x1="384" y1="135" x2="406" y2="135" marker-end="url(#arr)"/>
+  <line class="ln" x1="584" y1="135" x2="606" y2="135" marker-end="url(#arr)"/>
+  <line class="ln" x1="784" y1="135" x2="806" y2="135" marker-end="url(#arr)"/>
+  <text class="lab" x="187" y="128">No</text>
+  <text class="lab" x="387" y="128">No</text>
+  <text class="lab" x="587" y="128">No</text>
+  <text class="lab" x="787" y="128">No</text>
+
+  <!-- Yes arrows down -->
+  <line class="ln" x1="96" y1="194" x2="96" y2="226" marker-end="url(#arr)"/>
+  <line class="ln" x1="296" y1="194" x2="296" y2="226" marker-end="url(#arr)"/>
+  <line class="ln" x1="496" y1="194" x2="496" y2="226" marker-end="url(#arr)"/>
+  <line class="ln" x1="696" y1="194" x2="696" y2="226" marker-end="url(#arr)"/>
+  <line class="ln" x1="900" y1="194" x2="900" y2="226" marker-end="url(#arr)"/>
+  <text class="lab" x="102" y="215">Yes</text>
+  <text class="lab" x="302" y="215">Yes</text>
+  <text class="lab" x="502" y="215">Yes</text>
+  <text class="lab" x="702" y="215">Yes</text>
+  <text class="lab" x="906" y="215">Yes</text>
+
+  <!-- Method boxes -->
+  <rect class="m" x="8" y="228" width="176" height="150" rx="10"/>
+  <text class="mt" x="20" y="252"><tspan x="20">Randomized</tspan><tspan x="20" dy="19">experiment</tspan></text>
+  <text class="ch" x="20" y="295">Part II · Ch. 3–5</text>
+  <text class="nt" x="20" y="320"><tspan x="20">Take-up imperfect?</tspan><tspan x="20" dy="16">Use the offer as an</tspan><tspan x="20" dy="16">instrument →</tspan></text>
+
+  <rect class="m" x="208" y="228" width="176" height="150" rx="10"/>
+  <text class="mt" x="220" y="252"><tspan x="220">Instrumental</tspan><tspan x="220" dy="19">variables</tspan></text>
+  <text class="ch" x="220" y="295">Part III · Ch. 6</text>
+  <text class="nt" x="220" y="320"><tspan x="220">Weak or doubtful?</tspan><tspan x="220" dy="16">Look for a cutoff or</tspan><tspan x="220" dy="16">for panel data →</tspan></text>
+
+  <rect class="m" x="408" y="228" width="176" height="150" rx="10"/>
+  <text class="mt" x="420" y="252"><tspan x="420">Regression</tspan><tspan x="420" dy="19">discontinuity</tspan></text>
+  <text class="ch" x="420" y="295">Part IV · Ch. 7</text>
+  <text class="nt" x="420" y="320"><tspan x="420">Rule not followed</tspan><tspan x="420" dy="16">exactly? A fuzzy cutoff</tspan><tspan x="420" dy="16">is an instrument (Ch. 6)</tspan></text>
+
+  <!-- Panel group -->
+  <rect class="grp" x="602" y="222" width="188" height="226" rx="10"/>
+  <text class="ch" x="614" y="242">Part V · Panel methods</text>
+  <rect class="m" x="608" y="252" width="176" height="58" rx="8"/>
+  <text class="mt" x="620" y="273" style="font-size:13px">Fixed effects</text><text class="ch" x="776" y="273" text-anchor="end" style="font-size:11.5px">Ch. 8</text>
+  <text class="nt" x="620" y="295">treatment varies within units</text>
+  <rect class="m" x="608" y="318" width="176" height="58" rx="8"/>
+  <text class="mt" x="620" y="339" style="font-size:13px">Diff-in-diff</text><text class="ch" x="776" y="339" text-anchor="end" style="font-size:11.5px">Ch. 9</text>
+  <text class="nt" x="620" y="361">a policy turns on for a group</text>
+  <rect class="m" x="608" y="384" width="176" height="58" rx="8"/>
+  <text class="mt" x="620" y="405" style="font-size:13px">Synthetic control</text><text class="ch" x="776" y="405" text-anchor="end" style="font-size:11.5px">Ch. 10</text>
+  <text class="nt" x="620" y="427">one or a few treated units</text>
+
+  <rect class="m" x="808" y="228" width="184" height="150" rx="10"/>
+  <text class="mt" x="820" y="252"><tspan x="820">Regression and</tspan><tspan x="820" dy="19">matching</tspan></text>
+  <text class="ch" x="820" y="295">Part VI · Ch. 11</text>
+  <text class="nt" x="820" y="320"><tspan x="820">Strongest untestable</tspan><tspan x="820" dy="16">assumption: always add</tspan><tspan x="820" dy="16">sensitivity analysis</tspan></text>
+
+  <!-- Final No from Q5 -->
+  <path class="ln" d="M992,135 L1010,135 L1010,420 L996,420" marker-end="url(#arr)"/>
+  <text class="lab" x="995" y="128">No</text>
+  <rect class="stop" x="808" y="390" width="184" height="62" rx="8"/>
+  <text class="stoptxt" x="820" y="410"><tspan x="820" font-weight="700">No credible design yet:</tspan><tspan x="820" dy="16">find new variation or data,</tspan><tspan x="820" dy="16">or report bounds</tspan></text>
+
+  <!-- Part VII band -->
+  <rect class="band" x="8" y="470" width="1008" height="44" rx="8"/>
+  <text class="bandtxt" x="512" y="497" text-anchor="middle"><tspan font-weight="700">Part VII · Finish here:</tspan> back up the main design with one that has different weaknesses; pool evidence; report (Ch. 12)</text>
+
+  <!-- Bridges note -->
+  <text class="nt" x="512" y="540" text-anchor="middle" font-size="13">Parts II–VI follow this order: from researcher-controlled assignment, through a shock, a rule, or timing, to measured characteristics alone.</text>
+</svg>

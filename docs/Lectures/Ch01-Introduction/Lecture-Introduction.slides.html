@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2ed7f7ae727038b1aa95f4c24ad3a3a6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
+
+  <meta name="author" content="Fei Huang, UNSW Sydney">
+  <title>Causal Inference for Policy Evaluation – Introduction to Policy Evaluation and Causal Inference</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #1f1c1b;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #1f1c1b; } /* Normal */
+    code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+    code span.an { color: #ca60ca; } /* Annotation */
+    code span.at { color: #0057ae; } /* Attribute */
+    code span.bn { color: #b08000; } /* BaseN */
+    code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+    code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #924c9d; } /* Char */
+    code span.cn { color: #aa5500; } /* Constant */
+    code span.co { color: #898887; } /* Comment */
+    code span.cv { color: #0095ff; } /* CommentVar */
+    code span.do { color: #607880; } /* Documentation */
+    code span.dt { color: #0057ae; } /* DataType */
+    code span.dv { color: #b08000; } /* DecVal */
+    code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+    code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #b08000; } /* Float */
+    code span.fu { color: #644a9b; } /* Function */
+    code span.im { color: #ff5500; } /* Import */
+    code span.in { color: #b08000; } /* Information */
+    code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+    code span.op { color: #ca60ca; } /* Operator */
+    code span.ot { color: #006e28; } /* Other */
+    code span.pp { color: #006e28; } /* Preprocessor */
+    code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #ff5500; } /* SpecialString */
+    code span.st { color: #bf0303; } /* String */
+    code span.va { color: #0057ae; } /* Variable */
+    code span.vs { color: #bf0303; } /* VerbatimString */
+    code span.wa { color: #bf0303; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-96baaebca6aae0d833d4fea310b664e9.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Introduction to Policy Evaluation and Causal Inference</h1>
+  <p class="subtitle">Why Every Evaluation Needs a Counterfactual</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Fei Huang, UNSW Sydney 
+</div>
+</div>
+</div>
+
+</section>
+<section class="slide level2 center">
+
+<aside class="notes">
+<ul>
+<li>This chapter sets up the rest of the notes: what policy evaluation is, why it is hard, and how each method in these notes solves the same core problem in a different way.</li>
+<li>The running example is health insurance and mortality, a question where naive comparisons give the wrong sign.</li>
+<li>We finish with a roadmap of the methods and how to choose between them.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section>
+<section id="why-policy-evaluation" class="title-slide slide level1 center">
+<h1>Why Policy Evaluation</h1>
+
+</section>
+<section id="policies-rest-on-causal-claims" class="slide level2 center scrollable">
+<h2>Policies Rest on Causal Claims</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Every Policy Embeds a Causal Claim</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Expanding public health insurance will reduce deaths among low-income adults</li>
+<li>Giving workers a generative AI assistant will raise productivity</li>
+<li>Subsidizing insurance premiums will increase take-up</li>
+<li>Higher credit limits will increase borrowing and stimulate spending</li>
+</ul>
+<p>Each claim is about what <em>would</em> happen with the policy compared with what <em>would</em> happen without it.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>What Policy Evaluation Asks</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><strong>Did it work?</strong> Is there an effect at all?</li>
+<li><strong>How much?</strong> Is the effect large enough to matter relative to cost?</li>
+<li><strong>For whom?</strong> Who gains, who loses, and who is unaffected?</li>
+<li><strong>Why?</strong> Through which mechanism?</li>
+<li><strong>Would it work elsewhere?</strong> At a larger scale, in another country, for another population?</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="three-kinds-of-questions" class="slide level2 center">
+<h2>Three Kinds of Questions</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Data Can Answer Different Questions</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Example (insurance)</th>
+<th>What it needs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Description</strong></td>
+<td>What share of adults have no health insurance?</td>
+<td>Good measurement and sampling</td>
+</tr>
+<tr class="even">
+<td><strong>Prediction</strong></td>
+<td>Which policyholders are likely to lodge a claim next year?</td>
+<td>Patterns that hold in new data</td>
+</tr>
+<tr class="odd">
+<td><strong>Causation</strong></td>
+<td>Would a premium subsidy make uninsured people buy cover?</td>
+<td>A counterfactual: what happens <em>with</em> vs.&nbsp;<em>without</em> the subsidy</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Prediction Is Not Causation</strong></p>
+</div>
+<div class="callout-content">
+<p>A model can predict claims very well using variables that do not <em>cause</em> claims (postcode, car colour, the time of day a quote is requested). Machine learning models and LLMs are excellent prediction engines. A policy question, however, asks what would happen if we changed something. That is a causal question, and good prediction does not answer it.</p>
+<p>These notes are about causal questions.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="the-fundamental-problem" class="title-slide slide level1 center">
+<h1>The Fundamental Problem</h1>
+
+</section>
+<section id="potential-outcomes" class="slide level2 center">
+<h2>Potential Outcomes</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Two Outcomes, Only One Observed</strong></p>
+</div>
+<div class="callout-content">
+<p>For each person <span class="math inline">i</span> and a treatment <span class="math inline">D_i \in \{0, 1\}</span> (e.g., having health insurance):</p>
+<ul>
+<li><span class="math inline">Y_i(1)</span>: the outcome if person <span class="math inline">i</span> is treated</li>
+<li><span class="math inline">Y_i(0)</span>: the outcome if person <span class="math inline">i</span> is not treated</li>
+<li>The causal effect for person <span class="math inline">i</span> is <span class="math inline">Y_i(1) - Y_i(0)</span></li>
+</ul>
+<p>We observe only one of the two: <span class="math inline">Y_i = D_i \, Y_i(1) + (1 - D_i) \, Y_i(0)</span>.</p>
+<p>The other one, the counterfactual, is missing for everyone. This is the fundamental problem of causal inference <span class="citation" data-cites="holland1986statistics">(<a href="#/references" role="doc-biblioref" onclick="">Holland 1986</a>)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The Way Forward: Averages</strong></p>
+</div>
+<div class="callout-content">
+<p>We cannot learn individual effects, but we can learn average effects, such as the average treatment effect (ATE) <span class="math inline">E[Y_i(1) - Y_i(0)]</span>, if we can find a group whose outcomes stand in for the missing counterfactual. Every method in these notes is a different way of finding that group. Chapter 2 develops the framework formally.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="estimand-estimator-estimate" class="slide level2 center">
+<h2>Estimand, Estimator, Estimate</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Three Words Worth Keeping Apart</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Estimand:</strong> the quantity we want to know, defined with potential outcomes. <em>Example: the average effect of being sent a letter encouraging insurance enrollment on two-year mortality, among previously uninsured adults aged 45–64</em>: <span class="math inline">E[Y_i(1) - Y_i(0)]</span> in that population, where treatment is receiving the letter</li>
+<li><strong>Estimator:</strong> the recipe we apply to data. <em>Example: the difference in mean two-year mortality between people randomly sent and not sent the letter</em></li>
+<li><strong>Estimate:</strong> the number the recipe produces in our sample. <em>Example: a fall of about 0.06 percentage points (Chapter 3)</em></li>
+</ul>
+<p>A design is credible when its estimator recovers the estimand under assumptions we can defend. A precise estimate of the wrong estimand is still wrong.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="why-naive-comparisons-fail" class="slide level2 center">
+<h2>Why Naive Comparisons Fail</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Comparing the Insured with the Uninsured</strong></p>
+</div>
+<div class="callout-content">
+<p>The naive comparison of mortality between insured and uninsured people decomposes into two terms:</p>
+<p><span class="math display">\underbrace{E[Y_i \mid D_i = 1] - E[Y_i \mid D_i = 0]}_{\text{observed difference}} = \underbrace{E[Y_i(1) - Y_i(0) \mid D_i = 1]}_{\text{effect on the treated}} + \underbrace{E[Y_i(0) \mid D_i = 1] - E[Y_i(0) \mid D_i = 0]}_{\text{selection bias}}</span></p>
+<p><strong>Selection bias</strong> is the difference the two groups would have had <em>even without</em> insurance.</p>
+<ul>
+<li>People who expect high medical costs are more likely to buy insurance (adverse selection): selection bias pushes towards insurance <em>looking harmful</em></li>
+<li>People with higher income and education are more likely to be insured and are healthier anyway: selection bias pushes towards insurance <em>looking helpful</em></li>
+</ul>
+<p>Without a design, we cannot know which force dominates, or by how much.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="simulation-selection-bias-can-flip-the-sign" class="slide level2 center">
+<h2>Simulation: Selection Bias Can Flip the Sign</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb1-2"><a></a>n <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a><span class="co"># Underlying health risk (higher = sicker); unobserved by the researcher</span></span>
+<span id="cb1-5"><a></a>risk <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb1-6"><a></a></span>
+<span id="cb1-7"><a></a><span class="co"># Potential outcomes: annual probability of death (in percent)</span></span>
+<span id="cb1-8"><a></a>y0 <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">0</span>, <span class="fl">1.5</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> risk)          <span class="co"># without insurance</span></span>
+<span id="cb1-9"><a></a>y1 <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">0</span>, y0 <span class="sc">-</span> <span class="fl">0.3</span>)                  <span class="co"># insurance lowers mortality by up to 0.3 pp</span></span>
+<span id="cb1-10"><a></a></span>
+<span id="cb1-11"><a></a><span class="co"># Observational world: sicker people are more likely to buy insurance</span></span>
+<span id="cb1-12"><a></a>d_obs <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="fl">1.5</span> <span class="sc">*</span> risk))</span>
+<span id="cb1-13"><a></a>naive <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">ifelse</span>(d_obs <span class="sc">==</span> <span class="dv">1</span>, y1, y0)[d_obs <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span></span>
+<span id="cb1-14"><a></a>         <span class="fu">mean</span>(<span class="fu">ifelse</span>(d_obs <span class="sc">==</span> <span class="dv">1</span>, y1, y0)[d_obs <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb1-15"><a></a></span>
+<span id="cb1-16"><a></a><span class="co"># Experimental world: a coin flip decides who is insured</span></span>
+<span id="cb1-17"><a></a>d_rct <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</span>
+<span id="cb1-18"><a></a>y_rct <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(d_rct <span class="sc">==</span> <span class="dv">1</span>, y1, y0)</span>
+<span id="cb1-19"><a></a>rct <span class="ot">&lt;-</span> <span class="fu">mean</span>(y_rct[d_rct <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(y_rct[d_rct <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb1-20"><a></a></span>
+<span id="cb1-21"><a></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">true_ATE =</span> <span class="fu">mean</span>(y1 <span class="sc">-</span> y0), <span class="at">naive_comparison =</span> naive, <span class="at">randomized =</span> rct), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>        true_ATE naive_comparison       randomized 
+          -0.286            0.536           -0.287 </code></pre>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>The naive comparison says insurance <em>raises</em> mortality, because the insured are sicker to begin with. Randomization removes the selection term and recovers the true protective effect.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="other-ways-correlations-mislead" class="slide level2 center">
+<h2>Other Ways Correlations Mislead</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Six Traps</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Trap</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Confounding</strong></td>
+<td>Firms that adopt AI tools are larger and better managed; their higher productivity is not all due to AI</td>
+</tr>
+<tr class="even">
+<td><strong>Reverse causality</strong></td>
+<td>Workers who are struggling may be given AI tools <em>because</em> they are struggling</td>
+</tr>
+<tr class="odd">
+<td><strong>Controlling for a mechanism</strong></td>
+<td>Estimating the effect of insurance on health while “controlling for” doctor visits removes the main channel through which insurance works</td>
+</tr>
+<tr class="even">
+<td><strong>Reversion to the mean</strong></td>
+<td>Drivers selected into a safety program after an unusually bad claims year file fewer claims the next year, program or not</td>
+</tr>
+<tr class="odd">
+<td><strong>Selection into the sample</strong></td>
+<td>Studying only firms that survived a crisis hides the ones the crisis destroyed</td>
+</tr>
+<tr class="even">
+<td><strong>Searching and selective reporting</strong></td>
+<td>Try enough specifications and some will be “significant” by chance; if only those are published, the literature overstates effects</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="internal-and-external-validity" class="slide level2 center">
+<h2>Internal and External Validity</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Two Kinds of Validity</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Internal validity:</strong> is the estimate right for the people, place, and time studied?</li>
+<li><strong>External validity:</strong> does it carry over to other populations, places, or scales?</li>
+</ul>
+<p>Strong designs often buy internal validity with a narrow setting (one firm, one state, units near a cutoff). Keep both in view.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="the-evaluation-toolkit" class="title-slide slide level1 center">
+<h1>The Evaluation Toolkit</h1>
+
+</section>
+<section id="who-decided-who-was-treated" class="slide level2 center">
+<h2>Who Decided Who Was Treated?</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The Question That Organizes These Notes</strong></p>
+</div>
+<div class="callout-content">
+<p>Every method finds a counterfactual by exploiting how treatment was assigned. The notes move from designs where the researcher controls assignment, through designs that exploit a known source of variation (a shock, a rule, timing), to designs that rely only on measured characteristics:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Who or what decided treatment?</th>
+<th>Where the counterfactual comes from</th>
+<th>Method</th>
+<th>Part · Ch.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>The researcher</strong></td>
+<td>A lottery</td>
+<td>Randomized experiment</td>
+<td>II · 3–5</td>
+</tr>
+<tr class="even">
+<td><strong>An outside shock</strong></td>
+<td>Units nudged into treatment by something unrelated to outcomes</td>
+<td>Instrumental variables</td>
+<td>III · 6</td>
+</tr>
+<tr class="odd">
+<td><strong>A rule</strong></td>
+<td>Units just across a cutoff</td>
+<td>Regression discontinuity</td>
+<td>IV · 7</td>
+</tr>
+<tr class="even">
+<td><strong>The units, observed over time</strong></td>
+<td>The same units before treatment, or the change in untreated units</td>
+<td>Fixed effects, DiD, synthetic control</td>
+<td>V · 8–10</td>
+</tr>
+<tr class="odd">
+<td><strong>The units, observed once</strong></td>
+<td>Similar units, compared on observed characteristics</td>
+<td>Regression, matching</td>
+<td>VI · 11</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="choosing-a-design" class="slide level2 center">
+<h2>Choosing a Design</h2>
+
+<img data-src="../../images/method-flowchart.svg" alt="Decision flowchart: ask in turn whether you can randomize, whether an outside shock shifts treatment, whether a cutoff rule decides treatment, whether the same units are observed before and after, and whether every confounder is observed. Each yes leads to the corresponding part of the notes." class="r-stretch"><aside class="notes">
+<ul>
+<li>Walk through the five questions left to right. Each “no” moves to a design with less control over assignment; the final step relies on the strongest untestable assumption, that every confounder is measured.</li>
+<li>This is a starting point, not a rule. Strong evaluations often combine designs (Chapter 12).</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="moving-between-methods" class="slide level2 center">
+<h2>Moving Between Methods</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>When One Design Runs Into Trouble</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Move to</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>An experiment where not everyone takes up the treatment</td>
+<td>IV (Ch. 5–6)</td>
+<td>Random assignment is an instrument for take-up</td>
+</tr>
+<tr class="even">
+<td>A cutoff rule that is not followed exactly</td>
+<td>Fuzzy RDD = IV at the cutoff (Ch. 6–7)</td>
+<td>Crossing the cutoff shifts the probability of treatment</td>
+</tr>
+<tr class="odd">
+<td>An instrument that is weak or hard to defend, but you have panel data</td>
+<td>Fixed effects or DiD (Ch. 8–9)</td>
+<td>Use changes within units instead</td>
+</tr>
+<tr class="even">
+<td>Treated and comparison groups differ in levels</td>
+<td>Fixed effects or DiD (Ch. 8–9)</td>
+<td>Fixed differences cancel out</td>
+</tr>
+<tr class="odd">
+<td>Policy adopted at different times by different units</td>
+<td>Heterogeneity-robust DiD (Ch. 9)</td>
+<td>Static two-way fixed effects can mislead</td>
+</tr>
+<tr class="even">
+<td>Only one or a few treated units, no single good comparison</td>
+<td>Synthetic control (Ch. 10)</td>
+<td>Build a comparison from a weighted mix</td>
+</tr>
+<tr class="odd">
+<td>Parallel trends plausible only for similar units</td>
+<td>DiD with matching or reweighting (Ch. 9, 11)</td>
+<td>Compare like with like, then difference</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="methods-at-a-glance-designs-with-controlled-or-quasi-random-assignment" class="slide level2 smaller center">
+<h2>Methods at a Glance: Designs with Controlled or Quasi-Random Assignment</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 34%">
+<col style="width: 36%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Key identifying assumption</th>
+<th>Main limitation</th>
+<th>Ch.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Randomized experiment</strong></td>
+<td>Random assignment; no interference</td>
+<td>Costly or infeasible; non-compliance, attrition, spillovers</td>
+<td>3–5</td>
+</tr>
+<tr class="even">
+<td><strong>Instrumental variables</strong></td>
+<td>Exclusion restriction; relevance; monotonicity</td>
+<td>Untestable exclusion; weak instruments; LATE only</td>
+<td>6</td>
+</tr>
+<tr class="odd">
+<td><strong>Regression discontinuity</strong></td>
+<td>Continuity at the cutoff; no manipulation</td>
+<td>Effect only at the cutoff</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-at-a-glance-designs-using-time-and-observables" class="slide level2 smaller center">
+<h2>Methods at a Glance: Designs Using Time and Observables</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 34%">
+<col style="width: 36%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Key identifying assumption</th>
+<th>Main limitation</th>
+<th>Ch.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Panel fixed effects</strong></td>
+<td>No time-varying confounders (strict exogeneity)</td>
+<td>Time-varying confounders; needs within-unit variation</td>
+<td>8</td>
+</tr>
+<tr class="even">
+<td><strong>Difference-in-differences</strong></td>
+<td>Parallel trends; no anticipation</td>
+<td>Trends untestable; staggered-adoption bias in TWFE</td>
+<td>9</td>
+</tr>
+<tr class="odd">
+<td><strong>Synthetic control</strong></td>
+<td>Pre-treatment fit carries over</td>
+<td>Needs long pre-period; few treated units; placebo inference</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td><strong>Regression, matching</strong></td>
+<td>No unmeasured confounders; overlap</td>
+<td>Blind to unobservables; poor overlap</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<ul>
+<li>The full comparison table, with the core idea and estimand for each method, is on the course home page.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-credibility-revolution" class="slide level2 center">
+<h2>The Credibility Revolution</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Design Before Estimation</strong></p>
+</div>
+<div class="callout-content">
+<p>Over the past three decades, empirical economics and management research shifted from “control for everything and hope” to research design: a clear source of variation in treatment that is plausibly as good as random <span class="citation" data-cites="angrist2010credibility">(<a href="#/references" role="doc-biblioref" onclick="">Angrist and Pischke 2010</a>)</span>.</p>
+<p><strong>What that means in practice:</strong></p>
+<ul>
+<li>State the comparison that identifies the effect, in plain language</li>
+<li>Make the identifying assumption explicit</li>
+<li>Show evidence for it (balance, pre-trends, placebo tests, first stages)</li>
+<li>Report robustness, and state what the design cannot rule out</li>
+</ul>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="how-these-notes-work" class="title-slide slide level1 center">
+<h1>How These Notes Work</h1>
+
+</section>
+<section id="the-plan-of-these-notes" class="slide level2 center">
+<h2>The Plan of These Notes</h2>
+<p><strong>Part I: Foundations</strong>: what a causal effect is, and how treatment gets assigned</p>
+<p><strong>Part II: Randomized Experiments</strong>: <em>the researcher</em> assigns treatment; design, practice, and what goes wrong</p>
+<p><strong>Part III: Instrumental Variables</strong>: <em>an outside shock</em> shifts treatment; from randomized offers to natural instruments</p>
+<p><strong>Part IV: Regression Discontinuity</strong>: <em>a rule</em> assigns treatment at a cutoff</p>
+<p><strong>Part V: Panel Methods</strong>: <em>units choose</em>, but we see them over time; fixed effects, DiD, synthetic control</p>
+<p><strong>Part VI: Selection on Observables</strong>: <em>units choose</em>, and we observe them once; regression and matching</p>
+<p><strong>Part VII: Synthesis</strong>: combining designs, accumulating evidence, and reporting</p>
+</section>
+<section id="llms-as-research-tools" class="slide level2 center">
+<h2>LLMs as Research Tools</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Measuring Variables with LLMs</strong></p>
+</div>
+<div class="callout-content">
+<p>LLMs are also increasingly used to measure variables, such as classifying text or rating job tasks. A measured variable is only as good as its validation: measurement error in a treatment variable biases estimates (Chapter 8 shows how fixed effects make this worse).</p>
+</div>
+</div>
+</div>
+</section>
+<section id="six-questions-for-any-evaluation" class="slide level2 center scrollable">
+<h2>Six Questions for Any Evaluation</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Use These for Any Evaluation You Read or Design</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><strong>Question:</strong> What is the causal effect of what, on what, for whom?</li>
+<li><strong>Estimand:</strong> Is the target an ATE, an effect on the treated, or a local effect (compliers, units at a cutoff)?</li>
+<li><strong>Identification:</strong> What comparison identifies the effect, and what assumption makes it valid?</li>
+<li><strong>Threats:</strong> What would break that assumption in this setting?</li>
+<li><strong>Evidence:</strong> How do the authors test or defend the assumption?</li>
+<li><strong>External validity:</strong> Would the result hold in another place, time, or population?</li>
+</ol>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="practicalities" class="title-slide slide level1 center">
+<h1>Practicalities</h1>
+
+</section>
+<section id="ethics-in-policy-evaluation" class="slide level2 center">
+<h2>Ethics in Policy Evaluation</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Evaluations Involve Real People</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Informed consent</strong> and institutional review: ethics board approval, and registration in a public trial registry</li>
+<li><strong>Equipoise:</strong> randomizing is easier to justify when we genuinely do not know whether the policy helps, or when resources are limited and must be rationed anyway</li>
+<li><strong>Privacy:</strong> linking survey, tax, health, and death records requires secure facilities and disclosure review</li>
+<li><strong>Distribution:</strong> average effects can hide harm to specific groups; check heterogeneity</li>
+<li><strong>Complete reporting:</strong> pre-registration, pre-analysis plans, and reporting null results</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="software-and-code" class="slide level2 center">
+<h2>Software and Code</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Working with the Code in These Notes</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>All examples use R; the packages used are <code>fixest</code> (fixed effects, IV, DiD, event studies), <code>rdrobust</code> and <code>rddensity</code> (regression discontinuity), <code>did</code> (staggered DiD), <code>Synth</code> (synthetic control), and <code>MatchIt</code> (matching)</li>
+<li><strong>Simulations</strong> with made-up data and a known true effect show whether each method recovers it; real datasets that ship with these packages (minimum wages, the Basque Country, the LaLonde job-training data) show the methods at work</li>
+<li>Code is folded by default in both the lecture notes and the slides; click “Code” to expand it</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="summary" class="slide level2 center">
+<h2>Summary</h2>
+<ul>
+<li class="fragment">Policy evaluation asks what would have happened without the policy</li>
+<li class="fragment">Individual causal effects are never observed; we estimate averages using a comparison group</li>
+<li class="fragment">Naive comparisons mix the causal effect with selection bias, which can even flip the sign</li>
+<li class="fragment">Each method in these notes finds the counterfactual in a different place: chance, an outside shock, a cutoff, time, a synthetic unit, or observed characteristics</li>
+<li class="fragment">Credible evaluation is about design: a clear comparison, an explicit assumption, and evidence for it</li>
+</ul>
+</section>
+<section id="next-steps" class="slide level2 center scrollable">
+<h2>Next Steps</h2>
+<ol type="1">
+<li class="fragment"><strong>Read</strong>: <span class="citation" data-cites="angrist2010credibility">Angrist and Pischke (<a href="#/references" role="doc-biblioref" onclick="">2010</a>)</span>; <span class="citation" data-cites="holland1986statistics">Holland (<a href="#/references" role="doc-biblioref" onclick="">1986</a>)</span></li>
+<li class="fragment"><strong>Practice</strong>: In the selection-bias simulation, change the strength of selection (<code>1.5 * risk</code>) to 0 and to −1.5. When is the naive comparison right? When does it overstate the benefit of insurance?</li>
+<li class="fragment"><strong>Think</strong>: Pick one policy you care about. What comparison would identify its effect?</li>
+<li class="fragment"><strong>Next Class</strong>: The potential outcomes framework in detail (Chapter 2)</li>
+</ol>
+</section>
+<section id="references" class="slide level2 scrollable smaller">
+<h2>References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-angrist2010credibility" class="csl-entry" role="listitem">
+Angrist, Joshua D, and Jörn-Steffen Pischke. 2010. <span>“The Credibility Revolution in Empirical Economics: How Better Research Design Is Taking the Con Out of Econometrics.”</span> <em>Journal of Economic Perspectives</em> 24 (2): 3–30. <a href="https://doi.org/10.1257/jep.24.2.3">https://doi.org/10.1257/jep.24.2.3</a>.
+</div>
+<div id="ref-holland1986statistics" class="csl-entry" role="listitem">
+Holland, Paul W. 1986. <span>“Statistics and Causal Inference.”</span> <em>Journal of the American Statistical Association</em> 81 (396): 945–60. <a href="https://doi.org/10.1080/01621459.1986.10478354">https://doi.org/10.1080/01621459.1986.10478354</a>.
+</div>
+</div>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="../../unsw-logo.png" class="slide-logo"></p>
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': false,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true,"boardmarkerWidth":3,"grid":false},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1000,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

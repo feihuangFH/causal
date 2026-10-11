@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Fei Huang, UNSW Sydney">
+
+<title>Causal Inference Framework – Causal Inference for Policy Evaluation</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html" rel="next">
+<link href="../../Lectures/Ch01-Introduction/Lecture-Introduction.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2ed7f7ae727038b1aa95f4c24ad3a3a6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-af98a32a849caa794534a9445d98b5fe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lectures/Ch01-Introduction/Lecture-Introduction.html">Part I: Foundations</a></li><li class="breadcrumb-item"><a href="../../Lectures/Ch02-Causal-Framework/Lecture-Causal-Framework.html">Chapter 2: Causal Inference Framework</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Causal Inference for Policy Evaluation</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part I: Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch01-Introduction/Lecture-Introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 1: Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch02-Causal-Framework/Lecture-Causal-Framework.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Chapter 2: Causal Inference Framework</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part II: Randomized Experiments</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 3: Experiments: Design and Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 4: Experiments in Practice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 5: When Experiments Go Wrong</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part III: Instrumental Variables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 6: Instrumental Variables</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part IV: Regression Discontinuity</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 7: Regression Discontinuity</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part V: Panel Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 8: Panel Data and Fixed Effects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 9: Difference-in-Differences</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 10: Synthetic Control</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VI: Selection on Observables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 11: Regression and Matching</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VII: Synthesis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 12: Putting It Together</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading List</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#potential-outcomes" id="toc-potential-outcomes" class="nav-link active" data-scroll-target="#potential-outcomes">Potential Outcomes</a>
+  <ul class="collapse">
+  <li><a href="#units-treatments-outcomes" id="toc-units-treatments-outcomes" class="nav-link" data-scroll-target="#units-treatments-outcomes">Units, Treatments, Outcomes</a></li>
+  <li><a href="#a-potential-outcomes-table" id="toc-a-potential-outcomes-table" class="nav-link" data-scroll-target="#a-potential-outcomes-table">A Potential Outcomes Table</a></li>
+  <li><a href="#what-happens-when-managers-choose" id="toc-what-happens-when-managers-choose" class="nav-link" data-scroll-target="#what-happens-when-managers-choose">What Happens When Managers Choose</a></li>
+  </ul></li>
+  <li><a href="#estimands" id="toc-estimands" class="nav-link" data-scroll-target="#estimands">Estimands</a>
+  <ul class="collapse">
+  <li><a href="#which-average-effect" id="toc-which-average-effect" class="nav-link" data-scroll-target="#which-average-effect">Which Average Effect?</a></li>
+  <li><a href="#estimands-in-later-chapters" id="toc-estimands-in-later-chapters" class="nav-link" data-scroll-target="#estimands-in-later-chapters">Estimands in Later Chapters</a></li>
+  </ul></li>
+  <li><a href="#assumptions-about-the-treatment" id="toc-assumptions-about-the-treatment" class="nav-link" data-scroll-target="#assumptions-about-the-treatment">Assumptions About the Treatment</a>
+  <ul class="collapse">
+  <li><a href="#sutva-no-interference" id="toc-sutva-no-interference" class="nav-link" data-scroll-target="#sutva-no-interference">SUTVA: No Interference</a></li>
+  <li><a href="#sutva-no-hidden-versions-of-treatment" id="toc-sutva-no-hidden-versions-of-treatment" class="nav-link" data-scroll-target="#sutva-no-hidden-versions-of-treatment">SUTVA: No Hidden Versions of Treatment</a></li>
+  </ul></li>
+  <li><a href="#the-assignment-mechanism" id="toc-the-assignment-mechanism" class="nav-link" data-scroll-target="#the-assignment-mechanism">The Assignment Mechanism</a>
+  <ul class="collapse">
+  <li><a href="#why-assignment-is-everything" id="toc-why-assignment-is-everything" class="nav-link" data-scroll-target="#why-assignment-is-everything">Why Assignment Is Everything</a></li>
+  <li><a href="#five-assignment-mechanisms" id="toc-five-assignment-mechanisms" class="nav-link" data-scroll-target="#five-assignment-mechanisms">Five Assignment Mechanisms</a></li>
+  </ul></li>
+  <li><a href="#causal-diagrams" id="toc-causal-diagrams" class="nav-link" data-scroll-target="#causal-diagrams">Causal Diagrams</a>
+  <ul class="collapse">
+  <li><a href="#drawing-your-assumptions" id="toc-drawing-your-assumptions" class="nav-link" data-scroll-target="#drawing-your-assumptions">Drawing Your Assumptions</a></li>
+  <li><a href="#good-and-bad-controls" id="toc-good-and-bad-controls" class="nav-link" data-scroll-target="#good-and-bad-controls">Good and Bad Controls</a></li>
+  <li><a href="#simulation-collider-bias" id="toc-simulation-collider-bias" class="nav-link" data-scroll-target="#simulation-collider-bias">Simulation: Collider Bias</a></li>
+  </ul></li>
+  <li><a href="#identification-estimation-inference" id="toc-identification-estimation-inference" class="nav-link" data-scroll-target="#identification-estimation-inference">Identification, Estimation, Inference</a>
+  <ul class="collapse">
+  <li><a href="#three-separate-questions" id="toc-three-separate-questions" class="nav-link" data-scroll-target="#three-separate-questions">Three Separate Questions</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="Lecture-Causal-Framework.slides.html"><i class="bi bi-easel2"></i>Slides</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lectures/Ch01-Introduction/Lecture-Introduction.html">Part I: Foundations</a></li><li class="breadcrumb-item"><a href="../../Lectures/Ch02-Causal-Framework/Lecture-Causal-Framework.html">Chapter 2: Causal Inference Framework</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Causal Inference Framework</h1>
+<p class="subtitle lead">Potential Outcomes, Estimands, and Assignment</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Instructor</div>
+    <div class="quarto-title-meta-contents">
+             <p>Fei Huang, UNSW Sydney </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="notes">
+<ul>
+<li>Chapter 1 introduced the fundamental problem: we never see both potential outcomes for the same unit.</li>
+<li>This chapter builds the language used in the rest of the notes: potential outcomes, estimands, the assumptions about treatments (SUTVA), assignment mechanisms, and causal diagrams for deciding what to control for.</li>
+<li>The running example is a firm giving some workers access to a generative AI assistant.</li>
+</ul>
+</div>
+<section id="potential-outcomes" class="level2">
+<h2 class="anchored" data-anchor-id="potential-outcomes">Potential Outcomes</h2>
+<section id="units-treatments-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="units-treatments-outcomes">Units, Treatments, Outcomes</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The Ingredients of a Causal Question
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Units</strong> <span class="math inline">i = 1, \dots, N</span>: the entities affected (workers, households, firms, postcodes)</li>
+<li><strong>Treatment</strong> <span class="math inline">D_i</span>: the intervention whose effect we want, e.g., access to an AI assistant (<span class="math inline">D_i = 1</span>) or not (<span class="math inline">D_i = 0</span>)</li>
+<li><strong>Outcome</strong> <span class="math inline">Y_i</span>: what the intervention might change, e.g., tickets resolved per hour</li>
+<li><strong>Potential outcomes</strong> <span class="math inline">Y_i(1)</span> and <span class="math inline">Y_i(0)</span>: the outcome unit <span class="math inline">i</span> <em>would</em> have under each treatment</li>
+<li><strong>Unit-level effect</strong> <span class="math inline">\tau_i = Y_i(1) - Y_i(0)</span></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>A Treatment Must Be Something We Could Change
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>“What is the effect of a worker’s experience?” is vague. “What is the effect of giving a worker six months of on-the-job training?” is a well-defined intervention with two clear potential outcomes. Precise policy questions start with a treatment that someone could actually manipulate.</p>
+</div>
+</div>
+</section>
+<section id="a-potential-outcomes-table" class="level3">
+<h3 class="anchored" data-anchor-id="a-potential-outcomes-table">A Potential Outcomes Table</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Eight Customer-Support Workers (a Thought Experiment)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Worker</th>
+<th style="text-align: center;"><span class="math inline">Y_i(0)</span>: without AI</th>
+<th style="text-align: center;"><span class="math inline">Y_i(1)</span>: with AI</th>
+<th style="text-align: center;"><span class="math inline">\tau_i</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A (new)</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">1.6</td>
+<td style="text-align: center;">+0.6</td>
+</tr>
+<tr class="even">
+<td>B (new)</td>
+<td style="text-align: center;">1.2</td>
+<td style="text-align: center;">1.7</td>
+<td style="text-align: center;">+0.5</td>
+</tr>
+<tr class="odd">
+<td>C (new)</td>
+<td style="text-align: center;">1.4</td>
+<td style="text-align: center;">1.8</td>
+<td style="text-align: center;">+0.4</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td style="text-align: center;">1.8</td>
+<td style="text-align: center;">2.1</td>
+<td style="text-align: center;">+0.3</td>
+</tr>
+<tr class="odd">
+<td>E</td>
+<td style="text-align: center;">2.0</td>
+<td style="text-align: center;">2.2</td>
+<td style="text-align: center;">+0.2</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td style="text-align: center;">2.2</td>
+<td style="text-align: center;">2.3</td>
+<td style="text-align: center;">+0.1</td>
+</tr>
+<tr class="odd">
+<td>G (expert)</td>
+<td style="text-align: center;">2.6</td>
+<td style="text-align: center;">2.6</td>
+<td style="text-align: center;">0.0</td>
+</tr>
+<tr class="even">
+<td>H (expert)</td>
+<td style="text-align: center;">2.8</td>
+<td style="text-align: center;">2.7</td>
+<td style="text-align: center;">−0.1</td>
+</tr>
+</tbody>
+</table>
+<p>Average effect: <span class="math inline">\frac{1}{8}\sum_i \tau_i = +0.25</span> tickets per hour. Effects differ across workers, and in reality we only ever see one column for each.</p>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>The pattern (larger gains for newer workers) mirrors the findings of Brynjolfsson, Li and Raymond (2025), studied in Chapters 8 and 9.</li>
+</ul>
+</div>
+</section>
+<section id="what-happens-when-managers-choose" class="level3">
+<h3 class="anchored" data-anchor-id="what-happens-when-managers-choose">What Happens When Managers Choose</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>po <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">worker =</span> LETTERS[<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>],</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y0 =</span> <span class="fu">c</span>(<span class="fl">1.0</span>, <span class="fl">1.2</span>, <span class="fl">1.4</span>, <span class="fl">1.8</span>, <span class="fl">2.0</span>, <span class="fl">2.2</span>, <span class="fl">2.6</span>, <span class="fl">2.8</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y1 =</span> <span class="fu">c</span>(<span class="fl">1.6</span>, <span class="fl">1.7</span>, <span class="fl">1.8</span>, <span class="fl">2.1</span>, <span class="fl">2.2</span>, <span class="fl">2.3</span>, <span class="fl">2.6</span>, <span class="fl">2.7</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>ate <span class="ot">&lt;-</span> <span class="fu">mean</span>(po<span class="sc">$</span>y1 <span class="sc">-</span> po<span class="sc">$</span>y0)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Scenario 1: managers give AI to their four strongest workers</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>d_mgr <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(po<span class="sc">$</span>worker <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"E"</span>, <span class="st">"F"</span>, <span class="st">"G"</span>, <span class="st">"H"</span>))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>naive_mgr <span class="ot">&lt;-</span> <span class="fu">mean</span>(po<span class="sc">$</span>y1[d_mgr <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(po<span class="sc">$</span>y0[d_mgr <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Scenario 2: AI assigned by lottery, repeated many times</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>lottery <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">10000</span>, {</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="dv">4</span>))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(po<span class="sc">$</span>y1[d <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(po<span class="sc">$</span>y0[d <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">true_ATE =</span> ate,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">managers_choose =</span> naive_mgr,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">lottery_average =</span> <span class="fu">mean</span>(lottery),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">lottery_sd =</span> <span class="fu">sd</span>(lottery)), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       true_ATE managers_choose lottery_average      lottery_sd 
+          0.250           1.100           0.249           0.375 </code></pre>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>When managers choose the strongest workers, the comparison overstates the effect even though those workers gain the least: their high baseline does the work.</li>
+<li>Under a lottery, the comparison is right on average; any single lottery can still be off (the standard deviation). Chapter 3 is about that sampling variation.</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="estimands" class="level2">
+<h2 class="anchored" data-anchor-id="estimands">Estimands</h2>
+<section id="which-average-effect" class="level3">
+<h3 class="anchored" data-anchor-id="which-average-effect">Which Average Effect?</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Common Estimands
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estimand</th>
+<th>Definition</th>
+<th>Policy question it answers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>ATE</strong></td>
+<td><span class="math inline">E[Y_i(1) - Y_i(0)]</span></td>
+<td>What if <em>everyone</em> got the treatment?</td>
+</tr>
+<tr class="even">
+<td><strong>ATT</strong></td>
+<td><span class="math inline">E[Y_i(1) - Y_i(0) \mid D_i = 1]</span></td>
+<td>Did the program help the people who actually received it?</td>
+</tr>
+<tr class="odd">
+<td><strong>ATC</strong></td>
+<td><span class="math inline">E[Y_i(1) - Y_i(0) \mid D_i = 0]</span></td>
+<td>What if we extended it to those not yet covered?</td>
+</tr>
+<tr class="even">
+<td><strong>CATE</strong></td>
+<td><span class="math inline">E[Y_i(1) - Y_i(0) \mid X_i = x]</span></td>
+<td>Who benefits most? How should we target?</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>In the AI Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If managers give the tool to the experts (E–H), the ATT is <span class="math inline">+0.05</span>, while the ATC (new and mid-level workers) is <span class="math inline">+0.45</span>. Both are “the effect of AI”, and they differ by a factor of nine. Always say whose effect you are estimating.</p>
+</div>
+</div>
+</section>
+<section id="estimands-in-later-chapters" class="level3">
+<h3 class="anchored" data-anchor-id="estimands-in-later-chapters">Estimands in Later Chapters</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Many Designs Recover a Specific, Local Effect
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Design</th>
+<th>What it recovers</th>
+<th>Chapter</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Randomized experiment</td>
+<td>ATE (or intent-to-treat effect)</td>
+<td>3–5</td>
+</tr>
+<tr class="even">
+<td>Experiment with imperfect take-up, or an instrument</td>
+<td>LATE: effect for <em>compliers</em>, whose treatment responds to the instrument</td>
+<td>5–6</td>
+</tr>
+<tr class="odd">
+<td>Regression discontinuity</td>
+<td>Effect for units at the cutoff</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td>Panel fixed effects</td>
+<td>A variance-weighted average of within-unit effects</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td>Difference-in-differences</td>
+<td>ATT for treated units, after treatment</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+<p>A credible local effect is often more useful than a non-credible global one. But it should be described as what it is.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="assumptions-about-the-treatment" class="level2">
+<h2 class="anchored" data-anchor-id="assumptions-about-the-treatment">Assumptions About the Treatment</h2>
+<section id="sutva-no-interference" class="level3">
+<h3 class="anchored" data-anchor-id="sutva-no-interference">SUTVA: No Interference</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>One Unit’s Treatment Must Not Change Another’s Outcome
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Stable Unit Treatment Value Assumption (SUTVA) has two parts. The first is no interference: <span class="math inline">Y_i</span> depends only on <span class="math inline">D_i</span>, not on <span class="math inline">D_j</span>.</p>
+<p><strong>When it fails:</strong></p>
+<ul>
+<li><strong>Vaccines:</strong> my vaccination protects you</li>
+<li><strong>Platforms and markets:</strong> an incentive that makes some ride-hail drivers work more lowers earnings for other drivers</li>
+<li><strong>Teams:</strong> if half a support team gets an AI assistant, the untreated half may receive harder tickets, or learn from treated colleagues</li>
+<li><strong>Information:</strong> treated households tell untreated neighbours about a program</li>
+</ul>
+<p>Interference biases simple comparisons and changes what the estimand means. Designs that randomize whole clusters (teams, villages, markets) are one response (Chapter 5).</p>
+</div>
+</div>
+</section>
+<section id="sutva-no-hidden-versions-of-treatment" class="level3">
+<h3 class="anchored" data-anchor-id="sutva-no-hidden-versions-of-treatment">SUTVA: No Hidden Versions of Treatment</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>“The Treatment” Must Mean One Thing
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The second part: there is only one version of each treatment level.</p>
+<ul>
+<li>“Health insurance” may mean Medicaid or a private plan with a high deductible</li>
+<li>“An AI assistant” in 2021 (GPT-3) is not the same treatment as in 2025</li>
+<li>“Training” delivered by an expert and by a novice trainer may have different effects</li>
+</ul>
+<p>If versions differ, define the treatment more narrowly, or measure and analyze versions separately.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Assignment Is Not Receipt
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Being offered a treatment is not the same as taking it. Many evaluations randomize or study the offer (a letter, an invitation, eligibility). The effect of the offer is the intent-to-treat effect; the effect of actually taking the treatment requires extra assumptions (Chapters 5–6).</p>
+</div>
+</div>
+</section>
+</section>
+<section id="the-assignment-mechanism" class="level2">
+<h2 class="anchored" data-anchor-id="the-assignment-mechanism">The Assignment Mechanism</h2>
+<section id="why-assignment-is-everything" class="level3">
+<h3 class="anchored" data-anchor-id="why-assignment-is-everything">Why Assignment Is Everything</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Recall the Decomposition from Chapter 1
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">E[Y_i \mid D_i = 1] - E[Y_i \mid D_i = 0] = \text{ATT} + \underbrace{E[Y_i(0) \mid D_i = 1] - E[Y_i(0) \mid D_i = 0]}_{\text{selection bias}}</span></p>
+<p>Selection bias is zero when treatment is unrelated to untreated potential outcomes. Whether that holds depends entirely on how units came to be treated: the assignment mechanism.</p>
+</div>
+</div>
+</section>
+<section id="five-assignment-mechanisms" class="level3">
+<h3 class="anchored" data-anchor-id="five-assignment-mechanisms">Five Assignment Mechanisms</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>How Treatment Was Assigned Determines the Method
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Assignment mechanism</th>
+<th>Key condition</th>
+<th>Methods</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>The researcher randomizes</strong></td>
+<td><span class="math inline">(Y_i(0), Y_i(1)) \perp D_i</span></td>
+<td>Experiments (Ch. 3–5)</td>
+</tr>
+<tr class="even">
+<td><strong>An outside shock shifts treatment</strong></td>
+<td>The shock is as good as random and affects outcomes only through treatment</td>
+<td>Instrumental variables (Ch. 6)</td>
+</tr>
+<tr class="odd">
+<td><strong>A rule based on a score</strong></td>
+<td>Treatment switches at a known cutoff <span class="math inline">c</span> of a running variable</td>
+<td>Regression discontinuity (Ch. 7)</td>
+</tr>
+<tr class="even">
+<td><strong>Units choose, observed over time</strong></td>
+<td>Untreated outcomes evolve similarly, or confounders are fixed within units</td>
+<td>Fixed effects, DiD, synthetic control (Ch. 8–10)</td>
+</tr>
+<tr class="odd">
+<td><strong>Units choose, observed once</strong></td>
+<td><span class="math inline">(Y_i(0), Y_i(1)) \perp D_i \mid X_i</span>, with overlap</td>
+<td>Regression, matching (Ch. 11)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>Ask students to place familiar policies (a lottery-based housing program, a means-tested subsidy, a state law, a firm’s choice of who gets new software) into one of the five rows.</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="causal-diagrams" class="level2">
+<h2 class="anchored" data-anchor-id="causal-diagrams">Causal Diagrams</h2>
+<section id="drawing-your-assumptions" class="level3">
+<h3 class="anchored" data-anchor-id="drawing-your-assumptions">Drawing Your Assumptions</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Three Basic Structures
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A causal diagram draws variables as nodes and causal effects as arrows. Three patterns matter most for deciding what to control for:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Structure</th>
+<th>Picture</th>
+<th>Example</th>
+<th>Control for it?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Confounder</strong></td>
+<td><span class="math inline">D \leftarrow X \rightarrow Y</span></td>
+<td>Firm size drives both AI adoption and productivity</td>
+<td>Yes: controlling for it blocks a non-causal (back-door) path</td>
+</tr>
+<tr class="even">
+<td><strong>Mediator</strong></td>
+<td><span class="math inline">D \rightarrow M \rightarrow Y</span></td>
+<td>Insurance → doctor visits → health</td>
+<td>No if you want the total effect</td>
+</tr>
+<tr class="odd">
+<td><strong>Collider</strong></td>
+<td><span class="math inline">D \rightarrow C \leftarrow Y</span></td>
+<td>AI adoption and productivity both make a firm “featured” in the press</td>
+<td>No: conditioning on it <em>creates</em> bias</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="good-and-bad-controls" class="level3">
+<h3 class="anchored" data-anchor-id="good-and-bad-controls">Good and Bad Controls</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Controlling for More Is Not Always Better
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Confounders</strong> measured before treatment: good controls</li>
+<li><strong>Mediators</strong> (affected by treatment): controlling for them removes part of the effect you want to measure</li>
+<li><strong>Colliders</strong>, including sample selection on an outcome-related variable: conditioning on them creates spurious associations</li>
+<li><strong>Pre-treatment variables that only predict the outcome</strong>: harmless, and they improve precision</li>
+<li><strong>Pre-treatment variables that only predict treatment</strong> (instrument-like): they add no bias protection, reduce precision, and can amplify bias from any remaining unmeasured confounder</li>
+</ul>
+<p>The rule of thumb “only control for variables determined before treatment” avoids most mistakes, but not all: some pre-treatment variables are also bad controls (the instrument-like case above, and pre-treatment colliders, known as M-bias). Causal diagrams handle these cases <span class="citation" data-cites="cinelli2024crash">(<a href="#ref-cinelli2024crash" role="doc-biblioref">Cinelli et al. 2024</a>)</span>.</p>
+</div>
+</div>
+</section>
+<section id="simulation-collider-bias" class="level3">
+<h3 class="anchored" data-anchor-id="simulation-collider-bias">Simulation: Collider Bias</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ai_adoption  <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)          <span class="co"># randomly adopted: NO effect on productivity</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>productivity <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># A firm is "featured" in a business magazine if it adopted AI or is highly productive</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>featured <span class="ot">&lt;-</span> (ai_adoption <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> <span class="fu">runif</span>(n) <span class="sc">&lt;</span> <span class="fl">0.3</span>) <span class="sc">|</span> productivity <span class="sc">&gt;</span> <span class="dv">1</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">all_firms      =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(productivity <span class="sc">~</span> ai_adoption))[<span class="st">"ai_adoption"</span>],</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">featured_firms =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(productivity <span class="sc">~</span> ai_adoption, <span class="at">subset =</span> featured))[<span class="st">"ai_adoption"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>     all_firms.ai_adoption featured_firms.ai_adoption 
+                0.01276997                -1.11199358 </code></pre>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>Across all firms, the estimated effect is close to zero, as it should be.</li>
+<li>Among featured firms only, AI adopters look far <em>less</em> productive: non-adopters had to be highly productive to be featured. Studying only the firms that appear in the news, survived a crisis, or published a case study creates this bias.</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="identification-estimation-inference" class="level2">
+<h2 class="anchored" data-anchor-id="identification-estimation-inference">Identification, Estimation, Inference</h2>
+<section id="three-separate-questions" class="level3">
+<h3 class="anchored" data-anchor-id="three-separate-questions">Three Separate Questions</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Keep Them Apart
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Identification:</strong> if we had infinite data, would our comparison reveal the estimand? This depends on the assignment mechanism and the assumptions we are willing to make. It is never solved by more data.</li>
+<li><strong>Estimation:</strong> which formula do we apply to a finite sample (difference in means, regression, matching, two-stage least squares)?</li>
+<li><strong>Inference:</strong> how uncertain is the estimate? Uncertainty comes from sampling (who is in the data) and from design (which units happened to be treated).</li>
+</ol>
+<p>Most disagreements about a study are about step 1. Most of these notes are too.</p>
+</div>
+</div>
+</section>
+<section id="summary" class="level3">
+<h3 class="anchored" data-anchor-id="summary">Summary</h3>
+<div class="incremental">
+<ul class="incremental">
+<li>A causal effect compares potential outcomes for the same unit; only one is ever observed</li>
+<li><strong>Estimands</strong> (ATE, ATT, ATC, CATE, LATE, local effects) answer different policy questions; say which one you target</li>
+<li><strong>SUTVA</strong> requires no interference and a single, well-defined version of treatment</li>
+<li>The assignment mechanism determines whether a comparison is biased, and which method fits</li>
+<li><strong>Causal diagrams</strong> clarify which variables to control for: confounders yes; mediators and colliders no</li>
+<li>Separate identification from estimation and inference</li>
+</ul>
+</div>
+</section>
+<section id="next-steps" class="level3">
+<h3 class="anchored" data-anchor-id="next-steps">Next Steps</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li><strong>Read</strong>: <span class="citation" data-cites="holland1986statistics">Holland (<a href="#ref-holland1986statistics" role="doc-biblioref">1986</a>)</span>; <span class="citation" data-cites="cinelli2024crash">Cinelli et al. (<a href="#ref-cinelli2024crash" role="doc-biblioref">2024</a>)</span></li>
+<li><strong>Practice</strong>: In the eight-worker simulation, let managers give AI to the four <em>newest</em> workers. Is the naive comparison now too high or too low? Why?</li>
+<li><strong>Think</strong>: For a policy you know well, write down the treatment, the outcome, the estimand, and the assignment mechanism</li>
+<li><strong>Next Class</strong>: Randomized experiments: design and inference (Chapter 3)</li>
+</ol>
+</div>
+</section>
+<section id="references" class="level3 scrollable">
+<h3 class="scrollable anchored" data-anchor-id="references">References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-cinelli2024crash" class="csl-entry" role="listitem">
+Cinelli, Carlos, Andrew Forney, and Judea Pearl. 2024. <span>“A Crash Course in Good and Bad Controls.”</span> <em>Sociological Methods &amp; Research</em> 53 (3): 1071–104. <a href="https://doi.org/10.1177/00491241221099552">https://doi.org/10.1177/00491241221099552</a>.
+</div>
+<div id="ref-holland1986statistics" class="csl-entry" role="listitem">
+Holland, Paul W. 1986. <span>“Statistics and Causal Inference.”</span> <em>Journal of the American Statistical Association</em> 81 (396): 945–60. <a href="https://doi.org/10.1080/01621459.1986.10478354">https://doi.org/10.1080/01621459.1986.10478354</a>.
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../Lectures/Ch01-Introduction/Lecture-Introduction.html" class="pagination-link" aria-label="Chapter 1: Introduction">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Chapter 1: Introduction</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html" class="pagination-link" aria-label="Chapter 3: Experiments: Design and Inference">
+        <span class="nav-page-text">Chapter 3: Experiments: Design and Inference</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

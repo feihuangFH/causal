@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Fei Huang, UNSW Sydney">
+
+<title>Difference-in-Differences – Causal Inference for Policy Evaluation</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.html" rel="next">
+<link href="../../Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2ed7f7ae727038b1aa95f4c24ad3a3a6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-af98a32a849caa794534a9445d98b5fe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html">Part V: Panel Methods</a></li><li class="breadcrumb-item"><a href="../../Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.html">Chapter 9: Difference-in-Differences</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Causal Inference for Policy Evaluation</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part I: Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch01-Introduction/Lecture-Introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 1: Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch02-Causal-Framework/Lecture-Causal-Framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 2: Causal Inference Framework</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part II: Randomized Experiments</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 3: Experiments: Design and Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 4: Experiments in Practice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 5: When Experiments Go Wrong</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part III: Instrumental Variables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 6: Instrumental Variables</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part IV: Regression Discontinuity</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 7: Regression Discontinuity</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part V: Panel Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 8: Panel Data and Fixed Effects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Chapter 9: Difference-in-Differences</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 10: Synthetic Control</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VI: Selection on Observables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 11: Regression and Matching</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part VII: Synthesis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chapter 12: Putting It Together</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading List</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
+  <li><a href="#in-practice-difference-in-differences" id="toc-in-practice-difference-in-differences" class="nav-link" data-scroll-target="#in-practice-difference-in-differences">In Practice: Difference-in-Differences</a></li>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link" data-scroll-target="#motivation">Motivation</a>
+  <ul class="collapse">
+  <li><a href="#did-medicaid-expansion-save-lives" id="toc-did-medicaid-expansion-save-lives" class="nav-link" data-scroll-target="#did-medicaid-expansion-save-lives">Did Medicaid Expansion Save Lives?</a></li>
+  <li><a href="#the-did-idea" id="toc-the-did-idea" class="nav-link" data-scroll-target="#the-did-idea">The DiD Idea</a></li>
+  </ul></li>
+  <li><a href="#the-22-design" id="toc-the-22-design" class="nav-link" data-scroll-target="#the-22-design">The 2×2 Design</a>
+  <ul class="collapse">
+  <li><a href="#setup-and-target-parameter" id="toc-setup-and-target-parameter" class="nav-link" data-scroll-target="#setup-and-target-parameter">Setup and Target Parameter</a></li>
+  <li><a href="#the-key-assumption-parallel-trends" id="toc-the-key-assumption-parallel-trends" class="nav-link" data-scroll-target="#the-key-assumption-parallel-trends">The Key Assumption: Parallel Trends</a></li>
+  <li><a href="#what-parallel-trends-does-and-does-not-allow" id="toc-what-parallel-trends-does-and-does-not-allow" class="nav-link" data-scroll-target="#what-parallel-trends-does-and-does-not-allow">What Parallel Trends Does and Does Not Allow</a></li>
+  <li><a href="#regression-form" id="toc-regression-form" class="nav-link" data-scroll-target="#regression-form">Regression Form</a></li>
+  </ul></li>
+  <li><a href="#event-studies" id="toc-event-studies" class="nav-link" data-scroll-target="#event-studies">Event Studies</a>
+  <ul class="collapse">
+  <li><a href="#from-one-coefficient-to-many" id="toc-from-one-coefficient-to-many" class="nav-link" data-scroll-target="#from-one-coefficient-to-many">From One Coefficient to Many</a></li>
+  <li><a href="#pre-trend-tests-handle-with-care" id="toc-pre-trend-tests-handle-with-care" class="nav-link" data-scroll-target="#pre-trend-tests-handle-with-care">Pre-Trend Tests: Handle with Care</a></li>
+  </ul></li>
+  <li><a href="#staggered-adoption" id="toc-staggered-adoption" class="nav-link" data-scroll-target="#staggered-adoption">Staggered Adoption</a>
+  <ul class="collapse">
+  <li><a href="#when-units-are-treated-at-different-times" id="toc-when-units-are-treated-at-different-times" class="nav-link" data-scroll-target="#when-units-are-treated-at-different-times">When Units Are Treated at Different Times</a></li>
+  <li><a href="#why-twfe-breaks-the-goodman-bacon-decomposition" id="toc-why-twfe-breaks-the-goodman-bacon-decomposition" class="nav-link" data-scroll-target="#why-twfe-breaks-the-goodman-bacon-decomposition">Why TWFE Breaks: The Goodman-Bacon Decomposition</a></li>
+  <li><a href="#heterogeneity-robust-estimators" id="toc-heterogeneity-robust-estimators" class="nav-link" data-scroll-target="#heterogeneity-robust-estimators">Heterogeneity-Robust Estimators</a></li>
+  </ul></li>
+  <li><a href="#inference" id="toc-inference" class="nav-link" data-scroll-target="#inference">Inference</a>
+  <ul class="collapse">
+  <li><a href="#standard-errors-in-did" id="toc-standard-errors-in-did" class="nav-link" data-scroll-target="#standard-errors-in-did">Standard Errors in DiD</a></li>
+  </ul></li>
+  <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation">Simulation</a>
+  <ul class="collapse">
+  <li><a href="#a-22-did-by-hand-and-by-regression" id="toc-a-22-did-by-hand-and-by-regression" class="nav-link" data-scroll-target="#a-22-did-by-hand-and-by-regression">A 2×2 DiD by Hand and by Regression</a></li>
+  <li><a href="#staggered-adoption-twfe-vs.-a-robust-estimator" id="toc-staggered-adoption-twfe-vs.-a-robust-estimator" class="nav-link" data-scroll-target="#staggered-adoption-twfe-vs.-a-robust-estimator">Staggered Adoption: TWFE vs.&nbsp;a Robust Estimator</a></li>
+  <li><a href="#where-the-static-bias-comes-from" id="toc-where-the-static-bias-comes-from" class="nav-link" data-scroll-target="#where-the-static-bias-comes-from">Where the Static Bias Comes From</a></li>
+  </ul></li>
+  <li><a href="#real-data" id="toc-real-data" class="nav-link" data-scroll-target="#real-data">Real Data</a>
+  <ul class="collapse">
+  <li><a href="#real-data-minimum-wages-and-teen-employment" id="toc-real-data-minimum-wages-and-teen-employment" class="nav-link" data-scroll-target="#real-data-minimum-wages-and-teen-employment">Real Data: Minimum Wages and Teen Employment</a></li>
+  <li><a href="#real-data-the-event-study" id="toc-real-data-the-event-study" class="nav-link" data-scroll-target="#real-data-the-event-study">Real Data: The Event Study</a></li>
+  </ul></li>
+  <li><a href="#case-studies" id="toc-case-studies" class="nav-link" data-scroll-target="#case-studies">Case Studies</a>
+  <ul class="collapse">
+  <li><a href="#three-case-studies-at-a-glance" id="toc-three-case-studies-at-a-glance" class="nav-link" data-scroll-target="#three-case-studies-at-a-glance">Three Case Studies at a Glance</a></li>
+  <li><a href="#case-study-1-medicaid-and-mortality" id="toc-case-study-1-medicaid-and-mortality" class="nav-link" data-scroll-target="#case-study-1-medicaid-and-mortality">Case Study 1: Medicaid and Mortality</a></li>
+  <li><a href="#case-study-1-specification" id="toc-case-study-1-specification" class="nav-link" data-scroll-target="#case-study-1-specification">Case Study 1: Specification</a></li>
+  <li><a href="#case-study-1-checking-the-design" id="toc-case-study-1-checking-the-design" class="nav-link" data-scroll-target="#case-study-1-checking-the-design">Case Study 1: Checking the Design</a></li>
+  <li><a href="#case-study-1-results" id="toc-case-study-1-results" class="nav-link" data-scroll-target="#case-study-1-results">Case Study 1: Results</a></li>
+  <li><a href="#case-study-1-what-to-copy" id="toc-case-study-1-what-to-copy" class="nav-link" data-scroll-target="#case-study-1-what-to-copy">Case Study 1: What to Copy</a></li>
+  <li><a href="#case-study-1-discussion-questions" id="toc-case-study-1-discussion-questions" class="nav-link" data-scroll-target="#case-study-1-discussion-questions">Case Study 1: Discussion Questions</a></li>
+  <li><a href="#case-study-2-generative-ai-at-work" id="toc-case-study-2-generative-ai-at-work" class="nav-link" data-scroll-target="#case-study-2-generative-ai-at-work">Case Study 2: Generative AI at Work</a></li>
+  <li><a href="#case-study-2-where-the-variation-comes-from" id="toc-case-study-2-where-the-variation-comes-from" class="nav-link" data-scroll-target="#case-study-2-where-the-variation-comes-from">Case Study 2: Where the Variation Comes From</a></li>
+  <li><a href="#case-study-2-specification-and-checks" id="toc-case-study-2-specification-and-checks" class="nav-link" data-scroll-target="#case-study-2-specification-and-checks">Case Study 2: Specification and Checks</a></li>
+  <li><a href="#case-study-2-results" id="toc-case-study-2-results" class="nav-link" data-scroll-target="#case-study-2-results">Case Study 2: Results</a></li>
+  <li><a href="#case-study-2-what-to-copy" id="toc-case-study-2-what-to-copy" class="nav-link" data-scroll-target="#case-study-2-what-to-copy">Case Study 2: What to Copy</a></li>
+  <li><a href="#case-study-2-discussion-questions" id="toc-case-study-2-discussion-questions" class="nav-link" data-scroll-target="#case-study-2-discussion-questions">Case Study 2: Discussion Questions</a></li>
+  <li><a href="#case-study-3-who-is-ai-replacing" id="toc-case-study-3-who-is-ai-replacing" class="nav-link" data-scroll-target="#case-study-3-who-is-ai-replacing">Case Study 3: Who Is AI Replacing?</a></li>
+  <li><a href="#case-study-3-specification" id="toc-case-study-3-specification" class="nav-link" data-scroll-target="#case-study-3-specification">Case Study 3: Specification</a></li>
+  <li><a href="#case-study-3-results-and-checks" id="toc-case-study-3-results-and-checks" class="nav-link" data-scroll-target="#case-study-3-results-and-checks">Case Study 3: Results and Checks</a></li>
+  <li><a href="#case-study-3-what-to-copy" id="toc-case-study-3-what-to-copy" class="nav-link" data-scroll-target="#case-study-3-what-to-copy">Case Study 3: What to Copy</a></li>
+  <li><a href="#case-study-3-discussion-questions" id="toc-case-study-3-discussion-questions" class="nav-link" data-scroll-target="#case-study-3-discussion-questions">Case Study 3: Discussion Questions</a></li>
+  <li><a href="#comparing-the-three-designs" id="toc-comparing-the-three-designs" class="nav-link" data-scroll-target="#comparing-the-three-designs">Comparing the Three Designs</a></li>
+  </ul></li>
+  <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a>
+  <ul class="collapse">
+  <li><a href="#did-checklist" id="toc-did-checklist" class="nav-link" data-scroll-target="#did-checklist">DiD Checklist</a></li>
+  <li><a href="#common-pitfalls" id="toc-common-pitfalls" class="nav-link" data-scroll-target="#common-pitfalls">Common Pitfalls</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#summary-modern-practice-and-case-studies" id="toc-summary-modern-practice-and-case-studies" class="nav-link" data-scroll-target="#summary-modern-practice-and-case-studies">Summary: Modern Practice and Case Studies</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="Lecture-Difference-in-Differences.slides.html"><i class="bi bi-easel2"></i>Slides</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html">Part V: Panel Methods</a></li><li class="breadcrumb-item"><a href="../../Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.html">Chapter 9: Difference-in-Differences</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Difference-in-Differences</h1>
+<p class="subtitle lead">Comparing Changes Over Time</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Instructor</div>
+    <div class="quarto-title-meta-contents">
+             <p>Fei Huang, UNSW Sydney </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="notes">
+<ul>
+<li>Difference-in-differences (DiD) is the most widely used design for evaluating policies that switch on for some units and not others.</li>
+<li>It builds directly on Chapter 8: DiD is a two-way fixed effects model with a binary treatment that turns on at a known date.</li>
+<li>We cover the 2×2 design, event studies, what goes wrong with staggered adoption, and inference. Then three case studies: Medicaid expansion and mortality, and two papers on generative AI at work.</li>
+</ul>
+</div>
+<section id="where-this-chapter-fits" class="level3">
+<h3 class="anchored" data-anchor-id="where-this-chapter-fits">Where This Chapter Fits</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Step 4: Do you observe the same units before and after treatment?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>You arrive here when:</strong> A policy switches on for some units and not others, and you observe both groups before and after.</li>
+<li><strong>This chapter:</strong> Parallel trends, event studies, and what goes wrong with staggered adoption.</li>
+<li><strong>Next:</strong> Chapter 10: when only one or a few units are treated and no single comparison group is credible.</li>
+</ul>
+<p>See the design flowchart in Chapter 1.</p>
+</div>
+</div>
+</section>
+<section id="in-practice-difference-in-differences" class="level3">
+<h3 class="anchored" data-anchor-id="in-practice-difference-in-differences">In Practice: Difference-in-Differences</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Practitioner Summary
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Use it when:</strong> a policy switches on for some units at a known date, and you observe treated and untreated units before and after</li>
+<li><strong>What you need:</strong> outcomes for both groups over several periods before and after the policy</li>
+<li><strong>What must hold:</strong> parallel trends without the policy; no anticipation; no spillovers onto the control group</li>
+<li><strong>Checks to run:</strong> a plot of raw trends; an event study and the power of its pre-trend test; a heterogeneity-robust estimator if timing is staggered; placebo groups and dates; clustering at the policy level</li>
+<li><strong>In R:</strong> <code>feols(y ~ sunab(cohort, period) | unit + period, data)</code>, <code>did::att_gt()</code></li>
+<li><strong>Telling a manager:</strong> “Before the policy the two groups moved together; afterwards the treated group pulled away by X. That gap is our estimate.”</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="motivation" class="level2">
+<h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
+<section id="did-medicaid-expansion-save-lives" class="level3">
+<h3 class="anchored" data-anchor-id="did-medicaid-expansion-save-lives">Did Medicaid Expansion Save Lives?</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The Policy Question
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>From 2014, the Affordable Care Act (ACA) let US states expand Medicaid to low-income adults. Some states expanded; others did not.</p>
+<p><strong>Question:</strong> Did the expansion reduce mortality among low-income adults?</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Two Tempting but Wrong Comparisons
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Before vs.&nbsp;after, in expansion states only:</strong> mortality changes over time for many reasons: people age, medicine improves, the economy moves. A before–after difference mixes the policy with all of these.</p>
+<p><strong>Expansion vs.&nbsp;non-expansion states, after 2014 only:</strong> the states that chose to expand differ systematically (income, politics, health systems). A cross-sectional difference mixes the policy with these differences.</p>
+</div>
+</div>
+</section>
+<section id="the-did-idea" class="level3">
+<h3 class="anchored" data-anchor-id="the-did-idea">The DiD Idea</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Use Each Comparison to Fix the Other’s Problem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>The control group’s change over time tells us how the treated group <em>would have</em> changed without the policy</li>
+<li>Subtracting it removes common time shocks; differencing within groups removes fixed group differences</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 27%">
+<col style="width: 27%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: center;">Before</th>
+<th style="text-align: center;">After</th>
+<th style="text-align: center;">Change</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Treated</strong> (expansion states)</td>
+<td style="text-align: center;"><span class="math inline">\bar Y_{T,0}</span></td>
+<td style="text-align: center;"><span class="math inline">\bar Y_{T,1}</span></td>
+<td style="text-align: center;"><span class="math inline">\bar Y_{T,1} - \bar Y_{T,0}</span></td>
+</tr>
+<tr class="even">
+<td><strong>Control</strong> (non-expansion states)</td>
+<td style="text-align: center;"><span class="math inline">\bar Y_{C,0}</span></td>
+<td style="text-align: center;"><span class="math inline">\bar Y_{C,1}</span></td>
+<td style="text-align: center;"><span class="math inline">\bar Y_{C,1} - \bar Y_{C,0}</span></td>
+</tr>
+<tr class="odd">
+<td><strong>Difference</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span class="math inline">\hat\tau_{DiD} = (\bar Y_{T,1} - \bar Y_{T,0}) - (\bar Y_{C,1} - \bar Y_{C,0})</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>Classic example: Card and Krueger (1994), minimum wage in New Jersey vs.&nbsp;Pennsylvania fast-food restaurants.</li>
+<li>Ask students: what would make the control group’s change a bad guess for the treated group’s counterfactual change?</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="the-22-design" class="level2">
+<h2 class="anchored" data-anchor-id="the-22-design">The 2×2 Design</h2>
+<section id="setup-and-target-parameter" class="level3">
+<h3 class="anchored" data-anchor-id="setup-and-target-parameter">Setup and Target Parameter</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Notation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Units <span class="math inline">i</span> in a treated group (<span class="math inline">D_i = 1</span>) or control group (<span class="math inline">D_i = 0</span>)</li>
+<li>Two periods: before (<span class="math inline">t = 0</span>) and after (<span class="math inline">t = 1</span>); treatment switches on between them for the treated group only</li>
+<li>Potential outcomes <span class="math inline">Y_{it}(1)</span> and <span class="math inline">Y_{it}(0)</span>; observed <span class="math inline">Y_{it} = Y_{it}(0) + D_i \cdot \mathbb{1}[t = 1] \cdot (Y_{it}(1) - Y_{it}(0))</span></li>
+</ul>
+<p><strong>Target: the average treatment effect on the treated (ATT)</strong></p>
+<p><span class="math display">\tau_{ATT} = E[Y_{i1}(1) - Y_{i1}(0) \mid D_i = 1]</span></p>
+<p>The problem: <span class="math inline">E[Y_{i1}(0) \mid D_i = 1]</span>, the treated group’s outcome <em>without</em> the policy after it started, is never observed.</p>
+</div>
+</div>
+</section>
+<section id="the-key-assumption-parallel-trends" class="level3">
+<h3 class="anchored" data-anchor-id="the-key-assumption-parallel-trends">The Key Assumption: Parallel Trends</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Parallel Trends
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In the absence of treatment, the treated and control groups would have experienced the same average change in outcomes:</p>
+<p><span class="math display">E[Y_{i1}(0) - Y_{i0}(0) \mid D_i = 1] = E[Y_{i1}(0) - Y_{i0}(0) \mid D_i = 0]</span></p>
+<p><strong>Plus two supporting assumptions:</strong></p>
+<ul>
+<li><strong>No anticipation:</strong> treatment does not affect outcomes before it starts, so <span class="math inline">Y_{i0} = Y_{i0}(0)</span> for the treated group</li>
+<li><strong>No interference (SUTVA):</strong> the control group is not affected by the treated group’s treatment</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Identification in One Line
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Under these assumptions, <span class="math inline">E[Y_{i1}(0) \mid D_i = 1] = E[Y_{i0} \mid D_i = 1] + \big(E[Y_{i1} \mid D_i = 0] - E[Y_{i0} \mid D_i = 0]\big)</span>, so</p>
+<p><span class="math display">\tau_{ATT} = \big(E[Y_{i1} \mid D_i=1] - E[Y_{i0} \mid D_i=1]\big) - \big(E[Y_{i1} \mid D_i=0] - E[Y_{i0} \mid D_i=0]\big)</span></p>
+</div>
+</div>
+</section>
+<section id="what-parallel-trends-does-and-does-not-allow" class="level3">
+<h3 class="anchored" data-anchor-id="what-parallel-trends-does-and-does-not-allow">What Parallel Trends Does and Does Not Allow</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Allowed
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Treated and control groups can have different levels of the outcome</li>
+<li>Selection into treatment can depend on fixed characteristics, observed or not (the same idea as unit fixed effects in Chapter 8)</li>
+<li>Common shocks that hit both groups equally</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Not Allowed
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Selection on trends:</strong> units adopt the policy <em>because</em> their outcomes were already changing (e.g., the “Ashenfelter dip”: workers join training programs after an earnings drop, then recover anyway)</li>
+<li><strong>Group-specific shocks</strong> at the same time as the policy (another reform, a local recession)</li>
+<li><strong>Spillovers</strong> onto the control group</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Parallel Trends Depends on the Scale
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Parallel trends in levels and in logs are different assumptions: if it holds for one, it generally fails for the other. It holds for every transformation of the outcome only under strong conditions, roughly that the whole distribution of untreated outcomes evolves in parallel, as it would under random assignment <span class="citation" data-cites="roth2023when">(<a href="#ref-roth2023when" role="doc-biblioref">Roth and Sant’Anna 2023</a>)</span>. Choose the scale on substantive grounds before looking at results.</p>
+</div>
+</div>
+</section>
+<section id="regression-form" class="level3">
+<h3 class="anchored" data-anchor-id="regression-form">Regression Form</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The 2×2 as a Regression
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">Y_{it} = \alpha + \beta D_i + \gamma \,\text{Post}_t + \tau \,(D_i \times \text{Post}_t) + \varepsilon_{it}</span></p>
+<ul>
+<li><span class="math inline">\beta</span>: fixed difference between groups</li>
+<li><span class="math inline">\gamma</span>: common change over time</li>
+<li><span class="math inline">\tau</span>: the DiD estimate, numerically identical to the difference of the four means</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>With Panel Data: Two-Way Fixed Effects
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \tau \,\text{Treat}_{it} + \varepsilon_{it}</span></p>
+<p>where <span class="math inline">\text{Treat}_{it} = D_i \times \text{Post}_t</span>. Unit fixed effects <span class="math inline">\alpha_i</span> replace <span class="math inline">\beta D_i</span>; time fixed effects <span class="math inline">\lambda_t</span> replace <span class="math inline">\gamma \,\text{Post}_t</span>. This is the two-way fixed effects (TWFE) model from Chapter 8, with a binary treatment that turns on at a known date.</p>
+<p>Covariates can be added, but only those not affected by treatment (otherwise they are bad controls).</p>
+</div>
+</div>
+</section>
+</section>
+<section id="event-studies" class="level2">
+<h2 class="anchored" data-anchor-id="event-studies">Event Studies</h2>
+<section id="from-one-coefficient-to-many" class="level3">
+<h3 class="anchored" data-anchor-id="from-one-coefficient-to-many">From One Coefficient to Many</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Event-Study Specification
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">E_i</span> be the period unit <span class="math inline">i</span> is first treated (never-treated units have no event time). Estimate</p>
+<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \sum_{k \neq -1} \beta_k \,\mathbb{1}[t - E_i = k] + \varepsilon_{it}</span></p>
+<ul>
+<li><span class="math inline">\beta_k</span> for <span class="math inline">k \geq 0</span> (lags): how the effect evolves <span class="math inline">k</span> periods after treatment</li>
+<li><span class="math inline">\beta_k</span> for <span class="math inline">k &lt; -1</span> (leads): differences <em>before</em> treatment, which should be close to zero under parallel trends and no anticipation</li>
+<li><span class="math inline">k = -1</span> is the reference period, normalized to zero</li>
+<li>Distant leads and lags are usually binned into end-point indicators</li>
+</ul>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>Every case study in this chapter shows an event-study plot. Make sure students can read one: flat pre-period, then the dynamic path of the effect.</li>
+</ul>
+</div>
+</section>
+<section id="pre-trend-tests-handle-with-care" class="level3">
+<h3 class="anchored" data-anchor-id="pre-trend-tests-handle-with-care">Pre-Trend Tests: Handle with Care</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Flat Leads Are Evidence, Not Proof
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Pre-trends test parallel trends before treatment; the assumption is about the counterfactual after treatment, which is untestable</li>
+<li>Pre-trend tests often have low power: a violation large enough to matter may not be statistically detectable</li>
+<li><strong>Pretest bias:</strong> if we only report designs that pass a pre-trend test, the surviving estimates can be more biased, not less <span class="citation" data-cites="roth2022pretest">(<a href="#ref-roth2022pretest" role="doc-biblioref">Roth 2022</a>)</span></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Better Practice
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Report the power of the pre-trend test: how big a trend could you detect?</li>
+<li>Use sensitivity analysis: how large could post-treatment violations of parallel trends be, relative to observed pre-trends, before the conclusion changes? <span class="citation" data-cites="rambachan2023more">(<a href="#ref-rambachan2023more" role="doc-biblioref">Rambachan and Roth 2023</a>)</span></li>
+<li>Show robustness to unit-specific or group-specific linear trends</li>
+</ul>
+<p>Case study 1 (Miller et al.) does all three.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="staggered-adoption" class="level2">
+<h2 class="anchored" data-anchor-id="staggered-adoption">Staggered Adoption</h2>
+<section id="when-units-are-treated-at-different-times" class="level3">
+<h3 class="anchored" data-anchor-id="when-units-are-treated-at-different-times">When Units Are Treated at Different Times</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Staggered (Rolling) Adoption
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Most real policies roll out unevenly:</p>
+<ul>
+<li>Medicaid expansion: 21 states in 2014, 3 in 2015, 2 in 2016, 1 in 2017</li>
+<li>A firm gives an AI tool to different workers in different months</li>
+<li>Laws adopted by different states in different years</li>
+</ul>
+<p>The TWFE regression <span class="math inline">Y_{it} = \alpha_i + \lambda_t + \tau \,\text{Treat}_{it} + \varepsilon_{it}</span> is still the default. But with staggered timing and effects that vary over time or across cohorts, <span class="math inline">\hat\tau_{TWFE}</span> can be badly misleading.</p>
+</div>
+</div>
+</section>
+<section id="why-twfe-breaks-the-goodman-bacon-decomposition" class="level3">
+<h3 class="anchored" data-anchor-id="why-twfe-breaks-the-goodman-bacon-decomposition">Why TWFE Breaks: The Goodman-Bacon Decomposition</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>TWFE Is a Weighted Average of Many 2×2 Comparisons <span class="citation" data-cites="goodmanbacon2021difference">(<a href="#ref-goodmanbacon2021difference" role="doc-biblioref">Goodman-Bacon 2021</a>)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>With staggered timing, <span class="math inline">\hat\tau_{TWFE}</span> averages every possible 2×2 DiD:</p>
+<ol type="1">
+<li>Treated vs.&nbsp;never-treated units: fine</li>
+<li>Early-treated vs.&nbsp;not-yet-treated units: fine</li>
+<li>Late-treated vs.&nbsp;already-treated units, used as the “control”: the forbidden comparison</li>
+</ol>
+<p>In comparison 3, the control group’s outcomes include its own treatment effect. If effects grow over time, the already-treated controls are trending up for reasons unrelated to the late cohort, and the comparison subtracts part of the true effect.</p>
+<p><strong>Result:</strong> the decomposition weights on the 2×2 comparisons are all positive, but because already-treated units serve as controls, some group-by-period treatment effects enter <span class="math inline">\hat\tau_{TWFE}</span> with negative weights. <span class="math inline">\hat\tau_{TWFE}</span> can then be far from any meaningful average effect, and in extreme cases have the wrong sign <span class="citation" data-cites="dechaisemartin2020two">(<a href="#ref-dechaisemartin2020two" role="doc-biblioref">Chaisemartin and D’Haultfœuille 2020</a>)</span>.</p>
+</div>
+</div>
+</section>
+<section id="heterogeneity-robust-estimators" class="level3">
+<h3 class="anchored" data-anchor-id="heterogeneity-robust-estimators">Heterogeneity-Robust Estimators</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>The Fix: Only Make Clean Comparisons
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estimator</th>
+<th>Idea</th>
+<th>R package</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="citation" data-cites="callaway2021difference">Callaway and Sant’Anna (<a href="#ref-callaway2021difference" role="doc-biblioref">2021</a>)</span></td>
+<td>Estimate each cohort × period ATT against never- or not-yet-treated units, then aggregate</td>
+<td><code>did</code></td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="sun2021estimating">Sun and Abraham (<a href="#ref-sun2021estimating" role="doc-biblioref">2021</a>)</span></td>
+<td>Interaction-weighted event study: interact event time with cohort</td>
+<td><code>fixest::sunab()</code></td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="dechaisemartin2020two">Chaisemartin and D’Haultfœuille (<a href="#ref-dechaisemartin2020two" role="doc-biblioref">2020</a>)</span></td>
+<td>Compare switchers with units whose treatment did not change</td>
+<td><code>DIDmultiplegt</code></td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="borusyak2024revisiting">Borusyak et al. (<a href="#ref-borusyak2024revisiting" role="doc-biblioref">2024</a>)</span></td>
+<td>Impute <span class="math inline">Y(0)</span> from untreated observations, then average</td>
+<td><code>didimputation</code></td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="arkhangelsky2021synthetic">Arkhangelsky et al. (<a href="#ref-arkhangelsky2021synthetic" role="doc-biblioref">2021</a>)</span></td>
+<td>Synthetic DiD: reweight units and periods to match pre-trends</td>
+<td><code>synthdid</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Practical advice:</strong> with staggered timing, report a robust estimator alongside TWFE. If they agree, the TWFE weighting problem did little harm here. If they differ, the robust estimate is the better summary, but it still rests on parallel trends for its comparison group and on no anticipation. All three case studies in this chapter follow this advice.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="inference" class="level2">
+<h2 class="anchored" data-anchor-id="inference">Inference</h2>
+<section id="standard-errors-in-did" class="level3">
+<h3 class="anchored" data-anchor-id="standard-errors-in-did">Standard Errors in DiD</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Cluster at the Level of the Policy
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Outcomes are serially correlated within units, and the treatment indicator is extremely persistent (0, 0, 0, 1, 1, 1). Ignoring this badly understates standard errors <span class="citation" data-cites="bertrand2004how">(<a href="#ref-bertrand2004how" role="doc-biblioref">Bertrand et al. 2004</a>)</span></li>
+<li><strong>Cluster</strong> at the level at which treatment is assigned (e.g., state for a state law)</li>
+<li>With few clusters, or few <em>treated</em> clusters, cluster-robust standard errors are unreliable: use the wild cluster bootstrap or randomization inference (Chapter 8)</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Case study</th>
+<th>Treatment varies by</th>
+<th>Clustered by</th>
+<th>Number of clusters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Miller et al.</td>
+<td>State</td>
+<td>State</td>
+<td>46 states</td>
+</tr>
+<tr class="even">
+<td>Brynjolfsson et al.</td>
+<td>Agent</td>
+<td>Agent</td>
+<td>5,000+</td>
+</tr>
+<tr class="odd">
+<td>Demirci et al.</td>
+<td>Job category</td>
+<td>Job category</td>
+<td>5–6 categories per comparison</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="simulation" class="level2">
+<h2 class="anchored" data-anchor-id="simulation">Simulation</h2>
+<section id="a-22-did-by-hand-and-by-regression" class="level3">
+<h3 class="anchored" data-anchor-id="a-22-did-by-hand-and-by-regression">A 2×2 DiD by Hand and by Regression</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setFixest_notes</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>d22 <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n, <span class="at">post =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>d22<span class="sc">$</span>treated <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(d22<span class="sc">$</span>id <span class="sc">&lt;=</span> n <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Treated units start at a higher level (allowed under parallel trends)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>unit_level <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n) <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> (<span class="dv">1</span><span class="sc">:</span>n <span class="sc">&lt;=</span> n <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>d22<span class="sc">$</span>y <span class="ot">&lt;-</span> unit_level[d22<span class="sc">$</span>id] <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> d22<span class="sc">$</span>post <span class="sc">+</span>          <span class="co"># common trend</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>         <span class="fl">1.0</span> <span class="sc">*</span> d22<span class="sc">$</span>treated <span class="sc">*</span> d22<span class="sc">$</span>post <span class="sc">+</span>                  <span class="co"># true effect = 1</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>         <span class="fu">rnorm</span>(<span class="fu">nrow</span>(d22), <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Four means and their difference</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">with</span>(d22, <span class="fu">tapply</span>(y, <span class="fu">list</span>(<span class="at">treated =</span> treated, <span class="at">post =</span> post), mean))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(means, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       post
+treated    0    1
+      0 0.08 0.70
+      1 0.75 2.27</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(means[<span class="st">"1"</span>, <span class="st">"1"</span>] <span class="sc">-</span> means[<span class="st">"1"</span>, <span class="st">"0"</span>]) <span class="sc">-</span> (means[<span class="st">"0"</span>, <span class="st">"1"</span>] <span class="sc">-</span> means[<span class="st">"0"</span>, <span class="st">"0"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9062927</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same number from the regression</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">feols</span>(y <span class="sc">~</span> treated <span class="sc">*</span> post, <span class="at">data =</span> d22, <span class="at">cluster =</span> <span class="sc">~</span>id))[<span class="st">"treated:post"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Estimate Std. Error 
+ 0.9062927  0.1025802 </code></pre>
+</div>
+</div>
+</section>
+<section id="staggered-adoption-twfe-vs.-a-robust-estimator" class="level3">
+<h3 class="anchored" data-anchor-id="staggered-adoption-twfe-vs.-a-robust-estimator">Staggered Adoption: TWFE vs.&nbsp;a Robust Estimator</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Three adoption cohorts plus never-treated units; effects grow over time</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>n_units <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>cohorts <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">11</span>, <span class="dv">16</span>, <span class="cn">Inf</span>), n_units, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> <span class="fu">c</span>(.<span class="dv">3</span>, .<span class="dv">3</span>, .<span class="dv">2</span>, .<span class="dv">2</span>))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>stag <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n_units, <span class="at">t =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>stag<span class="sc">$</span>first_treat <span class="ot">&lt;-</span> cohorts[stag<span class="sc">$</span>id]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>stag<span class="sc">$</span>event_time  <span class="ot">&lt;-</span> stag<span class="sc">$</span>t <span class="sc">-</span> stag<span class="sc">$</span>first_treat</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>stag<span class="sc">$</span>treated_now <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(stag<span class="sc">$</span>event_time <span class="sc">&gt;=</span> <span class="dv">0</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>stag<span class="sc">$</span>tau <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(stag<span class="sc">$</span>treated_now <span class="sc">==</span> <span class="dv">1</span>, <span class="fl">0.3</span> <span class="sc">*</span> (stag<span class="sc">$</span>event_time <span class="sc">+</span> <span class="dv">1</span>), <span class="dv">0</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>stag<span class="sc">$</span>y   <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n_units)[stag<span class="sc">$</span>id] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> stag<span class="sc">$</span>t <span class="sc">+</span> stag<span class="sc">$</span>tau <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(stag), <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Static TWFE (uses forbidden comparisons)</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>m_twfe <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> treated_now <span class="sc">|</span> id <span class="sc">+</span> t, <span class="at">data =</span> stag, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Sun &amp; Abraham (2021): never-treated cohort coded as a large number</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>stag<span class="sc">$</span>cohort <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">is.infinite</span>(stag<span class="sc">$</span>first_treat), <span class="dv">10000</span>, stag<span class="sc">$</span>first_treat)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>m_sa <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> <span class="fu">sunab</span>(cohort, t) <span class="sc">|</span> id <span class="sc">+</span> t, <span class="at">data =</span> stag, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimator =</span> <span class="fu">c</span>(<span class="st">"True ATT"</span>, <span class="st">"TWFE"</span>, <span class="st">"Sun &amp; Abraham"</span>),</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate  =</span> <span class="fu">round</span>(<span class="fu">c</span>(<span class="fu">mean</span>(stag<span class="sc">$</span>tau[stag<span class="sc">$</span>treated_now <span class="sc">==</span> <span class="dv">1</span>]),</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">coef</span>(m_twfe)[<span class="st">"treated_now"</span>],</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">summary</span>(m_sa, <span class="at">agg =</span> <span class="st">"ATT"</span>)<span class="sc">$</span>coeftable[<span class="st">"ATT"</span>, <span class="st">"Estimate"</span>]), <span class="dv">2</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      estimator estimate
+1      True ATT     1.97
+2          TWFE     0.75
+3 Sun &amp; Abraham     2.01</code></pre>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>TWFE recovers well under half of the true average effect here, because effects grow over time and already-treated units serve as controls for later cohorts.</li>
+<li>Ask students to set the effect to a constant (e.g., tau = 1 for all treated observations) and re-run: TWFE and Sun &amp; Abraham then agree.</li>
+</ul>
+</div>
+</section>
+<section id="where-the-static-bias-comes-from" class="level3">
+<h3 class="anchored" data-anchor-id="where-the-static-bias-comes-from">Where the Static Bias Comes From</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TWFE event study: never-treated units get a reference event time</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>stag<span class="sc">$</span>rel <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">is.infinite</span>(stag<span class="sc">$</span>first_treat), <span class="sc">-</span><span class="dv">1000</span>, stag<span class="sc">$</span>event_time)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>m_es_twfe <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> <span class="fu">i</span>(rel, <span class="at">ref =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1000</span>)) <span class="sc">|</span> id <span class="sc">+</span> t, <span class="at">data =</span> stag, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">iplot</span>(<span class="fu">list</span>(m_es_twfe, m_sa), <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">8</span>, <span class="dv">10</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">5</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">main =</span> <span class="st">"Event studies: TWFE vs. Sun &amp; Abraham"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"Periods since treatment"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">10</span>, <span class="fl">0.3</span> <span class="sc">*</span> (<span class="dv">0</span><span class="sc">:</span><span class="dv">10</span> <span class="sc">+</span> <span class="dv">1</span>), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"grey40"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"TWFE"</span>, <span class="st">"Sun &amp; Abraham"</span>, <span class="st">"True effect"</span>),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"#CC0000"</span>, <span class="st">"grey40"</span>), <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="at">pch =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">20</span>, <span class="cn">NA</span>), <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture-Difference-in-Differences_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Reading the Plot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Both event studies track the true dynamic effect here, because each period since treatment gets its own coefficient, every cohort follows the same dynamic path, and never-treated units give clean comparisons. The problem is the single static coefficient, which averages these growing effects using already-treated units as controls. A TWFE event study is not safe in general: when the dynamic path differs across cohorts, or when periods are binned or dropped, each coefficient can mix in effects from other periods, and spurious pre-trends can appear <span class="citation" data-cites="sun2021estimating">(<a href="#ref-sun2021estimating" role="doc-biblioref">Sun and Abraham 2021</a>)</span>.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="real-data" class="level2">
+<h2 class="anchored" data-anchor-id="real-data">Real Data</h2>
+<section id="real-data-minimum-wages-and-teen-employment" class="level3">
+<h3 class="anchored" data-anchor-id="real-data-minimum-wages-and-teen-employment">Real Data: Minimum Wages and Teen Employment</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(did))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mpdta)   <span class="co"># 500 US counties, 2003-2007; some states raised their minimum wage in 2004, 2006, or 2007</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>mpdta<span class="sc">$</span>treated_now <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(mpdta<span class="sc">$</span>first.treat <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> mpdta<span class="sc">$</span>year <span class="sc">&gt;=</span> mpdta<span class="sc">$</span>first.treat)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Static TWFE vs. Callaway &amp; Sant'Anna (2021), which only compares with not-yet- or never-treated counties</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>twfe <span class="ot">&lt;-</span> <span class="fu">feols</span>(lemp <span class="sc">~</span> treated_now <span class="sc">|</span> countyreal <span class="sc">+</span> year, <span class="at">data =</span> mpdta, <span class="at">cluster =</span> <span class="sc">~</span>countyreal)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>cs <span class="ot">&lt;-</span> <span class="fu">att_gt</span>(<span class="at">yname =</span> <span class="st">"lemp"</span>, <span class="at">tname =</span> <span class="st">"year"</span>, <span class="at">idname =</span> <span class="st">"countyreal"</span>, <span class="at">gname =</span> <span class="st">"first.treat"</span>, <span class="at">data =</span> mpdta)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">TWFE =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(twfe)), <span class="at">Callaway_SantAnna =</span> <span class="fu">aggte</span>(cs, <span class="at">type =</span> <span class="st">"simple"</span>)<span class="sc">$</span>overall.att), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>             TWFE Callaway_SantAnna 
+           -0.037            -0.040 </code></pre>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li><code>mpdta</code> ships with the <code>did</code> package: log teen employment by county, a subset of the data in Callaway &amp; Sant’Anna (2021). Treated counties are in states that raised the minimum wage; controls are counties at the federal minimum throughout.</li>
+<li>The two estimates are close here (about −4% teen employment), so TWFE does little harm. That is a finding, not a guarantee: always check.</li>
+</ul>
+</div>
+</section>
+<section id="real-data-the-event-study" class="level3">
+<h3 class="anchored" data-anchor-id="real-data-the-event-study">Real Data: The Event Study</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>es <span class="ot">&lt;-</span> <span class="fu">aggte</span>(cs, <span class="at">type =</span> <span class="st">"dynamic"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(es<span class="sc">$</span>egt, es<span class="sc">$</span>att.egt, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">ylim =</span> <span class="fu">range</span>(es<span class="sc">$</span>att.egt <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> es<span class="sc">$</span>se.egt, es<span class="sc">$</span>att.egt <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> es<span class="sc">$</span>se.egt),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Years since the minimum wage increase"</span>, <span class="at">ylab =</span> <span class="st">"Effect on log teen employment"</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(es<span class="sc">$</span>egt, es<span class="sc">$</span>att.egt <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> es<span class="sc">$</span>se.egt, es<span class="sc">$</span>egt, es<span class="sc">$</span>att.egt <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> es<span class="sc">$</span>se.egt, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.04</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>); <span class="fu">abline</span>(<span class="at">v =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">col =</span> <span class="st">"#c2410c"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture-Difference-in-Differences_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The effect grows with time since the increase. Before the increase, the estimates are close to zero but not perfectly flat, which is when the power of the pre-trend test and a sensitivity analysis (Rambachan &amp; Roth) matter.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="case-studies" class="level2">
+<h2 class="anchored" data-anchor-id="case-studies">Case Studies</h2>
+<section id="three-case-studies-at-a-glance" class="level3 smaller">
+<h3 class="smaller anchored" data-anchor-id="three-case-studies-at-a-glance">Three Case Studies at a Glance</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Miller, Johnson &amp; Wherry (2021)</th>
+<th>Brynjolfsson, Li &amp; Raymond (2025)</th>
+<th>Demirci, Hannane &amp; Zhu (2025)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Journal</strong></td>
+<td><em>Quarterly Journal of Economics</em></td>
+<td><em>Quarterly Journal of Economics</em></td>
+<td><em>Management Science</em></td>
+</tr>
+<tr class="even">
+<td><strong>Question</strong></td>
+<td>Does Medicaid expansion reduce mortality?</td>
+<td>Does a generative AI assistant raise worker productivity?</td>
+<td>Which freelance jobs does generative AI replace?</td>
+</tr>
+<tr class="odd">
+<td><strong>Treated</strong></td>
+<td>Low-income adults in expansion states</td>
+<td>Customer-support agents given the AI tool</td>
+<td>Automation-prone job categories (writing, coding)</td>
+</tr>
+<tr class="even">
+<td><strong>Control</strong></td>
+<td>Same group in non-expansion states</td>
+<td>Agents not yet or never given the tool</td>
+<td>Manual-intensive job categories</td>
+</tr>
+<tr class="odd">
+<td><strong>Timing</strong></td>
+<td>Staggered by state (2014–2017)</td>
+<td>Staggered by agent (2020–2021)</td>
+<td>One date: ChatGPT release (Nov 2022)</td>
+</tr>
+<tr class="even">
+<td><strong>Robust estimator</strong></td>
+<td>Sun &amp; Abraham; Goodman-Bacon decomposition</td>
+<td>Sun &amp; Abraham; CS; dCDH; BJS</td>
+<td>Callaway &amp; Sant’Anna; synthetic DiD</td>
+</tr>
+</tbody>
+</table>
+<div class="notes">
+<ul>
+<li>Keep asking the same three questions for each paper: (1) Who is the control group, and why is it a credible counterfactual? (2) What could break parallel trends? (3) How did the authors check?</li>
+</ul>
+</div>
+</section>
+<section id="case-study-1-medicaid-and-mortality" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-medicaid-and-mortality">Case Study 1: Medicaid and Mortality</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Miller, Johnson &amp; Wherry (2021), <em>QJE</em> <span class="citation" data-cites="miller2021medicaid">(<a href="#ref-miller2021medicaid" role="doc-biblioref">Miller et al. 2021</a>)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question:</strong> Did the ACA Medicaid expansions reduce mortality among low-income adults?</p>
+<p><strong>Data:</strong> a linkage of three federal sources:</p>
+<ul>
+<li><strong>American Community Survey (2008–2013)</strong> to identify people likely to gain eligibility: income at or below 138% of the poverty line <em>or</em> less than high school education; citizens; not already on disability benefits</li>
+<li><strong>Medicaid enrollment records</strong> to measure take-up</li>
+<li><strong>Census Numident death records</strong> to measure mortality through 2017</li>
+</ul>
+<p><strong>Sample:</strong> ~566,000 adults aged 55–64 in 2014 (a high-mortality group), excluding states that expanded before 2014.</p>
+<p><strong>Why it matters:</strong> earlier studies used aggregate death records and could not tell who was eligible, so they were underpowered to detect effects of plausible size.</p>
+</div>
+</div>
+</section>
+<section id="case-study-1-specification" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-specification">Case Study 1: Specification</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Event Study with Staggered State Adoption
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">Y_{isjt} = \text{Expansion}_s \times \sum_{\substack{y=-6 \\ y \neq -1}}^{3} \beta_y \,\mathbb{1}[t - t^*_s = y] + \beta_t + \beta_s + \beta_j + \gamma\,\mathbb{1}[j = t] + \varepsilon_{isjt}</span></p>
+<ul>
+<li><span class="math inline">Y</span>: died during year <span class="math inline">t</span> (linear probability model); individual <span class="math inline">i</span>, state <span class="math inline">s</span>, survey wave <span class="math inline">j</span></li>
+<li><span class="math inline">\beta_s</span> state FE, <span class="math inline">\beta_t</span> year FE, <span class="math inline">\beta_j</span> survey-wave FE</li>
+<li><span class="math inline">t^*_s</span>: the state’s expansion year (21 states in 2014; 6 later)</li>
+<li><span class="math inline">\beta_y</span> for <span class="math inline">y &lt; -1</span>: pre-trend checks; <span class="math inline">y \geq 0</span>: effects in each year after expansion</li>
+<li>Standard errors clustered by state; ACS survey weights</li>
+</ul>
+<p><strong>A subtle point:</strong> the sample is a fixed cohort that ages, so mortality rises over time everywhere. The pre-period mean is the wrong baseline; the authors compute a counterfactual post-period mortality rate instead.</p>
+</div>
+</div>
+</section>
+<section id="case-study-1-checking-the-design" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-checking-the-design">Case Study 1: Checking the Design</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Checks the Authors Ran
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>First stage:</strong> Medicaid eligibility rises 49–51 pp and enrollment rises 12.8 pp in expansion states; flat beforehand.</p>
+<p><strong>Pre-trends:</strong> mortality trends are parallel before 2014. The authors then ask whether the test had power <span class="citation" data-cites="roth2022pretest">(<a href="#ref-roth2022pretest" role="doc-biblioref">Roth 2022</a>)</span>: they could detect a linear pre-trend of 0.032 pp per year with 80% power; even such a trend would bias the estimate for event year 3 (the fourth year of expansion) by at most 0.089 pp, under half the estimated effect (0.208 pp).</p>
+<p><strong>Staggered timing:</strong> Goodman-Bacon decomposition shows only 11% of the TWFE weight comes from comparisons between differently timed states; dropping late expanders and using Sun &amp; Abraham give similar results.</p>
+<p><strong>Placebo groups:</strong> no effect for people 65+ (already on Medicare), and only small effects for higher-income people, who were less likely to gain coverage.</p>
+<p><strong>Placebo period:</strong> no relative change in the pre-ACA period.</p>
+<p><strong>Other confounders:</strong> results are stable when adding state-specific linear trends, county economic trends, or alternative comparison groups.</p>
+</div>
+</div>
+</section>
+<section id="case-study-1-results" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-results">Case Study 1: Results</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Main Findings
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Mortality falls by 0.132 percentage points per year, a 9.4% reduction relative to the sample mean</li>
+<li>The effect grows over time: 0.089 pp in year 1, 0.208 pp by year 4</li>
+<li>Driven by disease-related and health care–amenable deaths, not external causes such as accidents</li>
+<li>Scaling: if non-expansion states had expanded, roughly 15,600 deaths could have been averted</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>From Intent-to-Treat to the Effect of Coverage
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The DiD estimate is an intent-to-treat effect of living in an expansion state. Dividing by the first stage gives the effect of Medicaid itself, the same logic as IV in Chapters 5–6:</p>
+<p><span class="math display">\frac{\text{reduced form}}{\text{first stage}} = \frac{0.132 \text{ pp}}{0.375 \text{ years of Medicaid}} \approx 0.35 \text{ pp lower mortality per year of coverage}</span></p>
+<p>This scaled effect is a LATE for compliers: people who enrolled <em>because</em> of the expansion.</p>
+</div>
+</div>
+</section>
+<section id="case-study-1-what-to-copy" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-what-to-copy">Case Study 1: What to Copy</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Practices to Reuse
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Define the exposed group precisely.</strong> Linked records identify people likely to gain eligibility, instead of diluting the effect over everyone.</li>
+<li><strong>Report the power of the pre-trend test:</strong> the trend they could have missed would bias the estimate by at most 0.089 pp.</li>
+<li><strong>Use a group that should not respond</strong> (people aged 65+, already on Medicare) as a placebo, and scale the ITT by the first stage.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-1-discussion-questions" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-1-discussion-questions">Case Study 1: Discussion Questions</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li>States chose whether to expand. Why doesn’t this choice by itself invalidate the design? What kind of state-level choice <em>would</em>?</li>
+<li>Why is the elderly (65+) sample a useful placebo? What would a significant effect in that group have suggested?</li>
+<li>The pre-trend test “passes”. Why do the authors still compute the size of trend they could have missed?</li>
+<li>Only 11% of the TWFE weight comes from timing comparisons. Why does that make staggered-adoption bias a small concern here, but potentially a large one in other settings?</li>
+<li>Why is the scaled effect (0.35 pp per year of coverage) a LATE, and for whom?</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-29-contents" aria-controls="callout-29" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Suggested Answers (click to expand)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-29" class="callout-29-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>DiD allows expanding states to differ in levels, for example in income or politics. The design fails only if the expansion decision was related to trends in mortality, or coincided with other changes affecting low-income adults’ health.</li>
+<li>People aged 65 and over already have Medicare, so the expansion should not affect them. An effect there would point to state-level health shocks or policies that coincided with expansion, not Medicaid.</li>
+<li>A test with low power can pass even when the trend is large enough to matter. Computing the trend they could have missed (and the bias it would cause) shows whether passing the test is informative.</li>
+<li>Most of the weight comes from comparisons with states that never expanded, because few states expanded late. Where most units adopt at different dates and few are never treated, comparisons with already-treated units get more weight, and growing effects can bias TWFE badly.</li>
+<li>It divides the effect of living in an expansion state by the increase in Medicaid coverage. Under exclusion and monotonicity it is the effect per year of coverage for people who enrolled because of the expansion.</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="case-study-2-generative-ai-at-work" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-generative-ai-at-work">Case Study 2: Generative AI at Work</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Brynjolfsson, Li &amp; Raymond (2025), <em>QJE</em> <span class="citation" data-cites="brynjolfsson2025generative">(<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">Brynjolfsson et al. 2025</a>)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question:</strong> Does a generative AI assistant raise the productivity of customer-support workers, and who benefits most?</p>
+<p><strong>Setting:</strong> a Fortune 500 software firm’s customer support. An AI tool built on GPT-3 reads live chats and suggests responses; agents can accept, edit, or ignore suggestions.</p>
+<p><strong>Data:</strong> 3 million chats by 5,172 agents (89% outside the US, mainly the Philippines), aggregated to agent × month.</p>
+<p><strong>Main outcome:</strong> resolutions per hour (issues successfully resolved per hour).</p>
+<p><strong>Why DiD:</strong> the tool was not given to everyone at once. Access was rolled out agent by agent between fall 2020 and early 2021.</p>
+</div>
+</div>
+</section>
+<section id="case-study-2-where-the-variation-comes-from" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-where-the-variation-comes-from">Case Study 2: Where the Variation Comes From</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Rollout Was Not Random. Is It Good Enough?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Constraints that created staggered timing:</strong></p>
+<ul>
+<li>Agents had to complete a 3-hour training session, run by only two trainers with limited weekly capacity</li>
+<li>The firm had a fixed contractual budget for AI seats</li>
+<li>Managers spread a team’s members across different sessions to avoid service disruption</li>
+</ul>
+<p><strong>The worry:</strong> managers chose who to onboard. Ever-treated agents were already better before AI access (2.0 vs.&nbsp;1.7 resolutions per hour).</p>
+<p><strong>Why the design can still work:</strong> agent fixed effects absorb level differences. The threat is selection on trends: managers picking agents who were about to improve anyway.</p>
+</div>
+</div>
+</section>
+<section id="case-study-2-specification-and-checks" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-specification-and-checks">Case Study 2: Specification and Checks</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>TWFE with Agent and Time Fixed Effects
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">y_{it} = \delta_t + \alpha_i + \beta \,AI_{it} + \gamma X_{it} + \varepsilon_{it}</span></p>
+<ul>
+<li><span class="math inline">\alpha_i</span> agent FE; <span class="math inline">\delta_t</span> year-month FE; <span class="math inline">X_{it}</span> tenure FE (months on the job, since agents improve with experience)</li>
+<li><span class="math inline">AI_{it} = 1</span> once agent <span class="math inline">i</span> has access; standard errors clustered by agent</li>
+</ul>
+<p><strong>Robustness:</strong></p>
+<ul>
+<li>Event study with the Sun &amp; Abraham estimator: flat before access, immediate jump after</li>
+<li>Similar results with Callaway &amp; Sant’Anna, de Chaisemartin &amp; D’Haultfœuille, and Borusyak, Jaravel &amp; Spiess estimators</li>
+<li><strong>IV:</strong> instrument each agent’s adoption date with the date the first person in their team got access (rules out within-team selection by managers)</li>
+<li>A small earlier RCT pilot (~50 workers) gives similar effects</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-2-results" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-results">Case Study 2: Results</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Main Findings
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Specification (resolutions per hour)</th>
+<th>Estimate</th>
+<th>Fixed effects</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Time + location FE</td>
+<td>+0.47 (+24%)</td>
+<td>Year-month, location</td>
+</tr>
+<tr class="even">
+<td>+ Agent FE</td>
+<td>+0.37</td>
+<td>+ agent</td>
+</tr>
+<tr class="odd">
+<td><strong>+ Tenure FE (preferred)</strong></td>
+<td>+0.30 (+15%)</td>
+<td>+ months of tenure</td>
+</tr>
+</tbody>
+</table>
+<p>Adding agent FE shrinks the estimate: part of the raw gap was selection of stronger agents, which is what unit FE are for (Chapter 8).</p>
+<ul>
+<li><strong>Who gains:</strong> least-skilled and newest agents improve ~30%; the most skilled gain little, with a small decline in quality</li>
+<li><strong>Learning:</strong> agents with two months of tenure and AI perform like agents with six or more months without it; productivity stays higher even during AI outages</li>
+<li><strong>Work experience:</strong> customers are more polite and less likely to ask for a manager; attrition of new agents falls</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-2-what-to-copy" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-what-to-copy">Case Study 2: What to Copy</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Practices to Reuse
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Document how timing arose</strong> (trainer capacity, seat budgets) to argue it is unrelated to workers’ trends.</li>
+<li><strong>Report several heterogeneity-robust estimators</strong> next to TWFE.</li>
+<li><strong>Add a different design for the same question:</strong> a team-level instrument and a small randomized pilot.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-2-discussion-questions" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-2-discussion-questions">Case Study 2: Discussion Questions</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li>Ever-treated agents were more productive <em>before</em> AI. Why is this a problem for a cross-sectional comparison but not, by itself, for DiD with agent FE?</li>
+<li>Why include tenure fixed effects in addition to agent and month FE? What bias would remain without them?</li>
+<li>Why does instrumenting with the <em>team’s</em> first adoption date address manager selection? What does it assume?</li>
+<li>The paper studies one firm in the medium run. What does it <em>not</em> tell us about generative AI’s effect on employment or wages?</li>
+<li>The most-skilled agents follow AI suggestions more over time, even though quality falls slightly. Connect this to the idea of “cognitive surrender” (Chapter 4).</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-35-contents" aria-controls="callout-35" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Suggested Answers (click to expand)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-35" class="callout-35-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>A cross-section compares strong agents with weaker ones, which credits AI with pre-existing differences. With agent fixed effects each agent is compared with themselves, so level differences cancel; only differences in trends would bias the result.</li>
+<li>New agents improve quickly with experience, and agents gain access at different points in their careers. Without tenure effects, normal learning on the job would be counted as an AI effect.</li>
+<li>The team’s first access date depends on scheduling and team-level rollout, not on a manager picking particular agents within the team. It assumes team timing is unrelated to team trends and affects agents only through their own access, which spillovers within teams would violate.</li>
+<li>It says nothing about hiring, wages, or the number of support jobs, how other firms respond, or effects in other occupations and over longer periods.</li>
+<li>Accepting more AI suggestions while quality slips is consistent with adopting outputs with less scrutiny. But field data cannot separate over-reliance from a sensible choice to save time; the lab design in Chapter 4 can.</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="case-study-3-who-is-ai-replacing" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-3-who-is-ai-replacing">Case Study 3: Who Is AI Replacing?</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Demirci, Hannane &amp; Zhu (2025), <em>Management Science</em> <span class="citation" data-cites="demirci2025who">(<a href="#ref-demirci2025who" role="doc-biblioref">Demirci et al. 2025</a>)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question:</strong> How did ChatGPT (and image-generating AI) change demand for freelance work, and for which kinds of jobs?</p>
+<p><strong>Data:</strong> all job posts on a leading global freelancing platform, 2021–mid-2023: 1.2 million fixed-price posts from 542,000 employers in 61 countries.</p>
+<p><strong>Treated and control groups:</strong> job posts are clustered by skill tags into categories, then grouped by exposure to language models:</p>
+<ul>
+<li><strong>Treated (automation-prone):</strong> writing; software, app and web development; engineering</li>
+<li><strong>Control (manual-intensive):</strong> data and office management, video services, audio services</li>
+<li>A separate analysis treats graphic design and 3D modeling as exposed to image-generating AI (Midjourney, DALL-E 2, Stable Diffusion)</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-3-specification" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-3-specification">Case Study 3: Specification</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>DiD with a Single, Common Shock
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">y_{ctl} = \beta \,(\text{Post}_t \times T_c) + \gamma_{cl} + \gamma_t + \varepsilon_{ctl}</span></p>
+<ul>
+<li><span class="math inline">y</span>: log number of job posts in category <span class="math inline">c</span>, week <span class="math inline">t</span>, country <span class="math inline">l</span></li>
+<li><span class="math inline">\text{Post}_t</span>: after ChatGPT’s release (30 November 2022); <span class="math inline">T_c</span>: automation-prone category</li>
+<li><span class="math inline">\gamma_{cl}</span> category × country FE; <span class="math inline">\gamma_t</span> week FE (seasonality, platform trends)</li>
+<li>Event-study version by month to check pre-trends</li>
+<li>Standard errors clustered by job category</li>
+</ul>
+<p><strong>Note:</strong> everyone is “treated” on the same date, so there is no staggered-adoption problem. The authors still report Callaway &amp; Sant’Anna and synthetic DiD estimates, plus a negative binomial model because log counts with zeros are problematic <span class="citation" data-cites="chen2024logs">(<a href="#ref-chen2024logs" role="doc-biblioref">Chen and Roth 2024</a>)</span>.</p>
+</div>
+</div>
+</section>
+<section id="case-study-3-results-and-checks" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-3-results-and-checks">Case Study 3: Results and Checks</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Main Findings
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Job posts in automation-prone categories fall 21% relative to manual-intensive ones within eight months (coefficient −0.234 on log posts)</li>
+<li>By category: writing −30%, software/app/web development −21%, engineering −10%</li>
+<li>Image-generating AI: graphic design and 3D modeling posts fall 17%</li>
+<li>The effect grows over time and after more capable model releases</li>
+<li>Remaining automation-prone jobs pay more (+5.7% maximum budget), are more complex (+2.2% skill tags), and attract more bids (+8.6%)</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Strengthening the Causal Story
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Dose-response:</strong> categories with larger increases in Google searches for “ChatGPT + [category]” saw larger declines</li>
+<li><strong>Placebo release dates</strong> give no effect</li>
+<li>Robust to alternative control groups and to aggregating to category × week</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-3-what-to-copy" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-3-what-to-copy">Case Study 3: What to Copy</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Practices to Reuse
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>When a shock hits everyone at once, compare exposed with unexposed categories,</strong> and argue that the controls are not exposed.</li>
+<li><strong>Add dose-response evidence</strong> (search intensity by category) and placebo release dates.</li>
+<li><strong>Pick a model that suits counts with zeros</strong> and be open about having few clusters.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="case-study-3-discussion-questions" class="level3">
+<h3 class="anchored" data-anchor-id="case-study-3-discussion-questions">Case Study 3: Discussion Questions</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li>The “treatment” is a worldwide technology release on one date. Why is a comparison across job categories still needed? What would a simple before–after comparison of writing jobs pick up?</li>
+<li>Could ChatGPT also affect the control categories (e.g., freelancers switching from writing to video editing, or clients using ChatGPT to write video scripts)? Which direction would that bias <span class="math inline">\hat\beta</span>?</li>
+<li>Standard errors are clustered by job category, with only a handful of categories. What inference concern does that raise, and what would you do about it?</li>
+<li>Why might log(job posts) be a problematic outcome, and why does a negative binomial model help?</li>
+<li>Compare with Case Study 2: one paper finds AI <em>raises</em> worker productivity, the other finds AI <em>reduces</em> demand for freelancers. Can both be true?</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-41-contents" aria-controls="callout-41" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Suggested Answers (click to expand)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-41" class="callout-41-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Freelance demand changes for other reasons at the same time: seasonality, platform growth, interest rates, and tech-sector layoffs in 2022–23. A before–after comparison of writing jobs would attribute all of these to ChatGPT.</li>
+<li>If ChatGPT also reduces demand for control jobs, the control group falls too and the estimated decline is understated. If employers move budgets towards control categories, the control rises and the decline is overstated.</li>
+<li>With few clusters, cluster-robust standard errors are too small and tests reject too often. Use the wild cluster bootstrap or randomization inference across categories, and report results at several aggregation levels.</li>
+<li>The log of zero is undefined, and log(y + 1) gives results that depend on the units of y. A count model such as the negative binomial includes zeros and estimates a proportional effect directly.</li>
+<li>Yes. They study different margins and people: inside a firm, AI helps workers who use it, especially new ones; across a market, firms can do some outsourced tasks themselves, which cuts demand for freelancers. Higher productivity can also mean fewer hours are needed.</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="comparing-the-three-designs" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-the-three-designs">Comparing the Three Designs</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Comparing the Three Designs
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Miller et al.</th>
+<th>Brynjolfsson et al.</th>
+<th>Demirci et al.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Who chose treatment?</strong></td>
+<td>States (politics)</td>
+<td>Managers and trainers</td>
+<td>Nobody (technology release)</td>
+</tr>
+<tr class="even">
+<td><strong>Main threat</strong></td>
+<td>State-level shocks around 2014</td>
+<td>Selection of improving agents</td>
+<td>Spillovers to control jobs</td>
+</tr>
+<tr class="odd">
+<td><strong>Key defence</strong></td>
+<td>Placebo groups, power analysis</td>
+<td>Agent + tenure FE, team-level IV, RCT pilot</td>
+<td>Dose-response via search data, placebo dates</td>
+</tr>
+<tr class="even">
+<td><strong>Staggered timing?</strong></td>
+<td>Yes, mild</td>
+<td>Yes, strong</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td><strong>Inference concern</strong></td>
+<td>46 state clusters</td>
+<td>None (many agents)</td>
+<td>Few category clusters</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="best-practices" class="level2">
+<h2 class="anchored" data-anchor-id="best-practices">Best Practices</h2>
+<section id="did-checklist" class="level3">
+<h3 class="anchored" data-anchor-id="did-checklist">DiD Checklist</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Before Estimating
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Plot the raw data</strong>: treated and control group means over time</li>
+<li><strong>Justify the control group</strong>: why is its change a credible counterfactual?</li>
+<li><strong>Ask who chose treatment and why</strong>: selection on levels is fine; selection on trends is not</li>
+<li><strong>Choose the outcome scale</strong> (levels vs.&nbsp;logs) before looking at results</li>
+<li><strong>Decide the clustering level</strong> from how treatment was assigned</li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>After Estimating
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol start="6" type="1">
+<li><strong>Show an event study</strong> and discuss the power of pre-trend tests</li>
+<li><strong>With staggered timing</strong>, report a heterogeneity-robust estimator alongside TWFE</li>
+<li><strong>Run placebo tests</strong>: unaffected groups, fake treatment dates</li>
+<li><strong>Check for spillovers</strong> onto the control group</li>
+<li><strong>Interpret the estimand</strong>: ATT for whom, over what horizon; scale by the first stage if treatment take-up is incomplete</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="common-pitfalls" class="level3">
+<h3 class="anchored" data-anchor-id="common-pitfalls">Common Pitfalls</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Mistakes to Avoid
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Treating flat pre-trends as proof</strong> of parallel trends</li>
+<li><strong>Running static TWFE with staggered adoption</strong> and dynamic effects</li>
+<li><strong>Using already-treated units as controls</strong> without realizing it</li>
+<li><strong>Clustering too finely</strong> (by individual when the policy varies by state)</li>
+<li><strong>Controlling for post-treatment variables</strong> that the policy itself changes</li>
+<li><strong>Ignoring anticipation</strong>: units changing behaviour before the official start date</li>
+<li><strong>Ignoring spillovers</strong>: the control group is partly treated</li>
+<li><strong>Taking logs of outcomes with many zeros</strong> without thinking about what the estimate means</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="summary" class="level3">
+<h3 class="anchored" data-anchor-id="summary">Summary</h3>
+<div class="incremental">
+<p><strong>Key Ideas:</strong></p>
+<ul class="incremental">
+<li>DiD compares changes, not levels: the control group’s change stands in for the treated group’s counterfactual change</li>
+<li>Identification rests on parallel trends, plus no anticipation and no spillovers</li>
+<li>DiD is the two-way fixed effects model from Chapter 8 with a policy that switches on at a known date</li>
+</ul>
+</div>
+</section>
+<section id="summary-modern-practice-and-case-studies" class="level3">
+<h3 class="anchored" data-anchor-id="summary-modern-practice-and-case-studies">Summary: Modern Practice and Case Studies</h3>
+<div class="incremental">
+<p><strong>Modern Practice:</strong></p>
+<ul class="incremental">
+<li><strong>Event studies</strong> show dynamics and pre-trends, but pre-trend tests have limited power</li>
+<li>With staggered adoption, TWFE can mix in forbidden comparisons; use robust estimators</li>
+<li><strong>Cluster</strong> at the policy level; beware of few clusters</li>
+</ul>
+<p><strong>From the Case Studies:</strong></p>
+<ul class="incremental">
+<li>Linked administrative data plus careful placebo tests make the Medicaid–mortality result credible</li>
+<li>Generative AI raises productivity most for less experienced workers inside a firm…</li>
+<li>…while reducing demand for automation-prone freelance work across a platform</li>
+</ul>
+</div>
+</section>
+<section id="next-steps" class="level3">
+<h3 class="anchored" data-anchor-id="next-steps">Next Steps</h3>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li><strong>Read</strong>: <span class="citation" data-cites="miller2021medicaid">Miller et al. (<a href="#ref-miller2021medicaid" role="doc-biblioref">2021</a>)</span> Sections IV–VI; <span class="citation" data-cites="brynjolfsson2025generative">Brynjolfsson et al. (<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">2025</a>)</span> Sections IV–V</li>
+<li><strong>Practice</strong>: In the staggered simulation, make the effect constant and re-run. When does TWFE work?</li>
+<li><strong>Assignment</strong>: Write a one-page referee report on <span class="citation" data-cites="demirci2025who">Demirci et al. (<a href="#ref-demirci2025who" role="doc-biblioref">2025</a>)</span> focusing on the control group and inference</li>
+<li><strong>Next Class</strong>: Synthetic control, for when there is only one treated unit and no single good control group</li>
+</ol>
+</div>
+</section>
+<section id="references" class="level3 scrollable">
+<h3 class="scrollable anchored" data-anchor-id="references">References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-arkhangelsky2021synthetic" class="csl-entry" role="listitem">
+Arkhangelsky, Dmitry, Susan Athey, David A Hirshberg, Guido W Imbens, and Stefan Wager. 2021. <span>“Synthetic Difference-in-Differences.”</span> <em>American Economic Review</em> 111 (12): 4088–118. <a href="https://doi.org/10.1257/aer.20190159">https://doi.org/10.1257/aer.20190159</a>.
+</div>
+<div id="ref-bertrand2004how" class="csl-entry" role="listitem">
+Bertrand, Marianne, Esther Duflo, and Sendhil Mullainathan. 2004. <span>“How Much Should We Trust Differences-in-Differences Estimates?”</span> <em>The Quarterly Journal of Economics</em> 119 (1): 249–75.
+</div>
+<div id="ref-borusyak2024revisiting" class="csl-entry" role="listitem">
+Borusyak, Kirill, Xavier Jaravel, and Jann Spiess. 2024. <span>“Revisiting Event-Study Designs: Robust and Efficient Estimation.”</span> <em>Review of Economic Studies</em> 91 (6): 3253–85. <a href="https://doi.org/10.1093/restud/rdae007">https://doi.org/10.1093/restud/rdae007</a>.
+</div>
+<div id="ref-brynjolfsson2025generative" class="csl-entry" role="listitem">
+Brynjolfsson, Erik, Danielle Li, and Lindsey Raymond. 2025. <span>“Generative <span>AI</span> at Work.”</span> <em>The Quarterly Journal of Economics</em> 140 (2): 889–942. <a href="https://doi.org/10.1093/qje/qjae044">https://doi.org/10.1093/qje/qjae044</a>.
+</div>
+<div id="ref-callaway2021difference" class="csl-entry" role="listitem">
+Callaway, Brantly, and Pedro H C Sant’Anna. 2021. <span>“Difference-in-Differences with Multiple Time Periods.”</span> <em>Journal of Econometrics</em> 225 (2): 200–230. <a href="https://doi.org/10.1016/j.jeconom.2020.12.001">https://doi.org/10.1016/j.jeconom.2020.12.001</a>.
+</div>
+<div id="ref-dechaisemartin2020two" class="csl-entry" role="listitem">
+Chaisemartin, Clément de, and Xavier D’Haultfœuille. 2020. <span>“Two-Way Fixed Effects Estimators with Heterogeneous Treatment Effects.”</span> <em>American Economic Review</em> 110 (9): 2964–96. <a href="https://doi.org/10.1257/aer.20181169">https://doi.org/10.1257/aer.20181169</a>.
+</div>
+<div id="ref-chen2024logs" class="csl-entry" role="listitem">
+Chen, Jiafeng, and Jonathan Roth. 2024. <span>“Logs with Zeros? Some Problems and Solutions.”</span> <em>The Quarterly Journal of Economics</em> 139 (2): 891–936. <a href="https://doi.org/10.1093/qje/qjad054">https://doi.org/10.1093/qje/qjad054</a>.
+</div>
+<div id="ref-demirci2025who" class="csl-entry" role="listitem">
+Demirci, Ozge, Jonas Hannane, and Xinrong Zhu. 2025. <span>“Who Is <span>AI</span> Replacing? The Impact of Generative <span>AI</span> on Online Freelancing Platforms.”</span> <em>Management Science</em> 71 (10): 8097–108. <a href="https://doi.org/10.1287/mnsc.2024.05420">https://doi.org/10.1287/mnsc.2024.05420</a>.
+</div>
+<div id="ref-goodmanbacon2021difference" class="csl-entry" role="listitem">
+Goodman-Bacon, Andrew. 2021. <span>“Difference-in-Differences with Variation in Treatment Timing.”</span> <em>Journal of Econometrics</em> 225 (2): 254–77.
+</div>
+<div id="ref-miller2021medicaid" class="csl-entry" role="listitem">
+Miller, Sarah, Norman Johnson, and Laura R Wherry. 2021. <span>“Medicaid and Mortality: New Evidence from Linked Survey and Administrative Data.”</span> <em>The Quarterly Journal of Economics</em> 136 (3): 1783–829. <a href="https://doi.org/10.1093/qje/qjab004">https://doi.org/10.1093/qje/qjab004</a>.
+</div>
+<div id="ref-rambachan2023more" class="csl-entry" role="listitem">
+Rambachan, Ashesh, and Jonathan Roth. 2023. <span>“A More Credible Approach to Parallel Trends.”</span> <em>Review of Economic Studies</em> 90 (5): 2555–91. <a href="https://doi.org/10.1093/restud/rdad018">https://doi.org/10.1093/restud/rdad018</a>.
+</div>
+<div id="ref-roth2022pretest" class="csl-entry" role="listitem">
+Roth, Jonathan. 2022. <span>“Pretest with Caution: Event-Study Estimates After Testing for Parallel Trends.”</span> <em>American Economic Review: Insights</em> 4 (3): 305–22. <a href="https://doi.org/10.1257/aeri.20210236">https://doi.org/10.1257/aeri.20210236</a>.
+</div>
+<div id="ref-roth2023when" class="csl-entry" role="listitem">
+Roth, Jonathan, and Pedro H C Sant’Anna. 2023. <span>“When Is Parallel Trends Sensitive to Functional Form?”</span> <em>Econometrica</em> 91 (2): 737–47. <a href="https://doi.org/10.3982/ECTA19402">https://doi.org/10.3982/ECTA19402</a>.
+</div>
+<div id="ref-sun2021estimating" class="csl-entry" role="listitem">
+Sun, Liyang, and Sarah Abraham. 2021. <span>“Estimating Dynamic Treatment Effects in Event Studies with Heterogeneous Treatment Effects.”</span> <em>Journal of Econometrics</em> 225 (2): 175–99. <a href="https://doi.org/10.1016/j.jeconom.2020.09.006">https://doi.org/10.1016/j.jeconom.2020.09.006</a>.
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html" class="pagination-link" aria-label="Chapter 8: Panel Data and Fixed Effects">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Chapter 8: Panel Data and Fixed Effects</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.html" class="pagination-link" aria-label="Chapter 10: Synthetic Control">
+        <span class="nav-page-text">Chapter 10: Synthetic Control</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
