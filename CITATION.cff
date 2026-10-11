@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use these lecture notes, please cite them as below."
+type: software
+authors:
+  - family-names: Huang
+    given-names: Fei
+    orcid: https://orcid.org/0000-0003-3406-5948
+    affiliation: "School of Risk and Actuarial Studies, UNSW Business School, UNSW Sydney"
+title: "Causal Inference for Policy Evaluation"
+date-released: 2026-10-12
+url: "https://causal.feihuang.org"
+repository-code: "https://github.com/feihuangFH/causal"
+license: CC-BY-NC-ND-4.0
+abstract: >
+  Open lecture notes and slides on causal inference methods for evaluating
+  policies and business decisions: randomized experiments, instrumental
+  variables, regression discontinuity, panel fixed effects,
+  difference-in-differences, synthetic control, and regression and matching,
+  each applied to recent published case studies, with R code.
+keywords:
+  - causal inference
+  - policy evaluation
+  - econometrics
+  - difference-in-differences
+  - instrumental variables
+  - regression discontinuity
+  - synthetic control
