@@ -117,7 +117,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-96baaebca6aae0d833d4fea310b664e9.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-cd26cd05cb2ca146dc4ad91679fa1d8d.css">
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
@@ -1047,6 +1047,18 @@ Lee, David S. 2009. <span>“Training, Wages, and Sample Selection: Estimating S
           RevealZoom
         ]
       });
+    </script>
+    <script>
+    // When folded code is expanded on a slide, let that slide scroll and re-centre it.
+    window.addEventListener("load", function () {
+      document.querySelectorAll(".reveal details.code-fold").forEach(function (d) {
+        d.addEventListener("toggle", function () {
+          var s = d.closest("section");
+          if (d.open && s) { s.classList.add("scrollable"); }
+          if (window.Reveal) { Reveal.layout(); }
+        });
+      });
+    });
     </script>
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {

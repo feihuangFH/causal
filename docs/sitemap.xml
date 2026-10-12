@@ -2,35 +2,35 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.html</loc>
-    <lastmod>2026-10-11T06:57:45.141Z</lastmod>
+    <lastmod>2026-10-11T21:07:45.237Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch12-Putting-It-Together/Lecture-Putting-It-Together.slides.html</loc>
-    <lastmod>2026-10-11T20:54:03.910Z</lastmod>
+    <lastmod>2026-10-12T09:50:50.626Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.html</loc>
-    <lastmod>2026-10-11T06:51:22.966Z</lastmod>
+    <lastmod>2026-10-11T21:07:45.207Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.slides.html</loc>
-    <lastmod>2026-10-11T20:53:54.964Z</lastmod>
+    <lastmod>2026-10-12T09:50:43.899Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.html</loc>
-    <lastmod>2026-10-11T06:51:22.969Z</lastmod>
+    <lastmod>2026-10-11T21:07:45.141Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html</loc>
-    <lastmod>2026-10-11T20:53:43.163Z</lastmod>
+    <lastmod>2026-10-12T09:50:33.755Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.html</loc>
-    <lastmod>2026-10-11T06:51:22.970Z</lastmod>
+    <lastmod>2026-10-11T21:07:45.018Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.slides.html</loc>
-    <lastmod>2026-10-11T20:53:30.083Z</lastmod>
+    <lastmod>2026-10-12T09:50:22.465Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.html</loc>
@@ -38,7 +38,7 @@
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.slides.html</loc>
-    <lastmod>2026-10-11T20:53:21.780Z</lastmod>
+    <lastmod>2026-10-12T09:50:15.543Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch02-Causal-Framework/Lecture-Causal-Framework.html</loc>
@@ -46,11 +46,11 @@
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch02-Causal-Framework/Lecture-Causal-Framework.slides.html</loc>
-    <lastmod>2026-10-11T20:53:13.580Z</lastmod>
+    <lastmod>2026-10-12T09:50:09.404Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/references.html</loc>
-    <lastmod>2026-10-11T06:57:54.430Z</lastmod>
+    <lastmod>2026-10-11T21:07:45.517Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/index.html</loc>
@@ -58,23 +58,23 @@
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch01-Introduction/Lecture-Introduction.slides.html</loc>
-    <lastmod>2026-10-11T20:53:09.311Z</lastmod>
+    <lastmod>2026-10-12T09:50:06.404Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch01-Introduction/Lecture-Introduction.html</loc>
-    <lastmod>2026-10-11T06:57:45.079Z</lastmod>
+    <lastmod>2026-10-11T21:07:44.960Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.slides.html</loc>
-    <lastmod>2026-10-11T20:53:18.541Z</lastmod>
+    <lastmod>2026-10-12T09:50:12.864Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.html</loc>
-    <lastmod>2026-10-11T06:57:45.107Z</lastmod>
+    <lastmod>2026-10-11T21:07:44.982Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.slides.html</loc>
-    <lastmod>2026-10-11T20:53:25.684Z</lastmod>
+    <lastmod>2026-10-12T09:50:18.700Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.html</loc>
@@ -82,26 +82,26 @@
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.slides.html</loc>
-    <lastmod>2026-10-11T20:53:34.877Z</lastmod>
+    <lastmod>2026-10-12T09:50:26.225Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.html</loc>
-    <lastmod>2026-10-11T06:51:22.969Z</lastmod>
+    <lastmod>2026-10-11T21:07:45.034Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.slides.html</loc>
-    <lastmod>2026-10-11T20:53:49.742Z</lastmod>
+    <lastmod>2026-10-12T09:50:39.665Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.html</loc>
-    <lastmod>2026-10-11T06:51:22.968Z</lastmod>
+    <lastmod>2026-10-11T21:07:45.187Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.slides.html</loc>
-    <lastmod>2026-10-11T20:54:00.852Z</lastmod>
+    <lastmod>2026-10-12T09:50:47.934Z</lastmod>
   </url>
   <url>
     <loc>https://causal.feihuang.org/Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.html</loc>
-    <lastmod>2026-10-11T06:57:45.140Z</lastmod>
+    <lastmod>2026-10-11T21:07:45.227Z</lastmod>
   </url>
 </urlset>

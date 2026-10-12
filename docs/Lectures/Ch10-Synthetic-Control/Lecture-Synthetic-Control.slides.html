@@ -117,7 +117,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-96baaebca6aae0d833d4fea310b664e9.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-cd26cd05cb2ca146dc4ad91679fa1d8d.css">
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
@@ -1054,8 +1054,8 @@ Fei Huang, UNSW Sydney
 <thead>
 <tr class="header">
 <th></th>
-<th>Abadie &amp; Gardeazabal</th>
-<th>Acemoglu et al.</th>
+<th>Abadie &amp; Gardeazabal <span class="citation" data-cites="abadie2003economic">(<a href="#/references" role="doc-biblioref" onclick="">2003</a>)</span></th>
+<th>Acemoglu et al. <span class="citation" data-cites="acemoglu2016value">(<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span></th>
 </tr>
 </thead>
 <tbody>
@@ -1386,6 +1386,18 @@ Ben-Michael, Eli, Avi Feller, and Jesse Rothstein. 2021. <span>“The Augmented 
           RevealZoom
         ]
       });
+    </script>
+    <script>
+    // When folded code is expanded on a slide, let that slide scroll and re-centre it.
+    window.addEventListener("load", function () {
+      document.querySelectorAll(".reveal details.code-fold").forEach(function (d) {
+        d.addEventListener("toggle", function () {
+          var s = d.closest("section");
+          if (d.open && s) { s.classList.add("scrollable"); }
+          if (window.Reveal) { Reveal.layout(); }
+        });
+      });
+    });
     </script>
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {

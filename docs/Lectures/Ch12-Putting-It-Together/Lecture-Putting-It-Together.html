@@ -579,32 +579,32 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td>Goldin et al.&nbsp;(Ch. 3)</td>
+<td>Goldin et al. <span class="citation" data-cites="goldin2021health">(<a href="#ref-goldin2021health" role="doc-biblioref">2021</a>, see Ch. 3)</span></td>
 <td>Randomized letters</td>
 <td>IV to scale to the effect of coverage</td>
 </tr>
 <tr class="even">
-<td>Cui et al.&nbsp;(Ch. 4–5)</td>
+<td>Cui et al. <span class="citation" data-cites="cui2026effects">(<a href="#ref-cui2026effects" role="doc-biblioref">2026</a>, see Ch. 4–5)</span></td>
 <td>Three field experiments</td>
 <td>IV for take-up; fixed effects; pooling across experiments</td>
 </tr>
 <tr class="odd">
-<td>Künn et al.&nbsp;(Ch. 8)</td>
+<td>Künn et al. <span class="citation" data-cites="kunn2023indoor">(<a href="#ref-kunn2023indoor" role="doc-biblioref">2023</a>, see Ch. 8)</span></td>
 <td>Player fixed effects</td>
 <td>IV using wind-driven outdoor pollution; replication in another league</td>
 </tr>
 <tr class="even">
-<td>Brynjolfsson et al.&nbsp;(Ch. 8–9)</td>
+<td>Brynjolfsson et al. <span class="citation" data-cites="brynjolfsson2025generative">(<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">2025</a>, see Ch. 8–9)</span></td>
 <td>Staggered DiD</td>
 <td>Team-level IV; a small randomized pilot; robust estimators</td>
 </tr>
 <tr class="odd">
-<td>Miller et al.&nbsp;(Ch. 9)</td>
+<td>Miller et al. <span class="citation" data-cites="miller2021medicaid">(<a href="#ref-miller2021medicaid" role="doc-biblioref">2021</a>, see Ch. 9)</span></td>
 <td>Event-study DiD</td>
 <td>Placebo groups; power analysis; Wald-style scaling</td>
 </tr>
 <tr class="even">
-<td>Demirci et al.&nbsp;(Ch. 9)</td>
+<td>Demirci et al. <span class="citation" data-cites="demirci2025who">(<a href="#ref-demirci2025who" role="doc-biblioref">2025</a>, see Ch. 9)</span></td>
 <td>DiD on a common shock</td>
 <td>Synthetic DiD; dose-response with search data; placebo dates</td>
 </tr>
@@ -628,8 +628,8 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <ul>
 <li><strong>LaLonde’s benchmark:</strong> standard non-experimental estimates of a job-training program often missed the experimental answer <span class="citation" data-cites="lalonde1986evaluating">(<a href="#ref-lalonde1986evaluating" role="doc-biblioref">LaLonde 1986</a>)</span></li>
-<li><strong>Within one paper:</strong> Cui et al.&nbsp;report both DiD and experimental (IV) estimates for each firm. The DiD estimates are sometimes larger and sometimes smaller: the direction of selection differs across firms</li>
-<li><strong>Across papers:</strong> an AI assistant raised support-agent productivity by about 15% in a staggered rollout (Brynjolfsson et al.), and a coding assistant raised completed tasks by about 26% in randomized experiments (Cui et al.). Different settings and estimands, but the same direction and similar size</li>
+<li><strong>Within one paper:</strong> Cui et al. <span class="citation" data-cites="cui2026effects">(<a href="#ref-cui2026effects" role="doc-biblioref">2026</a>)</span> report both DiD and experimental (IV) estimates for each firm. The DiD estimates are sometimes larger and sometimes smaller: the direction of selection differs across firms</li>
+<li><strong>Across papers:</strong> an AI assistant raised support-agent productivity by about 15% in a staggered rollout <span class="citation" data-cites="brynjolfsson2025generative">(<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">Brynjolfsson et al. 2025</a>)</span>, and a coding assistant raised completed tasks by about 26% in randomized experiments <span class="citation" data-cites="cui2026effects">(<a href="#ref-cui2026effects" role="doc-biblioref">Cui et al. 2026</a>)</span>. Different settings and estimands, but the same direction and similar size</li>
 </ul>
 <p><strong>Lesson:</strong> observational designs are most credible when their assumptions can be checked against an experiment, or against a design with different assumptions.</p>
 </div>
@@ -654,7 +654,7 @@ window.Quarto = {
 <p><span class="math display">\hat\tau_{\text{pooled}} = \frac{\sum_k w_k \hat\tau_k}{\sum_k w_k}, \qquad w_k = \frac{1}{s_k^2}, \qquad SE(\hat\tau_{\text{pooled}}) = \frac{1}{\sqrt{\sum_k w_k}}</span></p>
 <ul>
 <li>Precise studies get more weight</li>
-<li>This is how Cui et al.&nbsp;combine their three noisy experiments into one informative estimate</li>
+<li>This is how Cui et al. <span class="citation" data-cites="cui2026effects">(<a href="#ref-cui2026effects" role="doc-biblioref">2026</a>)</span> combine their three noisy experiments into one informative estimate</li>
 <li>If true effects differ across settings, a random-effects model adds a between-study variance <span class="math inline">\tau^2</span>, which widens the pooled interval and shifts weight towards smaller studies</li>
 </ul>
 </div>
@@ -711,7 +711,7 @@ p_heterogeneity
 <li>Small studies that happen to find large effects are especially likely to be published</li>
 <li><strong>Symptoms:</strong> many estimates just past the significance threshold; small studies reporting larger effects (an asymmetric “funnel plot”)</li>
 </ul>
-<p><strong>Remedies:</strong> pre-registration (Chapter 4); registered reports; publishing null results; replication packages with data and code; reporting failed experiments (Cui et al.&nbsp;report the abandoned Accenture experiment).</p>
+<p><strong>Remedies:</strong> pre-registration (Chapter 4); registered reports; publishing null results; replication packages with data and code; reporting failed experiments (Cui et al. <span class="citation" data-cites="cui2026effects">(<a href="#ref-cui2026effects" role="doc-biblioref">2026</a>)</span> report the abandoned Accenture experiment).</p>
 </div>
 </div>
 </section>
@@ -832,7 +832,7 @@ p_heterogeneity
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li>Use meaningful units: “one fewer death for every 1,587 people sent a letter” (Goldin et al.); “about 15,600 deaths averted had all states expanded Medicaid” (Miller et al.)</li>
+<li>Use meaningful units: “one fewer death for every 1,587 people sent a letter” <span class="citation" data-cites="goldin2021health">(<a href="#ref-goldin2021health" role="doc-biblioref">Goldin et al. 2021</a>)</span>; “about 15,600 deaths averted had all states expanded Medicaid” <span class="citation" data-cites="miller2021medicaid">(<a href="#ref-miller2021medicaid" role="doc-biblioref">Miller et al. 2021</a>)</span></li>
 <li>Report uncertainty: a range as well as a point estimate</li>
 <li>Say whose effect it is (compliers, treated units, units at a cutoff)</li>
 <li>Separate what the evidence shows from what you recommend</li>
@@ -881,8 +881,17 @@ Cui, Zheyuan Kevin, Mert Demirer, Sonia Jaffe, Leon Musolff, Sida Peng, and Tobi
 <div id="ref-demirci2025who" class="csl-entry" role="listitem">
 Demirci, Ozge, Jonas Hannane, and Xinrong Zhu. 2025. <span>“Who Is <span>AI</span> Replacing? The Impact of Generative <span>AI</span> on Online Freelancing Platforms.”</span> <em>Management Science</em> 71 (10): 8097–108. <a href="https://doi.org/10.1287/mnsc.2024.05420">https://doi.org/10.1287/mnsc.2024.05420</a>.
 </div>
+<div id="ref-goldin2021health" class="csl-entry" role="listitem">
+Goldin, Jacob, Ithai Z Lurie, and Janet McCubbin. 2021. <span>“Health Insurance and Mortality: Experimental Evidence from Taxpayer Outreach.”</span> <em>The Quarterly Journal of Economics</em> 136 (1): 1–49. <a href="https://doi.org/10.1093/qje/qjaa029">https://doi.org/10.1093/qje/qjaa029</a>.
+</div>
+<div id="ref-kunn2023indoor" class="csl-entry" role="listitem">
+Künn, Steffen, Juan Palacios, and Nico Pestel. 2023. <span>“Indoor Air Quality and Strategic Decision Making.”</span> <em>Management Science</em> 69 (9): 5354–77. <a href="https://doi.org/10.1287/mnsc.2022.4643">https://doi.org/10.1287/mnsc.2022.4643</a>.
+</div>
 <div id="ref-lalonde1986evaluating" class="csl-entry" role="listitem">
 LaLonde, Robert J. 1986. <span>“Evaluating the Econometric Evaluations of Training Programs with Experimental Data.”</span> <em>American Economic Review</em> 76 (4): 604–20.
+</div>
+<div id="ref-miller2021medicaid" class="csl-entry" role="listitem">
+Miller, Sarah, Norman Johnson, and Laura R Wherry. 2021. <span>“Medicaid and Mortality: New Evidence from Linked Survey and Administrative Data.”</span> <em>The Quarterly Journal of Economics</em> 136 (3): 1783–829. <a href="https://doi.org/10.1093/qje/qjab004">https://doi.org/10.1093/qje/qjab004</a>.
 </div>
 <div id="ref-shaw2026thinking" class="csl-entry" role="listitem">
 Shaw, Steven D, and Gideon Nave. 2026. <em>Thinking—Fast, Slow, and Artificial: How <span>AI</span> Is Reshaping Human Reasoning and the Rise of Cognitive Surrender</em>. SSRN Working Paper 6097646. <a href="https://doi.org/10.2139/ssrn.6097646">https://doi.org/10.2139/ssrn.6097646</a>.

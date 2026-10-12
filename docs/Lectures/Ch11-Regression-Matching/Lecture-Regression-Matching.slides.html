@@ -117,7 +117,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-96baaebca6aae0d833d4fea310b664e9.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-cd26cd05cb2ca146dc4ad91679fa1d8d.css">
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
@@ -705,7 +705,7 @@ loyalty       0.47  0.01</code></pre>
 </div>
 <div class="callout-content">
 <ul>
-<li><strong>Rosenbaum bounds:</strong> how much could an unobserved factor change the odds of treatment, between otherwise matched units, before the conclusion changes?</li>
+<li><strong>Rosenbaum bounds <span class="citation" data-cites="rosenbaum2002observational">(<a href="#/references" role="doc-biblioref" onclick="">Rosenbaum 2002</a>)</span>:</strong> how much could an unobserved factor change the odds of treatment, between otherwise matched units, before the conclusion changes?</li>
 <li><strong>Omitted variable bias benchmarks:</strong> how strongly would an unobserved confounder need to be related to treatment and outcome, compared with an observed covariate, to explain away the estimate? <span class="citation" data-cites="cinelli2020making">(<a href="#/references" role="doc-biblioref" onclick="">Cinelli and Hazlett 2020</a>)</span></li>
 <li><strong>Coefficient stability:</strong> how much do estimates move as controls are added, relative to how much explanatory power they add? <span class="citation" data-cites="oster2019unobservable">(<a href="#/references" role="doc-biblioref" onclick="">Oster 2019</a>)</span></li>
 </ul>
@@ -1026,8 +1026,8 @@ loyalty       0.47  0.01</code></pre>
 <thead>
 <tr class="header">
 <th></th>
-<th>LaLonde (1986)</th>
-<th>Rishika et al.&nbsp;(2013)</th>
+<th>LaLonde <span class="citation" data-cites="lalonde1986evaluating">(<a href="#/references" role="doc-biblioref" onclick="">1986</a>)</span></th>
+<th>Rishika et al. <span class="citation" data-cites="rishika2013effect">(<a href="#/references" role="doc-biblioref" onclick="">2013</a>)</span></th>
 </tr>
 </thead>
 <tbody>
@@ -1120,7 +1120,7 @@ loyalty       0.47  0.01</code></pre>
 <li class="fragment">Regression, matching, and propensity scores share one assumption: no unmeasured confounders, plus overlap</li>
 <li class="fragment">They differ in how they use covariates: functional form (regression), similar units (matching), a single score (propensity), or weights</li>
 <li class="fragment"><strong>Check overlap and balance</strong>; quantify how strong hidden confounding would have to be</li>
-<li class="fragment">The LaLonde benchmark is the standing warning: observables-only estimates can be badly wrong</li>
+<li class="fragment">The LaLonde <span class="citation" data-cites="lalonde1986evaluating">(<a href="#/references" role="doc-biblioref" onclick="">1986</a>)</span> benchmark is the standing warning: observables-only estimates can be badly wrong</li>
 <li class="fragment">Matching is most credible as a helper to designs with another source of variation</li>
 </ul>
 </section>
@@ -1149,6 +1149,9 @@ Oster, Emily. 2019. <span>“Unobservable Selection and Coefficient Stability: T
 </div>
 <div id="ref-rishika2013effect" class="csl-entry" role="listitem">
 Rishika, Rishika, Ashish Kumar, Ramkumar Janakiraman, and Ram Bezawada. 2013. <span>“The Effect of Customers’ Social Media Participation on Customer Visit Frequency and Profitability: An Empirical Investigation.”</span> <em>Information Systems Research</em> 24 (1): 108–27. <a href="https://doi.org/10.1287/isre.1120.0460">https://doi.org/10.1287/isre.1120.0460</a>.
+</div>
+<div id="ref-rosenbaum2002observational" class="csl-entry" role="listitem">
+Rosenbaum, Paul R. 2002. <span>“Observational Studies.”</span> <em>Springer</em>.
 </div>
 <div id="ref-rosenbaum1983central" class="csl-entry" role="listitem">
 Rosenbaum, Paul R, and Donald B Rubin. 1983. <span>“The Central Role of the Propensity Score in Observational Studies for Causal Effects.”</span> <em>Biometrika</em> 70 (1): 41–55.
@@ -1358,6 +1361,18 @@ Smith, Jeffrey A, and Petra E Todd. 2005. <span>“Does Matching Overcome <span 
           RevealZoom
         ]
       });
+    </script>
+    <script>
+    // When folded code is expanded on a slide, let that slide scroll and re-centre it.
+    window.addEventListener("load", function () {
+      document.querySelectorAll(".reveal details.code-fold").forEach(function (d) {
+        d.addEventListener("toggle", function () {
+          var s = d.closest("section");
+          if (d.open && s) { s.classList.add("scrollable"); }
+          if (window.Reveal) { Reveal.layout(); }
+        });
+      });
+    });
     </script>
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {

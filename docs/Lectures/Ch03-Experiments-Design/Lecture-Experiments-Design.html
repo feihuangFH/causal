@@ -694,7 +694,7 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p>With clusters of size <span class="math inline">m</span> and intra-cluster correlation <span class="math inline">\rho</span> (how similar outcomes are within a cluster), the variance of the estimate is inflated by roughly</p>
 <p><span class="math display">\text{DEFF} = 1 + (m - 1)\rho</span></p>
-<p>Example: teams of 6 software developers with <span class="math inline">\rho = 0.2</span> give <span class="math inline">\text{DEFF} = 2</span>, so the experiment behaves as if it had half as many developers. Cui et al.&nbsp;(Chapter 5) randomized some developers individually and others by team.</p>
+<p>Example: teams of 6 software developers with <span class="math inline">\rho = 0.2</span> give <span class="math inline">\text{DEFF} = 2</span>, so the experiment behaves as if it had half as many developers. Cui et al. <span class="citation" data-cites="cui2026effects">(<a href="#ref-cui2026effects" role="doc-biblioref">2026</a>, see Chapter 5)</span> randomized some developers individually and others by team.</p>
 </div>
 </div>
 </section>
@@ -717,7 +717,7 @@ window.Quarto = {
 <li>Makes subgroup analysis cleaner, since each subgroup is itself a small experiment</li>
 <li>Analysis: estimate the effect within each block and take a weighted average by block size; a regression with block fixed effects gives the same answer only when the treated share is the same in every block (otherwise it weights blocks by their treatment variance)</li>
 </ul>
-<p>Goldin et al.&nbsp;(case study below) stratified by age, gender, marital status, dependents, income, self-employment, prior penalty status, and state policy environment.</p>
+<p>Goldin et al. <span class="citation" data-cites="goldin2021health">(<a href="#ref-goldin2021health" role="doc-biblioref">2021</a>, case study below)</span> stratified by age, gender, marital status, dependents, income, self-employment, prior penalty status, and state policy environment.</p>
 </div>
 </div>
 </section>
@@ -1025,6 +1025,9 @@ window.Quarto = {
 <section id="references" class="level3 scrollable">
 <h3 class="scrollable anchored" data-anchor-id="references">References</h3>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-cui2026effects" class="csl-entry" role="listitem">
+Cui, Zheyuan Kevin, Mert Demirer, Sonia Jaffe, Leon Musolff, Sida Peng, and Tobias Salz. 2026. <span>“The Effects of Generative <span>AI</span> on High-Skilled Work: Evidence from Three Field Experiments with Software Developers.”</span> <em>Management Science</em>, ahead of print. <a href="https://doi.org/10.1287/mnsc.2025.00535">https://doi.org/10.1287/mnsc.2025.00535</a>.
+</div>
 <div id="ref-goldin2021health" class="csl-entry" role="listitem">
 Goldin, Jacob, Ithai Z Lurie, and Janet McCubbin. 2021. <span>“Health Insurance and Mortality: Experimental Evidence from Taxpayer Outreach.”</span> <em>The Quarterly Journal of Economics</em> 136 (1): 1–49. <a href="https://doi.org/10.1093/qje/qjaa029">https://doi.org/10.1093/qje/qjaa029</a>.
 </div>

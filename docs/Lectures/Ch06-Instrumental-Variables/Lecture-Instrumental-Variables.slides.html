@@ -117,7 +117,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-96baaebca6aae0d833d4fea310b664e9.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-cd26cd05cb2ca146dc4ad91679fa1d8d.css">
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
@@ -550,8 +550,8 @@ Fei Huang, UNSW Sydney
 <div class="callout-content">
 <ul>
 <li><strong>Name the alternative channels</strong> through which <span class="math inline">Z</span> could affect <span class="math inline">Y</span>, and rule them out one by one</li>
-<li><strong>Placebo tests:</strong> find a setting where <span class="math inline">Z</span> varies but cannot affect <span class="math inline">D</span>. If <span class="math inline">Z</span> still predicts <span class="math inline">Y</span> there, exclusion fails. Bernstein checks NASDAQ returns <em>outside</em> the IPO window</li>
-<li><strong>Falsification on the past:</strong> the instrument should not predict outcomes before treatment. Autor et al.&nbsp;check whether future import exposure predicts manufacturing changes in earlier decades</li>
+<li><strong>Placebo tests:</strong> find a setting where <span class="math inline">Z</span> varies but cannot affect <span class="math inline">D</span>. If <span class="math inline">Z</span> still predicts <span class="math inline">Y</span> there, exclusion fails. Bernstein <span class="citation" data-cites="bernstein2015going">(<a href="#/references" role="doc-biblioref" onclick="">2015</a>)</span> checks NASDAQ returns <em>outside</em> the IPO window</li>
+<li><strong>Falsification on the past:</strong> the instrument should not predict outcomes before treatment. Autor et al. <span class="citation" data-cites="autor2013china">(<a href="#/references" role="doc-biblioref" onclick="">2013</a>)</span> check whether future import exposure predicts manufacturing changes in earlier decades</li>
 <li><strong>Over-identification tests</strong> (several instruments) can only detect instruments that disagree; they cannot validate all of them</li>
 </ul>
 </div>
@@ -899,8 +899,8 @@ weak_IQR_high 2.02 2.08   3.31</code></pre>
 <thead>
 <tr class="header">
 <th></th>
-<th>Autor, Dorn &amp; Hanson</th>
-<th>Bernstein</th>
+<th>Autor, Dorn &amp; Hanson <span class="citation" data-cites="autor2013china">(<a href="#/references" role="doc-biblioref" onclick="">2013</a>)</span></th>
+<th>Bernstein <span class="citation" data-cites="bernstein2015going">(<a href="#/references" role="doc-biblioref" onclick="">2015</a>)</span></th>
 </tr>
 </thead>
 <tbody>
@@ -1238,6 +1238,18 @@ Lee, David S, Justin McCrary, Marcelo J Moreira, and Jack Porter. 2022. <span>â€
           RevealZoom
         ]
       });
+    </script>
+    <script>
+    // When folded code is expanded on a slide, let that slide scroll and re-centre it.
+    window.addEventListener("load", function () {
+      document.querySelectorAll(".reveal details.code-fold").forEach(function (d) {
+        d.addEventListener("toggle", function () {
+          var s = d.closest("section");
+          if (d.open && s) { s.classList.add("scrollable"); }
+          if (window.Reveal) { Reveal.layout(); }
+        });
+      });
+    });
     </script>
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {

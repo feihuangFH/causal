@@ -849,7 +849,7 @@ window.Quarto = {
 <li>Use sensitivity analysis: how large could post-treatment violations of parallel trends be, relative to observed pre-trends, before the conclusion changes? <span class="citation" data-cites="rambachan2023more">(<a href="#ref-rambachan2023more" role="doc-biblioref">Rambachan and Roth 2023</a>)</span></li>
 <li>Show robustness to unit-specific or group-specific linear trends</li>
 </ul>
-<p>Case study 1 (Miller et al.) does all three.</p>
+<p>Case study 1 <span class="citation" data-cites="miller2021medicaid">(<a href="#ref-miller2021medicaid" role="doc-biblioref">Miller et al. 2021</a>)</span> does all three.</p>
 </div>
 </div>
 </section>
@@ -995,19 +995,19 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td>Miller et al.</td>
+<td>Miller et al. <span class="citation" data-cites="miller2021medicaid">(<a href="#ref-miller2021medicaid" role="doc-biblioref">2021</a>)</span></td>
 <td>State</td>
 <td>State</td>
 <td>46 states</td>
 </tr>
 <tr class="even">
-<td>Brynjolfsson et al.</td>
+<td>Brynjolfsson et al. <span class="citation" data-cites="brynjolfsson2025generative">(<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">2025</a>)</span></td>
 <td>Agent</td>
 <td>Agent</td>
 <td>5,000+</td>
 </tr>
 <tr class="odd">
-<td>Demirci et al.</td>
+<td>Demirci et al. <span class="citation" data-cites="demirci2025who">(<a href="#ref-demirci2025who" role="doc-biblioref">2025</a>)</span></td>
 <td>Job category</td>
 <td>Job category</td>
 <td>5–6 categories per comparison</td>
@@ -1209,7 +1209,7 @@ treated    0    1
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The effect grows with time since the increase. Before the increase, the estimates are close to zero but not perfectly flat, which is when the power of the pre-trend test and a sensitivity analysis (Rambachan &amp; Roth) matter.</p>
+<p>The effect grows with time since the increase. Before the increase, the estimates are close to zero but not perfectly flat, which is when the power of the pre-trend test and a sensitivity analysis <span class="citation" data-cites="rambachan2023more">(<a href="#ref-rambachan2023more" role="doc-biblioref">Rambachan and Roth 2023</a>)</span> matter.</p>
 </div>
 </div>
 </section>
@@ -1228,9 +1228,9 @@ treated    0    1
 <thead>
 <tr class="header">
 <th></th>
-<th>Miller, Johnson &amp; Wherry (2021)</th>
-<th>Brynjolfsson, Li &amp; Raymond (2025)</th>
-<th>Demirci, Hannane &amp; Zhu (2025)</th>
+<th>Miller, Johnson &amp; Wherry <span class="citation" data-cites="miller2021medicaid">(<a href="#ref-miller2021medicaid" role="doc-biblioref">2021</a>)</span></th>
+<th>Brynjolfsson, Li &amp; Raymond <span class="citation" data-cites="brynjolfsson2025generative">(<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">2025</a>)</span></th>
+<th>Demirci, Hannane &amp; Zhu <span class="citation" data-cites="demirci2025who">(<a href="#ref-demirci2025who" role="doc-biblioref">2025</a>)</span></th>
 </tr>
 </thead>
 <tbody>
@@ -1266,9 +1266,9 @@ treated    0    1
 </tr>
 <tr class="even">
 <td><strong>Robust estimator</strong></td>
-<td>Sun &amp; Abraham; Goodman-Bacon decomposition</td>
+<td>Sun &amp; Abraham <span class="citation" data-cites="sun2021estimating">(<a href="#ref-sun2021estimating" role="doc-biblioref">2021</a>)</span>; Goodman-Bacon <span class="citation" data-cites="goodmanbacon2021difference">(<a href="#ref-goodmanbacon2021difference" role="doc-biblioref">2021</a>)</span> decomposition</td>
 <td>Sun &amp; Abraham; CS; dCDH; BJS</td>
-<td>Callaway &amp; Sant’Anna; synthetic DiD</td>
+<td>Callaway &amp; Sant’Anna <span class="citation" data-cites="callaway2021difference">(<a href="#ref-callaway2021difference" role="doc-biblioref">2021</a>)</span>; synthetic DiD</td>
 </tr>
 </tbody>
 </table>
@@ -1340,7 +1340,7 @@ treated    0    1
 <div class="callout-body-container callout-body">
 <p><strong>First stage:</strong> Medicaid eligibility rises 49–51 pp and enrollment rises 12.8 pp in expansion states; flat beforehand.</p>
 <p><strong>Pre-trends:</strong> mortality trends are parallel before 2014. The authors then ask whether the test had power <span class="citation" data-cites="roth2022pretest">(<a href="#ref-roth2022pretest" role="doc-biblioref">Roth 2022</a>)</span>: they could detect a linear pre-trend of 0.032 pp per year with 80% power; even such a trend would bias the estimate for event year 3 (the fourth year of expansion) by at most 0.089 pp, under half the estimated effect (0.208 pp).</p>
-<p><strong>Staggered timing:</strong> Goodman-Bacon decomposition shows only 11% of the TWFE weight comes from comparisons between differently timed states; dropping late expanders and using Sun &amp; Abraham give similar results.</p>
+<p><strong>Staggered timing:</strong> Goodman-Bacon <span class="citation" data-cites="goodmanbacon2021difference">(<a href="#ref-goodmanbacon2021difference" role="doc-biblioref">2021</a>)</span> decomposition shows only 11% of the TWFE weight comes from comparisons between differently timed states; dropping late expanders and using Sun &amp; Abraham <span class="citation" data-cites="sun2021estimating">(<a href="#ref-sun2021estimating" role="doc-biblioref">2021</a>)</span> give similar results.</p>
 <p><strong>Placebo groups:</strong> no effect for people 65+ (already on Medicare), and only small effects for higher-income people, who were less likely to gain coverage.</p>
 <p><strong>Placebo period:</strong> no relative change in the pre-ACA period.</p>
 <p><strong>Other confounders:</strong> results are stable when adding state-specific linear trends, county economic trends, or alternative comparison groups.</p>
@@ -1499,8 +1499,8 @@ treated    0    1
 </ul>
 <p><strong>Robustness:</strong></p>
 <ul>
-<li>Event study with the Sun &amp; Abraham estimator: flat before access, immediate jump after</li>
-<li>Similar results with Callaway &amp; Sant’Anna, de Chaisemartin &amp; D’Haultfœuille, and Borusyak, Jaravel &amp; Spiess estimators</li>
+<li>Event study with the Sun &amp; Abraham <span class="citation" data-cites="sun2021estimating">(<a href="#ref-sun2021estimating" role="doc-biblioref">2021</a>)</span> estimator: flat before access, immediate jump after</li>
+<li>Similar results with Callaway &amp; Sant’Anna <span class="citation" data-cites="callaway2021difference">(<a href="#ref-callaway2021difference" role="doc-biblioref">2021</a>)</span>, de Chaisemartin &amp; D’Haultfœuille <span class="citation" data-cites="dechaisemartin2020two">(<a href="#ref-dechaisemartin2020two" role="doc-biblioref">2020</a>)</span>, and Borusyak, Jaravel &amp; Spiess <span class="citation" data-cites="borusyak2024revisiting">(<a href="#ref-borusyak2024revisiting" role="doc-biblioref">2024</a>)</span> estimators</li>
 <li><strong>IV:</strong> instrument each agent’s adoption date with the date the first person in their team got access (rules out within-team selection by managers)</li>
 <li>A small earlier RCT pilot (~50 workers) gives similar effects</li>
 </ul>
@@ -1651,7 +1651,7 @@ treated    0    1
 <li>Event-study version by month to check pre-trends</li>
 <li>Standard errors clustered by job category</li>
 </ul>
-<p><strong>Note:</strong> everyone is “treated” on the same date, so there is no staggered-adoption problem. The authors still report Callaway &amp; Sant’Anna and synthetic DiD estimates, plus a negative binomial model because log counts with zeros are problematic <span class="citation" data-cites="chen2024logs">(<a href="#ref-chen2024logs" role="doc-biblioref">Chen and Roth 2024</a>)</span>.</p>
+<p><strong>Note:</strong> everyone is “treated” on the same date, so there is no staggered-adoption problem. The authors still report Callaway &amp; Sant’Anna <span class="citation" data-cites="callaway2021difference">(<a href="#ref-callaway2021difference" role="doc-biblioref">2021</a>)</span> and synthetic DiD estimates, plus a negative binomial model because log counts with zeros are problematic <span class="citation" data-cites="chen2024logs">(<a href="#ref-chen2024logs" role="doc-biblioref">Chen and Roth 2024</a>)</span>.</p>
 </div>
 </div>
 </section>
@@ -1770,9 +1770,9 @@ treated    0    1
 <thead>
 <tr class="header">
 <th></th>
-<th>Miller et al.</th>
-<th>Brynjolfsson et al.</th>
-<th>Demirci et al.</th>
+<th>Miller et al. <span class="citation" data-cites="miller2021medicaid">(<a href="#ref-miller2021medicaid" role="doc-biblioref">2021</a>)</span></th>
+<th>Brynjolfsson et al. <span class="citation" data-cites="brynjolfsson2025generative">(<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">2025</a>)</span></th>
+<th>Demirci et al. <span class="citation" data-cites="demirci2025who">(<a href="#ref-demirci2025who" role="doc-biblioref">2025</a>)</span></th>
 </tr>
 </thead>
 <tbody>

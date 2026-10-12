@@ -1074,7 +1074,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Three of this chapter’s case studies (Künn et al., Park et al., Ireland et al.) use weather or air quality fluctuations as the treatment.</p>
+<p>Three of this chapter’s case studies <span class="citation" data-cites="kunn2023indoor park2020heat ireland2023heat">(<a href="#ref-kunn2023indoor" role="doc-biblioref">Künn et al. 2023</a>; <a href="#ref-park2020heat" role="doc-biblioref">Park et al. 2020</a>; <a href="#ref-ireland2023heat" role="doc-biblioref">Ireland et al. 2023</a>)</span> use weather or air quality fluctuations as the treatment.</p>
 <ul>
 <li><strong>Climate</strong> (long-run averages) is correlated with everything: income, institutions, culture</li>
 <li><strong>Weather</strong> (deviations from the local norm) is plausibly random: no one chooses whether next Tuesday is 35°C</li>
@@ -1113,22 +1113,22 @@ window.Quarto = {
 <tr class="odd">
 <td><strong>Placebo leads:</strong> future treatment should not predict current outcomes</td>
 <td>Reverse causality, spurious trends</td>
-<td>Park et al.</td>
+<td>Park et al. <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span></td>
 </tr>
 <tr class="even">
 <td><strong>Selection tests:</strong> regress panel entry/attrition on treatment</td>
 <td>Selection into the sample</td>
-<td>Park et al.</td>
+<td>Park et al. <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span></td>
 </tr>
 <tr class="odd">
 <td><strong>Unit-specific trends:</strong> add <span class="math inline">\alpha_i \times t</span> or region × <span class="math inline">t</span></td>
 <td>Smooth time-varying confounders</td>
-<td>Park et al.</td>
+<td>Park et al. <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span></td>
 </tr>
 <tr class="even">
 <td><strong>Alternative FE structures:</strong> results stable?</td>
 <td>Sensitivity to the comparison</td>
-<td>Ireland et al.</td>
+<td>Ireland et al. <span class="citation" data-cites="ireland2023heat">(<a href="#ref-ireland2023heat" role="doc-biblioref">2023</a>)</span></td>
 </tr>
 <tr class="odd">
 <td><strong>Add potential confounders:</strong> pollution, precipitation, traffic</td>
@@ -1138,12 +1138,12 @@ window.Quarto = {
 <tr class="even">
 <td><strong>Placebo outcomes or periods:</strong> heat on weekends, in summer</td>
 <td>Mechanism and specificity</td>
-<td>Park et al.</td>
+<td>Park et al. <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span></td>
 </tr>
 <tr class="odd">
 <td><strong>IV using a different source of variation</strong></td>
 <td>Remaining endogeneity</td>
-<td>Künn et al.</td>
+<td>Künn et al. <span class="citation" data-cites="kunn2023indoor">(<a href="#ref-kunn2023indoor" role="doc-biblioref">2023</a>)</span></td>
 </tr>
 </tbody>
 </table>
@@ -1164,8 +1164,8 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \sum_{k=-K}^{L} \beta_k \, D_{i,t-k} + \varepsilon_{it}</span></p>
 <ul>
-<li><strong>Lags</strong> (<span class="math inline">k &gt; 0</span>): effects can persist or accumulate. Park et al.&nbsp;find that hot school days two to four years before the test also lower scores, so the cumulative effect of a warmer climate is larger than the one-year estimate</li>
-<li><strong>Leads</strong> (<span class="math inline">k &lt; 0</span>): future treatment cannot cause today’s outcome. A significant lead signals reverse causality, anticipation, or a spurious trend. Park et al.’s future-temperature placebo is this test</li>
+<li><strong>Lags</strong> (<span class="math inline">k &gt; 0</span>): effects can persist or accumulate. Park et al. <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span> find that hot school days two to four years before the test also lower scores, so the cumulative effect of a warmer climate is larger than the one-year estimate</li>
+<li><strong>Leads</strong> (<span class="math inline">k &lt; 0</span>): future treatment cannot cause today’s outcome. A significant lead signals reverse causality, anticipation, or a spurious trend. Park et al.’s <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span> future-temperature placebo is this test</li>
 <li>When the treatment is a policy that switches on once and stays on, this becomes an event study, the central tool of Chapter 9</li>
 </ul>
 </div>
@@ -1187,7 +1187,7 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <p>Always report the residual standard deviation of the treatment after partialling out the fixed effects.</p>
-<p><strong>Park et al.&nbsp;(2020):</strong> after student and cohort × test date × take FE, a 1 SD change in average school-day temperature is only about 1°F, and 1 SD in days above 90°F is about 3 days.</p>
+<p><strong>Park et al. <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span>:</strong> after student and cohort × test date × take FE, a 1 SD change in average school-day temperature is only about 1°F, and 1 SD in days above 90°F is about 3 days.</p>
 <p><strong>Why it matters:</strong></p>
 <ul>
 <li>Effects are identified from small, local fluctuations</li>
@@ -1212,7 +1212,7 @@ window.Quarto = {
 <p>If treatment is measured with error, <span class="math inline">D^{obs}_{it} = D_{it} + u_{it}</span>, OLS is attenuated by the factor</p>
 <p><span class="math display">\frac{\text{Var}(\ddot{D}_{it})}{\text{Var}(\ddot{D}_{it}) + \text{Var}(\ddot{u}_{it})}</span></p>
 <p>Demeaning removes much of the true signal (which is persistent) but little of the noise (which is not). The signal-to-noise ratio falls, so FE estimates are more attenuated than cross-sectional ones.</p>
-<p><strong>Park et al.&nbsp;evidence:</strong> restricting to schools within 5 miles of a weather station (less measurement error) raises the estimated effect by about 25%.</p>
+<p><strong>Park et al. <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span> evidence:</strong> restricting to schools within 5 miles of a weather station (less measurement error) raises the estimated effect by about 25%.</p>
 </div>
 </div>
 </section>
@@ -1236,7 +1236,7 @@ window.Quarto = {
 </ul>
 <p><strong>But you can estimate interactions</strong> between a time-invariant characteristic and a time-varying treatment:</p>
 <p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \tau D_{it} + \delta (D_{it} \times \text{Black}_i) + \varepsilon_{it}</span></p>
-<p>This is how Park et al.&nbsp;show heat harms Black and Hispanic students’ learning about three times as much as white students’.</p>
+<p>This is how Park et al. <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span> show heat harms Black and Hispanic students’ learning about three times as much as white students’.</p>
 </div>
 </div>
 </section>
@@ -1272,17 +1272,17 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td>Park et al.</td>
+<td>Park et al. <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span></td>
 <td>Weather station</td>
 <td>Treatment assigned at station level</td>
 </tr>
 <tr class="even">
-<td>Ireland et al.</td>
+<td>Ireland et al. <span class="citation" data-cites="ireland2023heat">(<a href="#ref-ireland2023heat" role="doc-biblioref">2023</a>)</span></td>
 <td>Postcode</td>
 <td>Unit of observation and treatment</td>
 </tr>
 <tr class="odd">
-<td>Künn et al.</td>
+<td>Künn et al. <span class="citation" data-cites="kunn2023indoor">(<a href="#ref-kunn2023indoor" role="doc-biblioref">2023</a>)</span></td>
 <td>Round × year (21 clusters)</td>
 <td>All players in a round share the same air</td>
 </tr>
@@ -1306,7 +1306,7 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p>Rather than a linear term in temperature, count the days in each temperature bin:</p>
 <p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \sum_{b \neq \text{ref}} \beta_b \cdot \text{Days}^{(b)}_{it} + \varepsilon_{it}</span></p>
-<p>Each <span class="math inline">\beta_b</span> is the effect of replacing one day in the reference bin with one day in bin <span class="math inline">b</span>. Both Park et al.&nbsp;and Ireland et al.&nbsp;use this to show damages that rise steeply at high temperatures.</p>
+<p>Each <span class="math inline">\beta_b</span> is the effect of replacing one day in the reference bin with one day in bin <span class="math inline">b</span>. Both Park et al. <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span> and Ireland et al. <span class="citation" data-cites="ireland2023heat">(<a href="#ref-ireland2023heat" role="doc-biblioref">2023</a>)</span> use this to show damages that rise steeply at high temperatures.</p>
 </div>
 </div>
 </section>
@@ -1462,35 +1462,35 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td>Künn, Palacios &amp; Pestel (2023)</td>
+<td>Künn, Palacios &amp; Pestel <span class="citation" data-cites="kunn2023indoor">(<a href="#ref-kunn2023indoor" role="doc-biblioref">2023</a>)</span></td>
 <td><em>Management Science</em></td>
 <td>Does indoor air pollution impair expert decisions?</td>
 <td>Player × move</td>
 <td>Player; year; round; move</td>
 </tr>
 <tr class="even">
-<td>Ardia, Bluteau, Boudt &amp; Inghelbrecht (2023)</td>
+<td>Ardia, Bluteau, Boudt &amp; Inghelbrecht <span class="citation" data-cites="ardia2023climate">(<a href="#ref-ardia2023climate" role="doc-biblioref">2023</a>)</span></td>
 <td><em>Management Science</em></td>
 <td>Do climate concerns move green vs.&nbsp;brown stocks?</td>
 <td>Firm × trading day</td>
 <td>Firm</td>
 </tr>
 <tr class="odd">
-<td>Brynjolfsson, Li &amp; Raymond (2025)</td>
+<td>Brynjolfsson, Li &amp; Raymond <span class="citation" data-cites="brynjolfsson2025generative">(<a href="#ref-brynjolfsson2025generative" role="doc-biblioref">2025</a>)</span></td>
 <td><em>QJE</em></td>
 <td>Does a generative AI assistant raise productivity?</td>
 <td>Agent × month</td>
 <td>Agent; month; tenure</td>
 </tr>
 <tr class="even">
-<td><em>Supplementary:</em> Park, Goodman, Hurwitz &amp; Smith (2020)</td>
+<td><em>Supplementary:</em> Park, Goodman, Hurwitz &amp; Smith <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span></td>
 <td><em>AEJ: Economic Policy</em></td>
 <td>Does heat reduce learning?</td>
 <td>Student × test sitting</td>
 <td>Student; cohort × date × take</td>
 </tr>
 <tr class="odd">
-<td><em>Supplementary:</em> Ireland, Johnston &amp; Knott (2023)</td>
+<td><em>Supplementary:</em> Ireland, Johnston &amp; Knott <span class="citation" data-cites="ireland2023heat">(<a href="#ref-ireland2023heat" role="doc-biblioref">2023</a>)</span></td>
 <td><em>J. Health Economics</em></td>
 <td>Does heat cause workplace injuries?</td>
 <td>Postcode × day</td>
@@ -1789,7 +1789,7 @@ window.Quarto = {
 <li>Why do the authors use the unexpected component of the concern index rather than its level?</li>
 <li>Firm FE absorb a firm’s average return. What does the <span class="math inline">lGHG_{i,t}</span> coefficient then capture, given that emissions intensity changes slowly within firm?</li>
 <li>The model allows firm-specific loadings <span class="math inline">\beta_i</span> on the controls. Why is this more flexible than a common <span class="math inline">\beta</span>?</li>
-<li>Compare to Park et al.&nbsp;(Supplementary Case A): in both papers a common shock (weather / news) interacts with heterogeneous exposure (AC / emissions). What is the analogue of the triple-difference AC design here?</li>
+<li>Compare to Park et al. <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>, Supplementary Case A)</span>: in both papers a common shock (weather / news) interacts with heterogeneous exposure (AC / emissions). What is the analogue of the triple-difference AC design here?</li>
 <li>Would you call this paper a policy evaluation? What policy questions could it inform (e.g., climate disclosure rules, carbon pricing announcements)?</li>
 </ol>
 </div>
@@ -1809,7 +1809,7 @@ window.Quarto = {
 <li>Prices should react to news, not to what investors already expected. The predictable part of the concern index is already in prices and may move with other market conditions; the surprise is closer to new information.</li>
 <li>With firm fixed effects it is identified only from changes in a firm’s emissions intensity relative to other firms, which are small and slow. It says little about the cross-sectional carbon premium and is imprecisely estimated.</li>
 <li>Firms differ in their exposure to the market, other risk factors, and energy prices. A common slope would push those differences into the error, which could be correlated with emissions and with climate news.</li>
-<li>Interact the climate shock with changes in a firm’s own emissions intensity over time: does the same firm react less to climate news after it becomes greener? That uses within-firm variation, like Park et al.’s within-school changes in air conditioning.</li>
+<li>Interact the climate shock with changes in a firm’s own emissions intensity over time: does the same firm react less to climate news after it becomes greener? That uses within-firm variation, like Park et al.’s <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">2020</a>)</span> within-school changes in air conditioning.</li>
 <li>Not a policy evaluation in the usual sense: there is no policy treatment. It informs policy by showing that investors price climate concern, which matters for disclosure rules and for how carbon-price announcements could affect firms’ cost of capital.</li>
 </ol>
 </div>
@@ -1984,8 +1984,8 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p>The next two papers appear in field journals rather than FT50 journals. They are included because they show fixed-effect choices the main cases do not:</p>
 <ul>
-<li><strong>Student vs.&nbsp;school fixed effects</strong>, and why the choice matters for selection (Park et al., <em>AEJ: Economic Policy</em>)</li>
-<li><strong>Postcode × month-year fixed effects</strong> with a Poisson model for count data, using Australian workers’ compensation records (Ireland et al., <em>Journal of Health Economics</em>)</li>
+<li><strong>Student vs.&nbsp;school fixed effects</strong>, and why the choice matters for selection <span class="citation" data-cites="park2020heat">(<a href="#ref-park2020heat" role="doc-biblioref">Park et al. 2020</a>, <em>AEJ: Economic Policy</em>)</span></li>
+<li><strong>Postcode × month-year fixed effects</strong> with a Poisson model for count data, using Australian workers’ compensation records <span class="citation" data-cites="ireland2023heat">(<a href="#ref-ireland2023heat" role="doc-biblioref">Ireland et al. 2023</a>, <em>Journal of Health Economics</em>)</span></li>
 </ul>
 <p>Both are also the source of several examples earlier in this chapter.</p>
 </div>
