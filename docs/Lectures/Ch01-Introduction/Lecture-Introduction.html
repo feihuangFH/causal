@@ -411,6 +411,18 @@ window.Quarto = {
   <li><a href="#methods-at-a-glance-designs-using-time-and-observables" id="toc-methods-at-a-glance-designs-using-time-and-observables" class="nav-link" data-scroll-target="#methods-at-a-glance-designs-using-time-and-observables">Methods at a Glance: Designs Using Time and Observables</a></li>
   <li><a href="#the-credibility-revolution" id="toc-the-credibility-revolution" class="nav-link" data-scroll-target="#the-credibility-revolution">The Credibility Revolution</a></li>
   </ul></li>
+  <li><a href="#case-study-an-ai-assistant-in-a-support-centre" id="toc-case-study-an-ai-assistant-in-a-support-centre" class="nav-link" data-scroll-target="#case-study-an-ai-assistant-in-a-support-centre">Case Study: An AI Assistant in a Support Centre</a>
+  <ul class="collapse">
+  <li><a href="#the-setting" id="toc-the-setting" class="nav-link" data-scroll-target="#the-setting">The Setting</a></li>
+  <li><a href="#design-1-randomized-experiment" id="toc-design-1-randomized-experiment" class="nav-link" data-scroll-target="#design-1-randomized-experiment">Design 1: Randomized Experiment</a></li>
+  <li><a href="#design-2-instrumental-variables" id="toc-design-2-instrumental-variables" class="nav-link" data-scroll-target="#design-2-instrumental-variables">Design 2: Instrumental Variables</a></li>
+  <li><a href="#design-3-regression-discontinuity" id="toc-design-3-regression-discontinuity" class="nav-link" data-scroll-target="#design-3-regression-discontinuity">Design 3: Regression Discontinuity</a></li>
+  <li><a href="#design-4-panel-fixed-effects" id="toc-design-4-panel-fixed-effects" class="nav-link" data-scroll-target="#design-4-panel-fixed-effects">Design 4: Panel Fixed Effects</a></li>
+  <li><a href="#design-5-difference-in-differences" id="toc-design-5-difference-in-differences" class="nav-link" data-scroll-target="#design-5-difference-in-differences">Design 5: Difference-in-Differences</a></li>
+  <li><a href="#design-6-synthetic-control" id="toc-design-6-synthetic-control" class="nav-link" data-scroll-target="#design-6-synthetic-control">Design 6: Synthetic Control</a></li>
+  <li><a href="#design-7-regression-and-matching" id="toc-design-7-regression-and-matching" class="nav-link" data-scroll-target="#design-7-regression-and-matching">Design 7: Regression and Matching</a></li>
+  <li><a href="#comparing-the-estimates" id="toc-comparing-the-estimates" class="nav-link" data-scroll-target="#comparing-the-estimates">Comparing the Estimates</a></li>
+  </ul></li>
   <li><a href="#how-these-notes-work" id="toc-how-these-notes-work" class="nav-link" data-scroll-target="#how-these-notes-work">How These Notes Work</a>
   <ul class="collapse">
   <li><a href="#the-plan-of-these-notes" id="toc-the-plan-of-these-notes" class="nav-link" data-scroll-target="#the-plan-of-these-notes">The Plan of These Notes</a></li>
@@ -1013,6 +1025,330 @@ window.Quarto = {
 <li>Show evidence for it (balance, pre-trends, placebo tests, first stages)</li>
 <li>Report robustness, and state what the design cannot rule out</li>
 </ul>
+</div>
+</div>
+</section>
+</section>
+<section id="case-study-an-ai-assistant-in-a-support-centre" class="level2">
+<h2 class="anchored" data-anchor-id="case-study-an-ai-assistant-in-a-support-centre">Case Study: An AI Assistant in a Support Centre</h2>
+<section id="the-setting" class="level3">
+<h3 class="anchored" data-anchor-id="the-setting">The Setting</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A Customer-Support Centre
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A software firm runs a customer-support centre. Its agents resolve about two customer issues per hour. The firm wants to know whether a generative AI assistant raises that number.</p>
+<p>The data on the next slides are simulated, so we know the true answer: the assistant adds 0.3 resolutions per hour for every agent.</p>
+<p>Each slide tells a different story about who got the assistant. The question stays the same. The assignment changes, and so does the method that can answer the question.</p>
+<p>In every story, a simple comparison gives the wrong answer. By a simple (or naive) comparison we mean the obvious one: agents with the tool against agents without it, or output after against output before, ignoring how the tool was assigned.</p>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>This is an illustrative case with simulated data. The method chapters use published studies; this one keeps the setting fixed so that only the assignment mechanism changes.</li>
+<li>The setting echoes the generative AI study of customer-support agents in Chapters 8 and 9, but every number here is made up.</li>
+</ul>
+</div>
+</section>
+<section id="design-1-randomized-experiment" class="level3">
+<h3 class="anchored" data-anchor-id="design-1-randomized-experiment">Design 1: Randomized Experiment</h3>
+<p>First, managers give the assistant to the agents they think will use it well, who tend to be their strongest. The alternative is a lottery.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(fixest))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>f2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">sub</span>(<span class="st">"^-"</span>, <span class="st">"&amp;minus;"</span>, <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, x))   <span class="co"># format estimates</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>blue <span class="ot">&lt;-</span> <span class="st">"#1565c0"</span>; orange <span class="ot">&lt;-</span> <span class="st">"#c2410c"</span>; grey <span class="ot">&lt;-</span> <span class="st">"grey55"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>tau <span class="ot">&lt;-</span> <span class="fl">0.3</span>                                                <span class="co"># true effect</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">11</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>skill <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)                                         <span class="co"># unobserved by the analyst</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>y0 <span class="ot">&lt;-</span> <span class="fl">2.0</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> skill <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.3</span>)                <span class="co"># resolutions per hour without AI</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>pick <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="fl">1.5</span> <span class="sc">*</span> skill))                 <span class="co"># managers pick stronger agents</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>y_pick <span class="ot">&lt;-</span> y0 <span class="sc">+</span> tau <span class="sc">*</span> pick</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>naive_pick <span class="ot">&lt;-</span> <span class="fu">mean</span>(y_pick[pick <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(y_pick[pick <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>lottery <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, n <span class="sc">/</span> <span class="dv">2</span>))                        <span class="co"># the alternative: a lottery</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>y_rct <span class="ot">&lt;-</span> y0 <span class="sc">+</span> tau <span class="sc">*</span> lottery</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>rct <span class="ot">&lt;-</span> <span class="fu">mean</span>(y_rct[lottery <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(y_rct[lottery <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(skill[pick <span class="sc">==</span> <span class="dv">0</span>], <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">col =</span> <span class="fu">adjustcolor</span>(grey, <span class="fl">0.5</span>), <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">3.5</span>, <span class="fl">3.5</span>),</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Skill of agents, by who got the tool"</span>, <span class="at">xlab =</span> <span class="st">"Skill (unobserved)"</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(skill[pick <span class="sc">==</span> <span class="dv">1</span>], <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">col =</span> <span class="fu">adjustcolor</span>(blue, <span class="fl">0.5</span>), <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"No tool"</span>, <span class="st">"Tool"</span>), <span class="at">fill =</span> <span class="fu">adjustcolor</span>(<span class="fu">c</span>(grey, blue), <span class="fl">0.5</span>), <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">c</span>(<span class="at">Managers =</span> naive_pick, <span class="at">Lottery =</span> rct), <span class="at">col =</span> <span class="fu">c</span>(grey, blue), <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.7</span>),</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">"Estimated effect"</span>, <span class="at">ylab =</span> <span class="st">"Resolutions per hour"</span>)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> tau, <span class="at">col =</span> orange, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Managers’ choice: 0.61. A lottery (a randomized experiment): 0.31. Truth: 0.30. The managers’ comparison credits the tool with the strong agents’ head start.</p>
+</section>
+<section id="design-2-instrumental-variables" class="level3">
+<h3 class="anchored" data-anchor-id="design-2-instrumental-variables">Design 2: Instrumental Variables</h3>
+<p>The firm cannot force anyone to use the tool. It emails a random half of agents encouraging them to try it. Motivated agents use it more, with or without the email.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>n_iv <span class="ot">&lt;-</span> <span class="dv">8000</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>email <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n_iv, <span class="dv">1</span>, <span class="fl">0.5</span>)                             <span class="co"># randomized encouragement</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>motiv <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n_iv)                                      <span class="co"># unobserved motivation</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>use <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n_iv, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="fu">qlogis</span>(<span class="fl">0.2</span>) <span class="sc">+</span> (<span class="fu">qlogis</span>(<span class="fl">0.6</span>) <span class="sc">-</span> <span class="fu">qlogis</span>(<span class="fl">0.2</span>)) <span class="sc">*</span> email <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> motiv))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>y_iv <span class="ot">&lt;-</span> <span class="fl">2.0</span> <span class="sc">+</span> <span class="fl">0.25</span> <span class="sc">*</span> motiv <span class="sc">+</span> <span class="fu">rnorm</span>(n_iv, <span class="dv">0</span>, <span class="fl">0.3</span>) <span class="sc">+</span> tau <span class="sc">*</span> use</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>first <span class="ot">&lt;-</span> <span class="fu">mean</span>(use[email <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(use[email <span class="sc">==</span> <span class="dv">0</span>])    <span class="co"># first stage</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>itt <span class="ot">&lt;-</span> <span class="fu">mean</span>(y_iv[email <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(y_iv[email <span class="sc">==</span> <span class="dv">0</span>])    <span class="co"># reduced form</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>as_treated <span class="ot">&lt;-</span> <span class="fu">mean</span>(y_iv[use <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(y_iv[use <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>iv <span class="ot">&lt;-</span> itt <span class="sc">/</span> first</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">tapply</span>(use, email, mean), <span class="at">names.arg =</span> <span class="fu">c</span>(<span class="st">"No email"</span>, <span class="st">"Email"</span>), <span class="at">col =</span> <span class="fu">c</span>(grey, blue), <span class="at">border =</span> <span class="cn">NA</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.8</span>), <span class="at">main =</span> <span class="st">"Share using the tool"</span>, <span class="at">ylab =</span> <span class="st">"Share"</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">tapply</span>(y_iv, email, mean), <span class="at">names.arg =</span> <span class="fu">c</span>(<span class="st">"No email"</span>, <span class="st">"Email"</span>), <span class="at">col =</span> <span class="fu">c</span>(grey, blue), <span class="at">border =</span> <span class="cn">NA</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylim =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">2.3</span>), <span class="at">xpd =</span> <span class="cn">FALSE</span>, <span class="at">main =</span> <span class="st">"Resolutions per hour"</span>, <span class="at">ylab =</span> <span class="st">"Mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The email raises use by 0.33 and output by 0.10, so IV gives 0.10 / 0.33 = 0.31. Comparing users with non-users gives 0.51. Truth: 0.30.</p>
+</section>
+<section id="design-3-regression-discontinuity" class="level3">
+<h3 class="anchored" data-anchor-id="design-3-regression-discontinuity">Design 3: Regression Discontinuity</h3>
+<p>The firm gives the tool to agents who scored below 70 on a skills test. Lower scorers are weaker agents, so they resolve fewer issues with or without the tool.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">13</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>score <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">40</span>, <span class="dv">100</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>below <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(score <span class="sc">&lt;</span> <span class="dv">70</span>)                           <span class="co"># the rule</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>y_rd <span class="ot">&lt;-</span> <span class="fl">1.0</span> <span class="sc">+</span> <span class="fl">0.015</span> <span class="sc">*</span> score <span class="sc">+</span> tau <span class="sc">*</span> below <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.15</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>naive_rd <span class="ot">&lt;-</span> <span class="fu">mean</span>(y_rd[below <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(y_rd[below <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>near <span class="ot">&lt;-</span> <span class="fu">abs</span>(score <span class="sc">-</span> <span class="dv">70</span>) <span class="sc">&lt;</span> <span class="dv">10</span>                              <span class="co"># local linear fit within 10 points</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>rdd <span class="ot">&lt;-</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y_rd <span class="sc">~</span> below <span class="sc">*</span> <span class="fu">I</span>(score <span class="sc">-</span> <span class="dv">70</span>), <span class="at">subset =</span> near))[<span class="st">"below"</span>])</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>bins <span class="ot">&lt;-</span> <span class="fu">cut</span>(score, <span class="fu">seq</span>(<span class="dv">40</span>, <span class="dv">100</span>, <span class="fl">2.5</span>))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">tapply</span>(score, bins, mean), <span class="fu">tapply</span>(y_rd, bins, mean), <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">ifelse</span>(<span class="fu">tapply</span>(score, bins, mean) <span class="sc">&lt;</span> <span class="dv">70</span>, blue, grey),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Test score"</span>, <span class="at">ylab =</span> <span class="st">"Resolutions per hour"</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (side <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) {</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">&lt;-</span> <span class="cf">if</span> (side <span class="sc">==</span> <span class="dv">1</span>) score <span class="sc">&lt;</span> <span class="dv">70</span> <span class="sc">&amp;</span> near <span class="cf">else</span> score <span class="sc">&gt;=</span> <span class="dv">70</span> <span class="sc">&amp;</span> near</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y_rd[s] <span class="sc">~</span> score[s]); xs <span class="ot">&lt;-</span> <span class="fu">range</span>(score[s])</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(xs, <span class="fu">coef</span>(fit)[<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">coef</span>(fit)[<span class="dv">2</span>] <span class="sc">*</span> xs, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="cf">if</span> (side <span class="sc">==</span> <span class="dv">1</span>) blue <span class="cf">else</span> grey)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">70</span>, <span class="at">col =</span> orange, <span class="at">lty =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Comparing everyone below 70 with everyone above gives −0.14, the wrong sign. The jump at the cutoff gives 0.33. Truth: 0.30.</p>
+</section>
+<section id="design-4-panel-fixed-effects" class="level3">
+<h3 class="anchored" data-anchor-id="design-4-panel-fixed-effects">Design 4: Panel Fixed Effects</h3>
+<p>Managers again pick their strongest agents, but now we see every agent’s monthly output for a year, before and after they get the tool.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>na <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sk <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(na)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>gets <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(na, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="fl">1.5</span> <span class="sc">*</span> sk))                   <span class="co"># stronger agents get the tool</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>start <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(gets <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">sample</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">9</span>, na, <span class="at">replace =</span> <span class="cn">TRUE</span>), <span class="cn">Inf</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>fe <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">agent =</span> <span class="dv">1</span><span class="sc">:</span>na, <span class="at">month =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>fe<span class="sc">$</span>tool <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(fe<span class="sc">$</span>month <span class="sc">&gt;=</span> start[fe<span class="sc">$</span>agent])</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>fe<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fl">2.0</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> sk[fe<span class="sc">$</span>agent] <span class="sc">+</span> tau <span class="sc">*</span> fe<span class="sc">$</span>tool <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(fe), <span class="dv">0</span>, <span class="fl">0.2</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>pooled <span class="ot">&lt;-</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> tool, fe))[<span class="st">"tool"</span>])</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>fe_est <span class="ot">&lt;-</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> tool <span class="sc">|</span> agent <span class="sc">+</span> month, fe))[<span class="st">"tool"</span>])</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>treated <span class="ot">&lt;-</span> <span class="fu">which</span>(gets <span class="sc">==</span> <span class="dv">1</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>]</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>before <span class="ot">&lt;-</span> <span class="fu">sapply</span>(treated, <span class="cf">function</span>(a) <span class="fu">mean</span>(fe<span class="sc">$</span>y[fe<span class="sc">$</span>agent <span class="sc">==</span> a <span class="sc">&amp;</span> fe<span class="sc">$</span>tool <span class="sc">==</span> <span class="dv">0</span>]))</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>after <span class="ot">&lt;-</span> <span class="fu">sapply</span>(treated, <span class="cf">function</span>(a) <span class="fu">mean</span>(fe<span class="sc">$</span>y[fe<span class="sc">$</span>agent <span class="sc">==</span> a <span class="sc">&amp;</span> fe<span class="sc">$</span>tool <span class="sc">==</span> <span class="dv">1</span>]))</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="cn">NA</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fl">0.8</span>, <span class="fl">2.2</span>), <span class="at">ylim =</span> <span class="fu">range</span>(before, after), <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">""</span>, <span class="at">ylab =</span> <span class="st">"Resolutions per hour"</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Before the tool"</span>, <span class="st">"After the tool"</span>))</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="fu">segments</span>(<span class="dv">1</span>, before, <span class="dv">2</span>, after, <span class="at">col =</span> <span class="fu">adjustcolor</span>(blue, <span class="fl">0.5</span>), <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">30</span>), before, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> grey); <span class="fu">points</span>(<span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">30</span>), after, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> blue)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Each line is one agent. A pooled regression that compares agents with and without the tool gives 0.52. Comparing each agent with themselves (agent and month fixed effects) gives 0.29. Truth: 0.30.</p>
+</section>
+<section id="design-5-difference-in-differences" class="level3">
+<h3 class="anchored" data-anchor-id="design-5-difference-in-differences">Design 5: Difference-in-Differences</h3>
+<p>Office A switches the tool on in month 7; office B never does. Output is rising in both offices as call volumes become more routine.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">15</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>did <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">office =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="at">month =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="at">agent =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">400</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>did<span class="sc">$</span>tool <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(did<span class="sc">$</span>office <span class="sc">==</span> <span class="st">"A"</span> <span class="sc">&amp;</span> did<span class="sc">$</span>month <span class="sc">&gt;=</span> <span class="dv">7</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>did<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(did<span class="sc">$</span>office <span class="sc">==</span> <span class="st">"A"</span>, <span class="fl">2.0</span>, <span class="fl">1.8</span>) <span class="sc">+</span> <span class="fl">0.03</span> <span class="sc">*</span> did<span class="sc">$</span>month <span class="sc">+</span> tau <span class="sc">*</span> did<span class="sc">$</span>tool <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(did), <span class="dv">0</span>, <span class="fl">0.25</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">tapply</span>(did<span class="sc">$</span>y, <span class="fu">list</span>(did<span class="sc">$</span>office, did<span class="sc">$</span>month <span class="sc">&gt;=</span> <span class="dv">7</span>), mean)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>before_after <span class="ot">&lt;-</span> m[<span class="st">"A"</span>, <span class="st">"TRUE"</span>] <span class="sc">-</span> m[<span class="st">"A"</span>, <span class="st">"FALSE"</span>]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>did_est <span class="ot">&lt;-</span> before_after <span class="sc">-</span> (m[<span class="st">"B"</span>, <span class="st">"TRUE"</span>] <span class="sc">-</span> m[<span class="st">"B"</span>, <span class="st">"FALSE"</span>])</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="fu">tapply</span>(did<span class="sc">$</span>y, <span class="fu">list</span>(did<span class="sc">$</span>office, did<span class="sc">$</span>month), mean)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>counterfactual <span class="ot">&lt;-</span> path[<span class="st">"A"</span>, <span class="dv">6</span>] <span class="sc">+</span> (path[<span class="st">"B"</span>, ] <span class="sc">-</span> path[<span class="st">"B"</span>, <span class="dv">6</span>])</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">matplot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="fu">t</span>(path), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="fu">c</span>(blue, grey), <span class="at">xlab =</span> <span class="st">"Month"</span>, <span class="at">ylab =</span> <span class="st">"Resolutions per hour"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="dv">6</span><span class="sc">:</span><span class="dv">12</span>, counterfactual[<span class="dv">6</span><span class="sc">:</span><span class="dv">12</span>], <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> blue)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fl">6.5</span>, <span class="at">col =</span> orange, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"Office A"</span>, <span class="st">"Office B"</span>, <span class="st">"Office A without the tool (implied)"</span>),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(blue, grey, blue), <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="at">lwd =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>), <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Office A’s before–after change is 0.49, which includes the common upward trend. Subtracting office B’s change gives 0.33. Truth: 0.30.</p>
+</section>
+<section id="design-6-synthetic-control" class="level3">
+<h3 class="anchored" data-anchor-id="design-6-synthetic-control">Design 6: Synthetic Control</h3>
+<p>Only the Manila office adopts, in month 13. The other twelve offices are exposed to a growing call volume to different degrees, so no single office, and not their average, follows Manila’s path.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">16</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>J <span class="ot">&lt;-</span> <span class="dv">12</span>; T0 <span class="ot">&lt;-</span> <span class="dv">12</span>; TT <span class="ot">&lt;-</span> <span class="dv">24</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>load <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.6</span>, <span class="fu">runif</span>(J, <span class="fl">0.2</span>, <span class="dv">2</span>))                          <span class="co"># exposure to a growing trend; Manila first</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>trend <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> TT)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>(J <span class="sc">+</span> <span class="dv">1</span>), <span class="cf">function</span>(i) <span class="fl">2.0</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="fl">0.08</span>) <span class="sc">*</span> (i <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">+</span> load[i] <span class="sc">*</span> trend <span class="sc">+</span> <span class="fu">rnorm</span>(TT, <span class="dv">0</span>, <span class="fl">0.02</span>)))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>Y[<span class="dv">1</span>, (T0 <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>TT] <span class="ot">&lt;-</span> Y[<span class="dv">1</span>, (T0 <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>TT] <span class="sc">+</span> tau               <span class="co"># Manila gets the tool in month 13</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>sc_weights <span class="ot">&lt;-</span> <span class="cf">function</span>(y1, Y0) {                          <span class="co"># non-negative weights that sum to one</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  loss <span class="ot">&lt;-</span> <span class="cf">function</span>(a) { w <span class="ot">&lt;-</span> <span class="fu">exp</span>(a) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">exp</span>(a)); <span class="fu">sum</span>((y1 <span class="sc">-</span> <span class="fu">colSums</span>(w <span class="sc">*</span> Y0))<span class="sc">^</span><span class="dv">2</span>) }</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">nrow</span>(Y0)), loss, <span class="at">method =</span> <span class="st">"BFGS"</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">2000</span>))<span class="sc">$</span>par</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">exp</span>(a) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">exp</span>(a))</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">sc_weights</span>(Y[<span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span>T0], Y[<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span>T0])</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>synth <span class="ot">&lt;-</span> <span class="fu">colSums</span>(w <span class="sc">*</span> Y[<span class="sc">-</span><span class="dv">1</span>, ])</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>post <span class="ot">&lt;-</span> (T0 <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>TT</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>sc_est <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y[<span class="dv">1</span>, post] <span class="sc">-</span> synth[post])</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>did_avg <span class="ot">&lt;-</span> (<span class="fu">mean</span>(Y[<span class="dv">1</span>, post]) <span class="sc">-</span> <span class="fu">mean</span>(Y[<span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span>T0])) <span class="sc">-</span> (<span class="fu">mean</span>(<span class="fu">colMeans</span>(Y[<span class="sc">-</span><span class="dv">1</span>, post])) <span class="sc">-</span> <span class="fu">mean</span>(<span class="fu">colMeans</span>(Y[<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span>T0])))</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>TT, Y[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> blue, <span class="at">ylim =</span> <span class="fu">range</span>(Y[<span class="dv">1</span>, ], synth, <span class="fu">colMeans</span>(Y[<span class="sc">-</span><span class="dv">1</span>, ])),</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Month"</span>, <span class="at">ylab =</span> <span class="st">"Resolutions per hour"</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="dv">1</span><span class="sc">:</span>TT, synth, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> blue)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="fu">colMeans</span>(Y[<span class="sc">-</span><span class="dv">1</span>, ]), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">3</span>, <span class="at">col =</span> grey)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> T0 <span class="sc">+</span> <span class="fl">0.5</span>, <span class="at">col =</span> orange, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"Manila"</span>, <span class="st">"Synthetic Manila"</span>, <span class="st">"Average of other offices"</span>),</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(blue, blue, grey), <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">lwd =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>), <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Difference-in-differences against the average of all other offices gives 0.59. A synthetic Manila, built from the offices that tracked it before month 13, gives 0.30. Truth: 0.30.</p>
+</section>
+<section id="design-7-regression-and-matching" class="level3">
+<h3 class="anchored" data-anchor-id="design-7-regression-and-matching">Design 7: Regression and Matching</h3>
+<p>Managers give the tool mostly to experienced agents, and experience raises output. This time we observe the one thing managers used: years of tenure.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">17</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>tenure <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)                  <span class="co"># years on the job (observed)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>tool_t <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">c</span>(<span class="fl">0.15</span>, <span class="fl">0.35</span>, <span class="fl">0.65</span>, <span class="fl">0.85</span>)[tenure]) <span class="co"># more experienced, more likely to get it</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>y_t <span class="ot">&lt;-</span> <span class="fl">1.6</span> <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> tenure <span class="sc">+</span> tau <span class="sc">*</span> tool_t <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.3</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>naive_t <span class="ot">&lt;-</span> <span class="fu">mean</span>(y_t[tool_t <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(y_t[tool_t <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>reg_t <span class="ot">&lt;-</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y_t <span class="sc">~</span> tool_t <span class="sc">+</span> <span class="fu">factor</span>(tenure)))[<span class="st">"tool_t"</span>])</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>gaps <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="cf">function</span>(k) <span class="fu">mean</span>(y_t[tool_t <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> tenure <span class="sc">==</span> k]) <span class="sc">-</span> <span class="fu">mean</span>(y_t[tool_t <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> tenure <span class="sc">==</span> k]))</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>match_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(gaps <span class="sc">*</span> <span class="fu">tabulate</span>(tenure[tool_t <span class="sc">==</span> <span class="dv">1</span>], <span class="dv">4</span>)) <span class="sc">/</span> <span class="fu">sum</span>(tool_t)   <span class="co"># exact matching on tenure</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>mt <span class="ot">&lt;-</span> <span class="fu">tapply</span>(y_t, <span class="fu">list</span>(tool_t, tenure), mean)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">matplot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="fu">t</span>(mt), <span class="at">type =</span> <span class="st">"b"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="fu">c</span>(grey, blue), <span class="at">xaxt =</span> <span class="st">"n"</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">"Years of tenure"</span>, <span class="at">ylab =</span> <span class="st">"Resolutions per hour"</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"No tool"</span>, <span class="st">"Tool"</span>), <span class="at">col =</span> <span class="fu">c</span>(grey, blue), <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The raw gap between agents with and without the tool is 0.53. Comparing agents with the same tenure gives 0.29 by regression and 0.28 by matching. Truth: 0.30. This works only because tenure is the whole story; with an unobserved driver, as in the first slide, it would not.</p>
+</section>
+<section id="comparing-the-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-the-estimates">Comparing the Estimates</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> <span class="fu">c</span>(<span class="st">"1 Randomized experiment"</span>, <span class="st">"2 Instrumental variables"</span>, <span class="st">"3 Regression discontinuity"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>             <span class="st">"4 Fixed effects"</span>, <span class="st">"5 Difference-in-differences"</span>, <span class="st">"6 Synthetic control"</span>, <span class="st">"7 Regression / matching"</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">naive  =</span> <span class="fu">c</span>(naive_pick, as_treated, naive_rd, pooled, before_after, did_avg, naive_t),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">design_est =</span> <span class="fu">c</span>(rct, iv, rdd, fe_est, did_est, sc_est, reg_t))</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">13</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res<span class="sc">$</span>naive, <span class="dv">7</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="fl">0.7</span>), <span class="at">pch =</span> <span class="dv">1</span>, <span class="at">cex =</span> <span class="fl">1.6</span>, <span class="at">col =</span> grey, <span class="at">yaxt =</span> <span class="st">"n"</span>, <span class="at">ylab =</span> <span class="st">""</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Estimated effect (resolutions per hour)"</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(res<span class="sc">$</span>design_est, <span class="dv">7</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">1.6</span>, <span class="at">col =</span> blue)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at =</span> <span class="dv">7</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">labels =</span> res<span class="sc">$</span>design, <span class="at">las =</span> <span class="dv">1</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> tau, <span class="at">col =</span> orange, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>); <span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"grey85"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"Simple comparison"</span>, <span class="st">"Design-based estimate"</span>, <span class="st">"Truth"</span>),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">pch =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">19</span>, <span class="cn">NA</span>), <span class="at">lty =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">2</span>), <span class="at">col =</span> <span class="fu">c</span>(grey, blue, orange), <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Why the Estimates Agree Here
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The tool has the same effect for every agent, so every design recovers 0.3. With real data, effects differ across people, and each design recovers the effect for a different group: everyone (experiment), agents who use the tool because of the email (IV), agents near the cutoff (RDD), or the offices and agents that were treated (DiD, synthetic control). The chapters return to this point.</p>
 </div>
 </div>
 </section>
