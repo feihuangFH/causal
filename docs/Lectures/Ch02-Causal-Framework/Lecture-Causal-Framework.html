@@ -390,6 +390,7 @@ window.Quarto = {
   <ul>
   <li><a href="#potential-outcomes" id="toc-potential-outcomes" class="nav-link active" data-scroll-target="#potential-outcomes">Potential Outcomes</a>
   <ul class="collapse">
+  <li><a href="#the-running-example" id="toc-the-running-example" class="nav-link" data-scroll-target="#the-running-example">The Running Example</a></li>
   <li><a href="#units-treatments-outcomes" id="toc-units-treatments-outcomes" class="nav-link" data-scroll-target="#units-treatments-outcomes">Units, Treatments, Outcomes</a></li>
   <li><a href="#a-potential-outcomes-table" id="toc-a-potential-outcomes-table" class="nav-link" data-scroll-target="#a-potential-outcomes-table">A Potential Outcomes Table</a></li>
   <li><a href="#what-happens-when-managers-choose" id="toc-what-happens-when-managers-choose" class="nav-link" data-scroll-target="#what-happens-when-managers-choose">What Happens When Managers Choose</a></li>
@@ -458,11 +459,33 @@ window.Quarto = {
 <ul>
 <li>Chapter 1 introduced the fundamental problem: we never see both potential outcomes for the same unit.</li>
 <li>This chapter builds the language used in the rest of the notes: potential outcomes, estimands, the assumptions about treatments (SUTVA), assignment mechanisms, and causal diagrams for deciding what to control for.</li>
-<li>The running example is a firm giving some workers access to a generative AI assistant.</li>
+<li>The running example is a firm giving some customer-support agents access to a generative AI assistant.</li>
 </ul>
 </div>
 <section id="potential-outcomes" class="level2">
 <h2 class="anchored" data-anchor-id="potential-outcomes">Potential Outcomes</h2>
+<section id="the-running-example" class="level3">
+<h3 class="anchored" data-anchor-id="the-running-example">The Running Example</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>An AI Assistant for Customer-Support Agents
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Setting:</strong> the customer-support centre from the Chapter 1 case study. Agents answer customers’ questions in live chats.</li>
+<li><strong>Treatment:</strong> access to a generative AI assistant that reads each chat and suggests replies. Agents can accept, edit, or ignore the suggestions.</li>
+<li><strong>Outcome:</strong> tickets (customer issues) resolved per hour.</li>
+<li><strong>Question:</strong> how many more tickets per hour does an agent resolve with the assistant than without it?</li>
+</ul>
+<p>We follow eight agents, from new to expert, through this chapter. Real studies of such tools find the largest gains for less experienced agents (Chapters 8 and 9), and the made-up numbers here follow that pattern.</p>
+</div>
+</div>
+</section>
 <section id="units-treatments-outcomes" class="level3">
 <h3 class="anchored" data-anchor-id="units-treatments-outcomes">Units, Treatments, Outcomes</h3>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -506,14 +529,14 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Eight Customer-Support Workers (a Thought Experiment)
+<span class="screen-reader-only">Note</span>Eight Support Agents (Made-Up Numbers)
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th>Worker</th>
+<th>Agent</th>
 <th style="text-align: center;"><span class="math inline">Y_i(0)</span>: without AI</th>
 <th style="text-align: center;"><span class="math inline">Y_i(1)</span>: with AI</th>
 <th style="text-align: center;"><span class="math inline">\tau_i</span></th>
@@ -570,7 +593,7 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>Average effect: <span class="math inline">\frac{1}{8}\sum_i \tau_i = +0.25</span> tickets per hour. Effects differ across workers, and in reality we only ever see one column for each.</p>
+<p>Average effect: <span class="math inline">\frac{1}{8}\sum_i \tau_i = +0.25</span> tickets per hour. Effects differ across agents, and in reality we only ever see one of the two outcome columns for each agent.</p>
 </div>
 </div>
 <div class="notes">
@@ -581,6 +604,7 @@ window.Quarto = {
 </section>
 <section id="what-happens-when-managers-choose" class="level3">
 <h3 class="anchored" data-anchor-id="what-happens-when-managers-choose">What Happens When Managers Choose</h3>
+<p>The table shows both outcomes for every agent, which real data never do. We use it to see what an observed comparison would report under two ways of handing out the tool: managers give it to their four strongest agents (E–H), or a lottery picks four agents. Because we know the true average effect (0.25), we can check which comparison gets it right.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -591,7 +615,7 @@ window.Quarto = {
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>ate <span class="ot">&lt;-</span> <span class="fu">mean</span>(po<span class="sc">$</span>y1 <span class="sc">-</span> po<span class="sc">$</span>y0)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Scenario 1: managers give AI to their four strongest workers</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Scenario 1: managers give AI to their four strongest agents</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>d_mgr <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(po<span class="sc">$</span>worker <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"E"</span>, <span class="st">"F"</span>, <span class="st">"G"</span>, <span class="st">"H"</span>))</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>naive_mgr <span class="ot">&lt;-</span> <span class="fu">mean</span>(po<span class="sc">$</span>y1[d_mgr <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(po<span class="sc">$</span>y0[d_mgr <span class="sc">==</span> <span class="dv">0</span>])</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
@@ -612,11 +636,21 @@ window.Quarto = {
           0.250           1.100           0.249           0.375 </code></pre>
 </div>
 </div>
-<div class="notes">
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
-<li>When managers choose the strongest workers, the comparison overstates the effect even though those workers gain the least: their high baseline does the work.</li>
-<li>Under a lottery, the comparison is right on average; any single lottery can still be off (the standard deviation). Chapter 3 is about that sampling variation.</li>
+<li><strong>Managers choose:</strong> agents E–H with the tool against agents A–D without it gives 1.10, more than four times the true 0.25. Most of the gap is the strong agents’ higher output even without AI, and they are the agents who gain least from it.</li>
+<li><strong>Lottery:</strong> averaged over 10,000 lotteries, the comparison gives 0.25, the true effect. With only eight agents, a single lottery can still miss by about 0.37 (the standard deviation). Chapter 3 deals with this chance variation.</li>
 </ul>
+</div>
 </div>
 </section>
 </section>
@@ -682,7 +716,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If managers give the tool to the experts (E–H), the ATT is <span class="math inline">+0.05</span>, while the ATC (new and mid-level workers) is <span class="math inline">+0.45</span>. Both are “the effect of AI”, and they differ by a factor of nine. Always say whose effect you are estimating.</p>
+<p>If managers give the tool to the experts (E–H), the ATT is <span class="math inline">+0.05</span>, while the ATC (new and mid-level agents) is <span class="math inline">+0.45</span>. Both are “the effect of AI”, and they differ by a factor of nine. Always say whose effect you are estimating.</p>
 </div>
 </div>
 </section>
@@ -1034,7 +1068,7 @@ window.Quarto = {
 <div class="incremental">
 <ol class="incremental" type="1">
 <li><strong>Read</strong>: <span class="citation" data-cites="holland1986statistics">Holland (<a href="#ref-holland1986statistics" role="doc-biblioref">1986</a>)</span>; <span class="citation" data-cites="cinelli2024crash">Cinelli et al. (<a href="#ref-cinelli2024crash" role="doc-biblioref">2024</a>)</span></li>
-<li><strong>Practice</strong>: In the eight-worker simulation, let managers give AI to the four <em>newest</em> workers. Is the naive comparison now too high or too low? Why?</li>
+<li><strong>Practice</strong>: In the eight-agent simulation, let managers give AI to the four <em>newest</em> agents. Is the naive comparison now too high or too low? Why?</li>
 <li><strong>Think</strong>: For a policy you know well, write down the treatment, the outcome, the estimand, and the assignment mechanism</li>
 <li><strong>Next Class</strong>: Randomized experiments: design and inference (Chapter 3)</li>
 </ol>
@@ -1056,44 +1090,6 @@ Holland, Paul W. 1986. <span>“Statistics and Causal Inference.”</span> <em>J
 </section>
 
 </main> <!-- /main -->
-
-<script>
-  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-  // slide changes (different for each slide format).
-  (function () {
-    // dispatch for htmlwidgets
-    function fireSlideEnter() {
-      const event = window.document.createEvent("Event");
-      event.initEvent("slideenter", true, true);
-      window.document.dispatchEvent(event);
-    }
-
-    function fireSlideChanged(previousSlide, currentSlide) {
-      fireSlideEnter();
-
-      // dispatch for shiny
-      if (window.jQuery) {
-        if (previousSlide) {
-          window.jQuery(previousSlide).trigger("hidden");
-        }
-        if (currentSlide) {
-          window.jQuery(currentSlide).trigger("shown");
-        }
-      }
-    }
-
-    // hookup for slidy
-    if (window.w3c_slidy) {
-      window.w3c_slidy.add_observer(function (slide_num) {
-        // slide_num starts at position 1
-        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-      });
-    }
-
-  })();
-</script>
-
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

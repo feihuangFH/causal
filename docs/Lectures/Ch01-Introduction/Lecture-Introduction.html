@@ -1117,7 +1117,7 @@ window.Quarto = {
 </section>
 <section id="design-1-randomized-experiment" class="level3">
 <h3 class="anchored" data-anchor-id="design-1-randomized-experiment">Design 1: Randomized Experiment</h3>
-<p>Managers give the assistant to the agents they expect to use it well, who tend to be their strongest. The firm could instead hold a lottery.</p>
+<p>The firm considers two ways to roll out the tool. Plan A: managers choose who gets it, and they tend to pick their strongest agents. Plan B: a lottery decides. The plot compares the two plans.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1140,10 +1140,10 @@ window.Quarto = {
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(skill[pick <span class="sc">==</span> <span class="dv">0</span>], <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">col =</span> <span class="fu">adjustcolor</span>(grey, <span class="fl">0.5</span>), <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">3.5</span>, <span class="fl">3.5</span>),</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Skill of agents, by who got the tool"</span>, <span class="at">xlab =</span> <span class="st">"Skill (unobserved)"</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Plan A: who got the tool, by skill"</span>, <span class="at">xlab =</span> <span class="st">"Skill (unobserved)"</span>)</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(skill[pick <span class="sc">==</span> <span class="dv">1</span>], <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">col =</span> <span class="fu">adjustcolor</span>(blue, <span class="fl">0.5</span>), <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"No tool"</span>, <span class="st">"Tool"</span>), <span class="at">fill =</span> <span class="fu">adjustcolor</span>(<span class="fu">c</span>(grey, blue), <span class="fl">0.5</span>), <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">c</span>(<span class="at">Managers =</span> naive_pick, <span class="at">Lottery =</span> rct), <span class="at">col =</span> <span class="fu">c</span>(grey, blue), <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.7</span>),</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">c</span>(<span class="st">"Plan A (managers)"</span> <span class="ot">=</span> naive_pick, <span class="st">"Plan B (lottery)"</span> <span class="ot">=</span> rct), <span class="at">col =</span> <span class="fu">c</span>(grey, blue), <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.7</span>),</span>
 <span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">"Estimated effect"</span>, <span class="at">ylab =</span> <span class="st">"Resolutions per hour"</span>)</span>
 <span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> tau, <span class="at">col =</span> orange, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
@@ -1169,9 +1169,10 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><strong>Simple comparison:</strong> agents with the tool against agents without it, when managers chose: 0.61. Too high, because the chosen agents were stronger to begin with (left panel).</li>
-<li><strong>Randomized experiment:</strong> a lottery decides who gets the tool, so both groups have the same mix of skill. Their difference is the effect: 0.31.</li>
-<li><strong>Relies on:</strong> assignment really being random, and treated agents not affecting untreated ones.</li>
+<li><strong>Plan A, managers choose (simple comparison):</strong> comparing agents with the tool against agents without it gives 0.61. Too high, because the chosen agents were stronger to begin with (left panel).</li>
+<li><strong>Plan B, a lottery (randomized experiment):</strong> chance decides who gets the tool, so both groups have the same mix of skill, measured or not. Their difference is the effect: 0.31.</li>
+<li><strong>The lottery is the better design.</strong> It needs no assumption beyond the randomization being carried out as planned, and treated agents not affecting untreated ones.</li>
+<li><strong>Timing matters:</strong> a lottery is only possible before the rollout. If managers have already chosen, see Designs 4 and 7.</li>
 </ul>
 </div>
 </div>
