@@ -629,7 +629,7 @@ window.Quarto = {
 </blockquote>
 <ul>
 <li>The student’s ability, family background, neighborhood, and the region’s climate are the same in both comparisons.</li>
-<li>Anything that is fixed over time cancels out, <em>even if we never measure it</em>.</li>
+<li>Anything that is fixed over time, and affects the outcome the same way in every period, cancels out, <em>even if we never measure it</em>.</li>
 </ul>
 <p>This is the logic of fixed effects (FE).</p>
 </div>
@@ -1054,7 +1054,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>1. Time-varying confounders</strong> Something changes over time for unit <span class="math inline">i</span> and affects both <span class="math inline">D_{it}</span> and <span class="math inline">Y_{it}</span>. <em>Example:</em> a local recession reduces both school AC maintenance and family resources.</p>
+<p><strong>1. Time-varying confounders</strong> Something changes over time for unit <span class="math inline">i</span> and affects both <span class="math inline">D_{it}</span> and <span class="math inline">Y_{it}</span>. <em>Example:</em> a local recession reduces both school AC maintenance and family resources. A fixed trait whose effect changes over time acts the same way. <em>Example:</em> a student’s ability is fixed, but if it counts for more on later tests, its contribution to scores changes from year to year.</p>
 <p><strong>2. Feedback / reverse causality</strong> Past outcomes affect future treatment: <span class="math inline">Y_{i,t-1} \rightarrow D_{it}</span>. <em>Example:</em> a firm whose stock price fell cuts emissions. A worker who was injured changes jobs.</p>
 <p><strong>3. Anticipation and dynamic effects</strong> Future treatment affects current outcomes, or past treatment still matters today.</p>
 <p><strong>4. Lagged dependent variables</strong> Including <span class="math inline">Y_{i,t-1}</span> as a regressor with unit FE violates strict exogeneity mechanically. This is the Nickell bias, of order <span class="math inline">1/T</span> <span class="citation" data-cites="nickell1981biases">(<a href="#ref-nickell1981biases" role="doc-biblioref">Nickell 1981</a>)</span>.</p>

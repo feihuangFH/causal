@@ -380,7 +380,7 @@ Fei Huang, UNSW Sydney
 </blockquote>
 <ul>
 <li>The student’s ability, family background, neighborhood, and the region’s climate are the same in both comparisons.</li>
-<li>Anything that is fixed over time cancels out, <em>even if we never measure it</em>.</li>
+<li>Anything that is fixed over time, and affects the outcome the same way in every period, cancels out, <em>even if we never measure it</em>.</li>
 </ul>
 <p>This is the logic of fixed effects (FE).</p>
 </div>
@@ -841,7 +841,7 @@ Fei Huang, UNSW Sydney
 <p><strong>Threats to FE Identification</strong></p>
 </div>
 <div class="callout-content">
-<p><strong>1. Time-varying confounders</strong> Something changes over time for unit <span class="math inline">i</span> and affects both <span class="math inline">D_{it}</span> and <span class="math inline">Y_{it}</span>. <em>Example:</em> a local recession reduces both school AC maintenance and family resources.</p>
+<p><strong>1. Time-varying confounders</strong> Something changes over time for unit <span class="math inline">i</span> and affects both <span class="math inline">D_{it}</span> and <span class="math inline">Y_{it}</span>. <em>Example:</em> a local recession reduces both school AC maintenance and family resources. A fixed trait whose effect changes over time acts the same way. <em>Example:</em> a student’s ability is fixed, but if it counts for more on later tests, its contribution to scores changes from year to year.</p>
 <p><strong>2. Feedback / reverse causality</strong> Past outcomes affect future treatment: <span class="math inline">Y_{i,t-1} \rightarrow D_{it}</span>. <em>Example:</em> a firm whose stock price fell cuts emissions. A worker who was injured changes jobs.</p>
 <p><strong>3. Anticipation and dynamic effects</strong> Future treatment affects current outcomes, or past treatment still matters today.</p>
 <p><strong>4. Lagged dependent variables</strong> Including <span class="math inline">Y_{i,t-1}</span> as a regressor with unit FE violates strict exogeneity mechanically. This is the Nickell bias, of order <span class="math inline">1/T</span> <span class="citation" data-cites="nickell1981biases">(<a href="#/references" role="doc-biblioref" onclick="">Nickell 1981</a>)</span>.</p>
@@ -2691,6 +2691,44 @@ Wooldridge, Jeffrey M. 1999. <span>“Distribution-Free Estimation of Some Nonli
       });
     });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
