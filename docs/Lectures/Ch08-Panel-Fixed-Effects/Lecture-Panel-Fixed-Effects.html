@@ -566,7 +566,7 @@ window.Quarto = {
 <li><strong>What must hold:</strong> strict exogeneity: no confounders that change over time, and no feedback from past outcomes to treatment</li>
 <li><strong>Checks to run:</strong> residual variation after fixed effects; leads of treatment; selection into the panel; alternative fixed-effect structures; clustering at the level of treatment (wild bootstrap if clusters are few)</li>
 <li><strong>In R:</strong> <code>feols(y ~ d + x | unit + time, data, cluster = ~unit)</code>, <code>fepois()</code> for counts</li>
-<li><strong>Telling a manager:</strong> “We compare each branch with itself in other periods, so nothing permanent about a branch can explain the result.”</li>
+<li><strong>Telling a manager:</strong> “We compared each branch’s sales after the training with the same branch’s sales before it. Its location, size and customers were the same both times, so they can’t explain the change. Something else that changed at that branch around the same time, such as a rival closing nearby, still could.”</li>
 </ul>
 </div>
 </div>
