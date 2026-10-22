@@ -914,6 +914,7 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="simulation-collider-bias" class="slide level2 center">
 <h2>Simulation: Collider Bias</h2>
+<p>A business magazine features firms that adopted AI <em>or</em> that are highly productive. Being featured is therefore a collider: AI adoption → featured ← productivity. In this simulation AI has no effect on productivity at all. We estimate its effect twice: across all firms, and only among featured firms, as a researcher would if the data came from magazine stories.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -925,38 +926,41 @@ Fei Huang, UNSW Sydney
 <span id="cb3-6"><a></a><span class="co"># A firm is "featured" in a business magazine if it adopted AI or is highly productive</span></span>
 <span id="cb3-7"><a></a>featured <span class="ot">&lt;-</span> (ai_adoption <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> <span class="fu">runif</span>(n) <span class="sc">&lt;</span> <span class="fl">0.3</span>) <span class="sc">|</span> productivity <span class="sc">&gt;</span> <span class="dv">1</span></span>
 <span id="cb3-8"><a></a></span>
-<span id="cb3-9"><a></a><span class="fu">c</span>(<span class="at">all_firms      =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(productivity <span class="sc">~</span> ai_adoption))[<span class="st">"ai_adoption"</span>],</span>
-<span id="cb3-10"><a></a>  <span class="at">featured_firms =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(productivity <span class="sc">~</span> ai_adoption, <span class="at">subset =</span> featured))[<span class="st">"ai_adoption"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-9"><a></a>est_all      <span class="ot">&lt;-</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(productivity <span class="sc">~</span> ai_adoption))[<span class="st">"ai_adoption"</span>])</span>
+<span id="cb3-10"><a></a>est_featured <span class="ot">&lt;-</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(productivity <span class="sc">~</span> ai_adoption, <span class="at">subset =</span> featured))[<span class="st">"ai_adoption"</span>])</span>
+<span id="cb3-11"><a></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">all_firms =</span> est_all, <span class="at">featured_firms =</span> est_featured), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>     all_firms.ai_adoption featured_firms.ai_adoption 
-                0.01276997                -1.11199358 </code></pre>
+<pre><code>     all_firms featured_firms 
+          0.01          -1.11 </code></pre>
 </div>
 </div>
-<aside class="notes">
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
 <ul>
-<li>Across all firms, the estimated effect is close to zero, as it should be.</li>
-<li>Among featured firms only, AI adopters look far <em>less</em> productive: non-adopters had to be highly productive to be featured. Studying only the firms that appear in the news, survived a crisis, or published a case study creates this bias.</li>
+<li><strong>All firms:</strong> 0.01, close to the true effect of zero.</li>
+<li><strong>Featured firms only:</strong> −1.11. A featured firm that did not adopt AI must have got in by being highly productive, while many adopters got in through AI alone with ordinary productivity. Among featured firms, AI therefore looks harmful, although it does nothing.</li>
+<li><strong>Lesson:</strong> do not control for, or select the sample on, a variable that both the treatment and the outcome affect. Firms in the news, firms that survived a crisis, and firms that published a case study are all selected this way.</li>
 </ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+</div>
+</div>
+</div>
 </section></section>
 <section>
 <section id="identification-estimation-inference" class="title-slide slide level1 center">
 <h1>Identification, Estimation, Inference</h1>
 
 </section>
-<section id="three-separate-questions" class="slide level2 center scrollable">
+<section id="three-separate-questions" class="slide level2 center">
 <h2>Three Separate Questions</h2>
+<p>Every causal study has to get three things right, and each can fail on its own. Separating them tells you what kind of problem a study has, and whether more data would help.</p>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -966,12 +970,43 @@ Fei Huang, UNSW Sydney
 <p><strong>Keep Them Apart</strong></p>
 </div>
 <div class="callout-content">
-<ol type="1">
-<li><strong>Identification:</strong> if we had infinite data, would our comparison reveal the estimand? This depends on the assignment mechanism and the assumptions we are willing to make. It is never solved by more data.</li>
-<li><strong>Estimation:</strong> which formula do we apply to a finite sample (difference in means, regression, matching, two-stage least squares)?</li>
-<li><strong>Inference:</strong> how uncertain is the estimate? Uncertainty comes from sampling (who is in the data) and from design (which units happened to be treated).</li>
-</ol>
-<p>Most disagreements about a study are about step 1. Most of these notes are too.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 26%">
+<col style="width: 46%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Question</th>
+<th>What it asks</th>
+<th>In the support-centre example</th>
+<th>More data helps?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Identification</strong></td>
+<td>With unlimited data, would our comparison reveal the estimand?</td>
+<td>When managers choose, comparing agents with and without the tool gives 1.10, not 0.25, however many agents we have. A lottery fixes this</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td><strong>Estimation</strong></td>
+<td>Which formula do we apply to the sample we have?</td>
+<td>With lottery data, a difference in means, or a regression that adds baseline productivity to sharpen the estimate</td>
+<td>Partly</td>
+</tr>
+<tr class="odd">
+<td><strong>Inference</strong></td>
+<td>How uncertain is the estimate?</td>
+<td>With eight agents, one lottery can miss the true effect by about 0.37; a confidence interval reports this</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>Most disagreements about a study are about identification, and so are most of these notes. Estimation is the R code in each chapter. Inference covers standard errors, clustering, and randomization inference (Chapters 3 and 8).</p>
 </div>
 </div>
 </div>
