@@ -407,7 +407,6 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#matching-and-weighting-in-r" id="toc-matching-and-weighting-in-r" class="nav-link" data-scroll-target="#matching-and-weighting-in-r">Matching and Weighting in R</a></li>
   <li><a href="#checking-balance" id="toc-checking-balance" class="nav-link" data-scroll-target="#checking-balance">Checking Balance</a></li>
-  <li><a href="#when-the-assumption-fails" id="toc-when-the-assumption-fails" class="nav-link" data-scroll-target="#when-the-assumption-fails">When the Assumption Fails</a></li>
   </ul></li>
   <li><a href="#real-data" id="toc-real-data" class="nav-link" data-scroll-target="#real-data">Real Data</a>
   <ul class="collapse">
@@ -415,7 +414,11 @@ window.Quarto = {
   </ul></li>
   <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis">Sensitivity Analysis</a>
   <ul class="collapse">
+  <li><a href="#when-the-assumption-fails" id="toc-when-the-assumption-fails" class="nav-link" data-scroll-target="#when-the-assumption-fails">When the Assumption Fails</a></li>
   <li><a href="#how-strong-would-a-hidden-confounder-have-to-be" id="toc-how-strong-would-a-hidden-confounder-have-to-be" class="nav-link" data-scroll-target="#how-strong-would-a-hidden-confounder-have-to-be">How Strong Would a Hidden Confounder Have to Be?</a></li>
+  </ul></li>
+  <li><a href="#matching-with-other-designs" id="toc-matching-with-other-designs" class="nav-link" data-scroll-target="#matching-with-other-designs">Matching with Other Designs</a>
+  <ul class="collapse">
   <li><a href="#combining-matching-with-other-designs" id="toc-combining-matching-with-other-designs" class="nav-link" data-scroll-target="#combining-matching-with-other-designs">Combining Matching with Other Designs</a></li>
   </ul></li>
   <li><a href="#case-study-1-the-lalonde-benchmark" id="toc-case-study-1-the-lalonde-benchmark" class="nav-link" data-scroll-target="#case-study-1-the-lalonde-benchmark">Case Study 1: The LaLonde Benchmark</a>
@@ -855,33 +858,6 @@ loyalty       0.47  0.01</code></pre>
 </ul>
 </div>
 </section>
-<section id="when-the-assumption-fails" class="level3">
-<h3 class="anchored" data-anchor-id="when-the-assumption-fails">When the Assumption Fails</h3>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now an unobserved trait (enthusiasm) drives both joining and visiting</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>enthusiasm <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>join2   <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> loyalty <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> enthusiasm))</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>visits2 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> loyalty <span class="sc">+</span> <span class="fl">1.0</span> <span class="sc">*</span> join2 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> enthusiasm <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">visits =</span> visits2, <span class="at">join =</span> join2, past_visits, loyalty)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">matchit</span>(join <span class="sc">~</span> past_visits <span class="sc">+</span> loyalty, <span class="at">data =</span> dat2, <span class="at">method =</span> <span class="st">"nearest"</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">distance =</span> <span class="st">"glm"</span>, <span class="at">caliper =</span> <span class="fl">0.1</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">true_effect =</span> <span class="dv">1</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">PS_matching =</span> <span class="fu">round</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(visits <span class="sc">~</span> join, <span class="fu">match.data</span>(m2), <span class="at">weights =</span> weights))[<span class="st">"join"</span>]), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>true_effect PS_matching 
-       1.00        2.54 </code></pre>
-</div>
-</div>
-<div class="notes">
-<ul>
-<li>Balance on past visits and loyalty can look perfect, and the estimate is still badly biased: matching cannot balance what it cannot see.</li>
-</ul>
-</div>
-</section>
 </section>
 <section id="real-data" class="level2">
 <h2 class="anchored" data-anchor-id="real-data">Real Data</h2>
@@ -890,16 +866,16 @@ loyalty       0.47  0.01</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"lalonde"</span>, <span class="at">package =</span> <span class="st">"MatchIt"</span>)   <span class="co"># 185 NSW trainees and 429 comparison men from a national survey (PSID)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> treat <span class="sc">~</span> age <span class="sc">+</span> educ <span class="sc">+</span> race <span class="sc">+</span> married <span class="sc">+</span> nodegree <span class="sc">+</span> re74 <span class="sc">+</span> re75</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>m_ll <span class="ot">&lt;-</span> <span class="fu">matchit</span>(f, <span class="at">data =</span> lalonde, <span class="at">method =</span> <span class="st">"nearest"</span>, <span class="at">distance =</span> <span class="st">"glm"</span>, <span class="at">caliper =</span> <span class="fl">0.1</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>md_ll <span class="ot">&lt;-</span> <span class="fu">match.data</span>(m_ll)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">experimental_benchmark =</span> <span class="dv">1794</span>,   <span class="co"># Dehejia &amp; Wahba (1999), same 185 trainees</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">naive      =</span> <span class="fu">with</span>(lalonde, <span class="fu">mean</span>(re78[treat <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(re78[treat <span class="sc">==</span> <span class="dv">0</span>])),</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">regression =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(<span class="fu">update</span>(f, re78 <span class="sc">~</span> treat <span class="sc">+</span> .), lalonde))[<span class="st">"treat"</span>]),</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">PS_matching =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(re78 <span class="sc">~</span> treat, md_ll, <span class="at">weights =</span> weights))[<span class="st">"treat"</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"lalonde"</span>, <span class="at">package =</span> <span class="st">"MatchIt"</span>)   <span class="co"># 185 NSW trainees and 429 comparison men from a national survey (PSID)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> treat <span class="sc">~</span> age <span class="sc">+</span> educ <span class="sc">+</span> race <span class="sc">+</span> married <span class="sc">+</span> nodegree <span class="sc">+</span> re74 <span class="sc">+</span> re75</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>m_ll <span class="ot">&lt;-</span> <span class="fu">matchit</span>(f, <span class="at">data =</span> lalonde, <span class="at">method =</span> <span class="st">"nearest"</span>, <span class="at">distance =</span> <span class="st">"glm"</span>, <span class="at">caliper =</span> <span class="fl">0.1</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>md_ll <span class="ot">&lt;-</span> <span class="fu">match.data</span>(m_ll)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">experimental_benchmark =</span> <span class="dv">1794</span>,   <span class="co"># Dehejia &amp; Wahba (1999), same 185 trainees</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">naive      =</span> <span class="fu">with</span>(lalonde, <span class="fu">mean</span>(re78[treat <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(re78[treat <span class="sc">==</span> <span class="dv">0</span>])),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">regression =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(<span class="fu">update</span>(f, re78 <span class="sc">~</span> treat <span class="sc">+</span> .), lalonde))[<span class="st">"treat"</span>]),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">PS_matching =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(re78 <span class="sc">~</span> treat, md_ll, <span class="at">weights =</span> weights))[<span class="st">"treat"</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>experimental_benchmark                  naive             regression 
@@ -930,6 +906,33 @@ loyalty       0.47  0.01</code></pre>
 </section>
 <section id="sensitivity-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="sensitivity-analysis">Sensitivity Analysis</h2>
+<section id="when-the-assumption-fails" class="level3">
+<h3 class="anchored" data-anchor-id="when-the-assumption-fails">When the Assumption Fails</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now an unobserved trait (enthusiasm) drives both joining and visiting</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>enthusiasm <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>join2   <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> loyalty <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> enthusiasm))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>visits2 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> loyalty <span class="sc">+</span> <span class="fl">1.0</span> <span class="sc">*</span> join2 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> enthusiasm <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">visits =</span> visits2, <span class="at">join =</span> join2, past_visits, loyalty)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">matchit</span>(join <span class="sc">~</span> past_visits <span class="sc">+</span> loyalty, <span class="at">data =</span> dat2, <span class="at">method =</span> <span class="st">"nearest"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">distance =</span> <span class="st">"glm"</span>, <span class="at">caliper =</span> <span class="fl">0.1</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">true_effect =</span> <span class="dv">1</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">PS_matching =</span> <span class="fu">round</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(visits <span class="sc">~</span> join, <span class="fu">match.data</span>(m2), <span class="at">weights =</span> weights))[<span class="st">"join"</span>]), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>true_effect PS_matching 
+       1.00        2.54 </code></pre>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>Balance on past visits and loyalty can look perfect, and the estimate is still badly biased: matching cannot balance what it cannot see.</li>
+</ul>
+</div>
+</section>
 <section id="how-strong-would-a-hidden-confounder-have-to-be" class="level3">
 <h3 class="anchored" data-anchor-id="how-strong-would-a-hidden-confounder-have-to-be">How Strong Would a Hidden Confounder Have to Be?</h3>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -951,6 +954,9 @@ loyalty       0.47  0.01</code></pre>
 </div>
 </div>
 </section>
+</section>
+<section id="matching-with-other-designs" class="level2">
+<h2 class="anchored" data-anchor-id="matching-with-other-designs">Matching with Other Designs</h2>
 <section id="combining-matching-with-other-designs" class="level3">
 <h3 class="anchored" data-anchor-id="combining-matching-with-other-designs">Combining Matching with Other Designs</h3>
 <div class="callout callout-style-default callout-note callout-titled">

@@ -660,43 +660,6 @@ loyalty       0.47  0.01</code></pre>
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section>
-<section id="when-the-assumption-fails" class="slide level2 center">
-<h2>When the Assumption Fails</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># Now an unobserved trait (enthusiasm) drives both joining and visiting</span></span>
-<span id="cb5-2"><a></a>enthusiasm <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb5-3"><a></a>join2   <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> loyalty <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> enthusiasm))</span>
-<span id="cb5-4"><a></a>visits2 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> loyalty <span class="sc">+</span> <span class="fl">1.0</span> <span class="sc">*</span> join2 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> enthusiasm <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb5-5"><a></a>dat2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">visits =</span> visits2, <span class="at">join =</span> join2, past_visits, loyalty)</span>
-<span id="cb5-6"><a></a></span>
-<span id="cb5-7"><a></a>m2 <span class="ot">&lt;-</span> <span class="fu">matchit</span>(join <span class="sc">~</span> past_visits <span class="sc">+</span> loyalty, <span class="at">data =</span> dat2, <span class="at">method =</span> <span class="st">"nearest"</span>,</span>
-<span id="cb5-8"><a></a>              <span class="at">distance =</span> <span class="st">"glm"</span>, <span class="at">caliper =</span> <span class="fl">0.1</span>)</span>
-<span id="cb5-9"><a></a><span class="fu">c</span>(<span class="at">true_effect =</span> <span class="dv">1</span>,</span>
-<span id="cb5-10"><a></a>  <span class="at">PS_matching =</span> <span class="fu">round</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(visits <span class="sc">~</span> join, <span class="fu">match.data</span>(m2), <span class="at">weights =</span> weights))[<span class="st">"join"</span>]), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>true_effect PS_matching 
-       1.00        2.54 </code></pre>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li>Balance on past visits and loyalty can look perfect, and the estimate is still badly biased: matching cannot balance what it cannot see.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section></section>
 <section>
 <section id="real-data" class="title-slide slide level1 center">
@@ -708,16 +671,16 @@ loyalty       0.47  0.01</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">data</span>(<span class="st">"lalonde"</span>, <span class="at">package =</span> <span class="st">"MatchIt"</span>)   <span class="co"># 185 NSW trainees and 429 comparison men from a national survey (PSID)</span></span>
-<span id="cb7-2"><a></a>f <span class="ot">&lt;-</span> treat <span class="sc">~</span> age <span class="sc">+</span> educ <span class="sc">+</span> race <span class="sc">+</span> married <span class="sc">+</span> nodegree <span class="sc">+</span> re74 <span class="sc">+</span> re75</span>
-<span id="cb7-3"><a></a></span>
-<span id="cb7-4"><a></a>m_ll <span class="ot">&lt;-</span> <span class="fu">matchit</span>(f, <span class="at">data =</span> lalonde, <span class="at">method =</span> <span class="st">"nearest"</span>, <span class="at">distance =</span> <span class="st">"glm"</span>, <span class="at">caliper =</span> <span class="fl">0.1</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-5"><a></a>md_ll <span class="ot">&lt;-</span> <span class="fu">match.data</span>(m_ll)</span>
-<span id="cb7-6"><a></a></span>
-<span id="cb7-7"><a></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">experimental_benchmark =</span> <span class="dv">1794</span>,   <span class="co"># Dehejia &amp; Wahba (1999), same 185 trainees</span></span>
-<span id="cb7-8"><a></a>        <span class="at">naive      =</span> <span class="fu">with</span>(lalonde, <span class="fu">mean</span>(re78[treat <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(re78[treat <span class="sc">==</span> <span class="dv">0</span>])),</span>
-<span id="cb7-9"><a></a>        <span class="at">regression =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(<span class="fu">update</span>(f, re78 <span class="sc">~</span> treat <span class="sc">+</span> .), lalonde))[<span class="st">"treat"</span>]),</span>
-<span id="cb7-10"><a></a>        <span class="at">PS_matching =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(re78 <span class="sc">~</span> treat, md_ll, <span class="at">weights =</span> weights))[<span class="st">"treat"</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">data</span>(<span class="st">"lalonde"</span>, <span class="at">package =</span> <span class="st">"MatchIt"</span>)   <span class="co"># 185 NSW trainees and 429 comparison men from a national survey (PSID)</span></span>
+<span id="cb5-2"><a></a>f <span class="ot">&lt;-</span> treat <span class="sc">~</span> age <span class="sc">+</span> educ <span class="sc">+</span> race <span class="sc">+</span> married <span class="sc">+</span> nodegree <span class="sc">+</span> re74 <span class="sc">+</span> re75</span>
+<span id="cb5-3"><a></a></span>
+<span id="cb5-4"><a></a>m_ll <span class="ot">&lt;-</span> <span class="fu">matchit</span>(f, <span class="at">data =</span> lalonde, <span class="at">method =</span> <span class="st">"nearest"</span>, <span class="at">distance =</span> <span class="st">"glm"</span>, <span class="at">caliper =</span> <span class="fl">0.1</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-5"><a></a>md_ll <span class="ot">&lt;-</span> <span class="fu">match.data</span>(m_ll)</span>
+<span id="cb5-6"><a></a></span>
+<span id="cb5-7"><a></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">experimental_benchmark =</span> <span class="dv">1794</span>,   <span class="co"># Dehejia &amp; Wahba (1999), same 185 trainees</span></span>
+<span id="cb5-8"><a></a>        <span class="at">naive      =</span> <span class="fu">with</span>(lalonde, <span class="fu">mean</span>(re78[treat <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(re78[treat <span class="sc">==</span> <span class="dv">0</span>])),</span>
+<span id="cb5-9"><a></a>        <span class="at">regression =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(<span class="fu">update</span>(f, re78 <span class="sc">~</span> treat <span class="sc">+</span> .), lalonde))[<span class="st">"treat"</span>]),</span>
+<span id="cb5-10"><a></a>        <span class="at">PS_matching =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(re78 <span class="sc">~</span> treat, md_ll, <span class="at">weights =</span> weights))[<span class="st">"treat"</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>experimental_benchmark                  naive             regression 
@@ -760,6 +723,43 @@ loyalty       0.47  0.01</code></pre>
 <h1>Sensitivity Analysis</h1>
 
 </section>
+<section id="when-the-assumption-fails" class="slide level2 center">
+<h2>When the Assumption Fails</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="co"># Now an unobserved trait (enthusiasm) drives both joining and visiting</span></span>
+<span id="cb7-2"><a></a>enthusiasm <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb7-3"><a></a>join2   <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> loyalty <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> enthusiasm))</span>
+<span id="cb7-4"><a></a>visits2 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> past_visits <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> loyalty <span class="sc">+</span> <span class="fl">1.0</span> <span class="sc">*</span> join2 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> enthusiasm <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb7-5"><a></a>dat2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">visits =</span> visits2, <span class="at">join =</span> join2, past_visits, loyalty)</span>
+<span id="cb7-6"><a></a></span>
+<span id="cb7-7"><a></a>m2 <span class="ot">&lt;-</span> <span class="fu">matchit</span>(join <span class="sc">~</span> past_visits <span class="sc">+</span> loyalty, <span class="at">data =</span> dat2, <span class="at">method =</span> <span class="st">"nearest"</span>,</span>
+<span id="cb7-8"><a></a>              <span class="at">distance =</span> <span class="st">"glm"</span>, <span class="at">caliper =</span> <span class="fl">0.1</span>)</span>
+<span id="cb7-9"><a></a><span class="fu">c</span>(<span class="at">true_effect =</span> <span class="dv">1</span>,</span>
+<span id="cb7-10"><a></a>  <span class="at">PS_matching =</span> <span class="fu">round</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(visits <span class="sc">~</span> join, <span class="fu">match.data</span>(m2), <span class="at">weights =</span> weights))[<span class="st">"join"</span>]), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>true_effect PS_matching 
+       1.00        2.54 </code></pre>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Balance on past visits and loyalty can look perfect, and the estimate is still badly biased: matching cannot balance what it cannot see.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="how-strong-would-a-hidden-confounder-have-to-be" class="slide level2 center">
 <h2>How Strong Would a Hidden Confounder Have to Be?</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -780,6 +780,11 @@ loyalty       0.47  0.01</code></pre>
 </div>
 </div>
 </div>
+</section></section>
+<section>
+<section id="matching-with-other-designs" class="title-slide slide level1 center">
+<h1>Matching with Other Designs</h1>
+
 </section>
 <section id="combining-matching-with-other-designs" class="slide level2 center">
 <h2>Combining Matching with Other Designs</h2>
@@ -1441,6 +1446,44 @@ Smith, Jeffrey A, and Petra E Todd. 2005. <span>“Does Matching Overcome <span 
       });
     });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

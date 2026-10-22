@@ -508,61 +508,6 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="requirements-and-limits" class="slide level2 center">
-<h2>Requirements and Limits</h2>
-<div class="callout callout-warning callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>When the Method Is Credible</strong></p>
-</div>
-<div class="callout-content">
-<ul>
-<li><strong>Long pre-treatment period</strong> with a close fit; a poor fit means the counterfactual is not credible</li>
-<li><strong>Donor pool</strong> of units that were not affected by the treatment or by other large shocks in the same period</li>
-<li><strong>No spillovers</strong> from the treated unit to donors (otherwise the gap is biased)</li>
-<li><strong>No anticipation:</strong> if behaviour changed before the formal treatment date (for example, once a policy was announced), backdate the treatment to that point</li>
-<li><strong>Not too extreme:</strong> the treated unit must be within the range of donors on the characteristics that matter</li>
-<li><strong>Inference</strong> cannot rely on large-sample standard errors with one treated unit; use placebo tests <span class="citation" data-cites="abadie2021using">(<a href="#/references" role="doc-biblioref" onclick="">Abadie 2021</a>)</span></li>
-</ul>
-</div>
-</div>
-</div>
-</section></section>
-<section>
-<section id="inference" class="title-slide slide level1 center">
-<h1>Inference</h1>
-
-</section>
-<section id="placebo-tests" class="slide level2 center">
-<h2>Placebo Tests</h2>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Is the Gap Unusual?</strong></p>
-</div>
-<div class="callout-content">
-<p><strong>In-space placebos:</strong> pretend each donor was treated instead, and re-run synthetic control for it (excluding the real treated unit from its donor pool). If the treated unit’s gap is larger than almost all placebo gaps, the effect is unlikely to be chance.</p>
-<ul>
-<li>Compare the ratio of post- to pre-treatment fit error (root mean squared prediction error, RMSPE), which penalizes placebos with poor pre-treatment fit</li>
-<li><strong>p-value</strong> = rank of the treated unit’s ratio among all <span class="math inline">J + 1</span> units, divided by <span class="math inline">J + 1</span>. With 20 donors the smallest possible p-value is <span class="math inline">1/21 \approx 0.048</span></li>
-</ul>
-<p><strong>In-time placebos:</strong> pretend treatment happened at an earlier date. A large “effect” before the real treatment signals a poor design.</p>
-<p><strong>Leave-one-out:</strong> drop each donor with positive weight in turn; results should not hinge on one donor.</p>
-</div>
-</div>
-</div>
-</section></section>
-<section>
-<section id="simulation" class="title-slide slide level1 center">
-<h1>Simulation</h1>
-
-</section>
 <section id="synthetic-control-vs.-did" class="slide level2 center">
 <h2>Synthetic Control vs.&nbsp;DiD</h2>
 <div class="cell">
@@ -635,7 +580,57 @@ Fei Huang, UNSW Sydney
 </details>
 
 </div>
-<img data-src="Lecture-Synthetic-Control_files/figure-html/unnamed-chunk-2-1.png" width="864" class="r-stretch"></section>
+<img data-src="Lecture-Synthetic-Control_files/figure-revealjs/unnamed-chunk-2-1.png" width="864" class="r-stretch"></section>
+<section id="requirements-and-limits" class="slide level2 center">
+<h2>Requirements and Limits</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>When the Method Is Credible</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Long pre-treatment period</strong> with a close fit; a poor fit means the counterfactual is not credible</li>
+<li><strong>Donor pool</strong> of units that were not affected by the treatment or by other large shocks in the same period</li>
+<li><strong>No spillovers</strong> from the treated unit to donors (otherwise the gap is biased)</li>
+<li><strong>No anticipation:</strong> if behaviour changed before the formal treatment date (for example, once a policy was announced), backdate the treatment to that point</li>
+<li><strong>Not too extreme:</strong> the treated unit must be within the range of donors on the characteristics that matter</li>
+<li><strong>Inference</strong> cannot rely on large-sample standard errors with one treated unit; use placebo tests <span class="citation" data-cites="abadie2021using">(<a href="#/references" role="doc-biblioref" onclick="">Abadie 2021</a>)</span></li>
+</ul>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="inference" class="title-slide slide level1 center">
+<h1>Inference</h1>
+
+</section>
+<section id="placebo-tests" class="slide level2 center">
+<h2>Placebo Tests</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Is the Gap Unusual?</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>In-space placebos:</strong> pretend each donor was treated instead, and re-run synthetic control for it (excluding the real treated unit from its donor pool). If the treated unit’s gap is larger than almost all placebo gaps, the effect is unlikely to be chance.</p>
+<ul>
+<li>Compare the ratio of post- to pre-treatment fit error (root mean squared prediction error, RMSPE), which penalizes placebos with poor pre-treatment fit</li>
+<li><strong>p-value</strong> = rank of the treated unit’s ratio among all <span class="math inline">J + 1</span> units, divided by <span class="math inline">J + 1</span>. With 20 donors the smallest possible p-value is <span class="math inline">1/21 \approx 0.048</span></li>
+</ul>
+<p><strong>In-time placebos:</strong> pretend treatment happened at an earlier date. A large “effect” before the real treatment signals a poor design.</p>
+<p><strong>Leave-one-out:</strong> drop each donor with positive weight in turn; results should not hinge on one donor.</p>
+</div>
+</div>
+</div>
+</section>
 <section id="placebo-inference" class="slide level2 center">
 <h2>Placebo Inference</h2>
 <div class="cell">
@@ -789,7 +784,7 @@ Fei Huang, UNSW Sydney
 </details>
 
 </div>
-<img data-src="Lecture-Synthetic-Control_files/figure-html/unnamed-chunk-5-1.png" width="864" class="r-stretch"><div class="callout callout-note callout-titled callout-style-default">
+<img data-src="Lecture-Synthetic-Control_files/figure-revealjs/unnamed-chunk-5-1.png" width="864" class="r-stretch"><div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
@@ -1466,6 +1461,44 @@ Ben-Michael, Eli, Avi Feller, and Jesse Rothstein. 2021. <span>“The Augmented 
       });
     });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

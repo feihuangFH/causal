@@ -642,6 +642,53 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </div>
+</section>
+<section id="a-22-did-by-hand-and-by-regression" class="slide level2 center">
+<h2>A 2×2 DiD by Hand and by Regression</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(fixest)</span>
+<span id="cb1-2"><a></a><span class="fu">setFixest_notes</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb1-3"><a></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb1-4"><a></a></span>
+<span id="cb1-5"><a></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb1-6"><a></a>d22 <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n, <span class="at">post =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)</span>
+<span id="cb1-7"><a></a>d22<span class="sc">$</span>treated <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(d22<span class="sc">$</span>id <span class="sc">&lt;=</span> n <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb1-8"><a></a></span>
+<span id="cb1-9"><a></a><span class="co"># Treated units start at a higher level (allowed under parallel trends)</span></span>
+<span id="cb1-10"><a></a>unit_level <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n) <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> (<span class="dv">1</span><span class="sc">:</span>n <span class="sc">&lt;=</span> n <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb1-11"><a></a>d22<span class="sc">$</span>y <span class="ot">&lt;-</span> unit_level[d22<span class="sc">$</span>id] <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> d22<span class="sc">$</span>post <span class="sc">+</span>          <span class="co"># common trend</span></span>
+<span id="cb1-12"><a></a>         <span class="fl">1.0</span> <span class="sc">*</span> d22<span class="sc">$</span>treated <span class="sc">*</span> d22<span class="sc">$</span>post <span class="sc">+</span>                  <span class="co"># true effect = 1</span></span>
+<span id="cb1-13"><a></a>         <span class="fu">rnorm</span>(<span class="fu">nrow</span>(d22), <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
+<span id="cb1-14"><a></a></span>
+<span id="cb1-15"><a></a><span class="co"># Four means and their difference</span></span>
+<span id="cb1-16"><a></a>means <span class="ot">&lt;-</span> <span class="fu">with</span>(d22, <span class="fu">tapply</span>(y, <span class="fu">list</span>(<span class="at">treated =</span> treated, <span class="at">post =</span> post), mean))</span>
+<span id="cb1-17"><a></a><span class="fu">round</span>(means, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       post
+treated    0    1
+      0 0.08 0.70
+      1 0.75 2.27</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>(means[<span class="st">"1"</span>, <span class="st">"1"</span>] <span class="sc">-</span> means[<span class="st">"1"</span>, <span class="st">"0"</span>]) <span class="sc">-</span> (means[<span class="st">"0"</span>, <span class="st">"1"</span>] <span class="sc">-</span> means[<span class="st">"0"</span>, <span class="st">"0"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9062927</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># Same number from the regression</span></span>
+<span id="cb5-2"><a></a><span class="fu">coeftable</span>(<span class="fu">feols</span>(y <span class="sc">~</span> treated <span class="sc">*</span> post, <span class="at">data =</span> d22, <span class="at">cluster =</span> <span class="sc">~</span>id))[<span class="st">"treated:post"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Estimate Std. Error 
+ 0.9062927  0.1025802 </code></pre>
+</div>
+</div>
 </section></section>
 <section>
 <section id="event-studies" class="title-slide slide level1 center">
@@ -830,119 +877,6 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </div>
-</section></section>
-<section>
-<section id="inference" class="title-slide slide level1 center">
-<h1>Inference</h1>
-
-</section>
-<section id="standard-errors-in-did" class="slide level2 center">
-<h2>Standard Errors in DiD</h2>
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Cluster at the Level of the Policy</strong></p>
-</div>
-<div class="callout-content">
-<ul>
-<li>Outcomes are serially correlated within units, and the treatment indicator is extremely persistent (0, 0, 0, 1, 1, 1). Ignoring this badly understates standard errors <span class="citation" data-cites="bertrand2004how">(<a href="#/references" role="doc-biblioref" onclick="">Bertrand et al. 2004</a>)</span></li>
-<li><strong>Cluster</strong> at the level at which treatment is assigned (e.g., state for a state law)</li>
-<li>With few clusters, or few <em>treated</em> clusters, cluster-robust standard errors are unreliable: use the wild cluster bootstrap or randomization inference (Chapter 8)</li>
-</ul>
-<table class="caption-top">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Case study</th>
-<th>Treatment varies by</th>
-<th>Clustered by</th>
-<th>Number of clusters</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Miller et al. <span class="citation" data-cites="miller2021medicaid">(<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span></td>
-<td>State</td>
-<td>State</td>
-<td>46 states</td>
-</tr>
-<tr class="even">
-<td>Brynjolfsson et al. <span class="citation" data-cites="brynjolfsson2025generative">(<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span></td>
-<td>Agent</td>
-<td>Agent</td>
-<td>5,000+</td>
-</tr>
-<tr class="odd">
-<td>Demirci et al. <span class="citation" data-cites="demirci2025who">(<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span></td>
-<td>Job category</td>
-<td>Job category</td>
-<td>5–6 categories per comparison</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</section></section>
-<section>
-<section id="simulation" class="title-slide slide level1 center">
-<h1>Simulation</h1>
-
-</section>
-<section id="a-22-did-by-hand-and-by-regression" class="slide level2 center">
-<h2>A 2×2 DiD by Hand and by Regression</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(fixest)</span>
-<span id="cb1-2"><a></a><span class="fu">setFixest_notes</span>(<span class="cn">FALSE</span>)</span>
-<span id="cb1-3"><a></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
-<span id="cb1-4"><a></a></span>
-<span id="cb1-5"><a></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb1-6"><a></a>d22 <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n, <span class="at">post =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)</span>
-<span id="cb1-7"><a></a>d22<span class="sc">$</span>treated <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(d22<span class="sc">$</span>id <span class="sc">&lt;=</span> n <span class="sc">/</span> <span class="dv">2</span>)</span>
-<span id="cb1-8"><a></a></span>
-<span id="cb1-9"><a></a><span class="co"># Treated units start at a higher level (allowed under parallel trends)</span></span>
-<span id="cb1-10"><a></a>unit_level <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n) <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> (<span class="dv">1</span><span class="sc">:</span>n <span class="sc">&lt;=</span> n <span class="sc">/</span> <span class="dv">2</span>)</span>
-<span id="cb1-11"><a></a>d22<span class="sc">$</span>y <span class="ot">&lt;-</span> unit_level[d22<span class="sc">$</span>id] <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> d22<span class="sc">$</span>post <span class="sc">+</span>          <span class="co"># common trend</span></span>
-<span id="cb1-12"><a></a>         <span class="fl">1.0</span> <span class="sc">*</span> d22<span class="sc">$</span>treated <span class="sc">*</span> d22<span class="sc">$</span>post <span class="sc">+</span>                  <span class="co"># true effect = 1</span></span>
-<span id="cb1-13"><a></a>         <span class="fu">rnorm</span>(<span class="fu">nrow</span>(d22), <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
-<span id="cb1-14"><a></a></span>
-<span id="cb1-15"><a></a><span class="co"># Four means and their difference</span></span>
-<span id="cb1-16"><a></a>means <span class="ot">&lt;-</span> <span class="fu">with</span>(d22, <span class="fu">tapply</span>(y, <span class="fu">list</span>(<span class="at">treated =</span> treated, <span class="at">post =</span> post), mean))</span>
-<span id="cb1-17"><a></a><span class="fu">round</span>(means, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>       post
-treated    0    1
-      0 0.08 0.70
-      1 0.75 2.27</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>(means[<span class="st">"1"</span>, <span class="st">"1"</span>] <span class="sc">-</span> means[<span class="st">"1"</span>, <span class="st">"0"</span>]) <span class="sc">-</span> (means[<span class="st">"0"</span>, <span class="st">"1"</span>] <span class="sc">-</span> means[<span class="st">"0"</span>, <span class="st">"0"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.9062927</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># Same number from the regression</span></span>
-<span id="cb5-2"><a></a><span class="fu">coeftable</span>(<span class="fu">feols</span>(y <span class="sc">~</span> treated <span class="sc">*</span> post, <span class="at">data =</span> d22, <span class="at">cluster =</span> <span class="sc">~</span>id))[<span class="st">"treated:post"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>  Estimate Std. Error 
- 0.9062927  0.1025802 </code></pre>
-</div>
-</div>
 </section>
 <section id="staggered-adoption-twfe-vs.-a-robust-estimator" class="slide level2 center">
 <h2>Staggered Adoption: TWFE vs.&nbsp;a Robust Estimator</h2>
@@ -1015,7 +949,7 @@ treated    0    1
 </details>
 
 </div>
-<img data-src="Lecture-Difference-in-Differences_files/figure-html/unnamed-chunk-3-1.png" width="768" class="r-stretch"><div class="callout callout-note callout-titled callout-style-default">
+<img data-src="Lecture-Difference-in-Differences_files/figure-revealjs/unnamed-chunk-3-1.png" width="768" class="r-stretch"><div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
@@ -1025,6 +959,67 @@ treated    0    1
 </div>
 <div class="callout-content">
 <p>Both event studies track the true dynamic effect here, because each period since treatment gets its own coefficient, every cohort follows the same dynamic path, and never-treated units give clean comparisons. The problem is the single static coefficient, which averages these growing effects using already-treated units as controls. A TWFE event study is not safe in general: when the dynamic path differs across cohorts, or when periods are binned or dropped, each coefficient can mix in effects from other periods, and spurious pre-trends can appear <span class="citation" data-cites="sun2021estimating">(<a href="#/references" role="doc-biblioref" onclick="">Sun and Abraham 2021</a>)</span>.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="inference" class="title-slide slide level1 center">
+<h1>Inference</h1>
+
+</section>
+<section id="standard-errors-in-did" class="slide level2 center">
+<h2>Standard Errors in DiD</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Cluster at the Level of the Policy</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Outcomes are serially correlated within units, and the treatment indicator is extremely persistent (0, 0, 0, 1, 1, 1). Ignoring this badly understates standard errors <span class="citation" data-cites="bertrand2004how">(<a href="#/references" role="doc-biblioref" onclick="">Bertrand et al. 2004</a>)</span></li>
+<li><strong>Cluster</strong> at the level at which treatment is assigned (e.g., state for a state law)</li>
+<li>With few clusters, or few <em>treated</em> clusters, cluster-robust standard errors are unreliable: use the wild cluster bootstrap or randomization inference (Chapter 8)</li>
+</ul>
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Case study</th>
+<th>Treatment varies by</th>
+<th>Clustered by</th>
+<th>Number of clusters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Miller et al. <span class="citation" data-cites="miller2021medicaid">(<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span></td>
+<td>State</td>
+<td>State</td>
+<td>46 states</td>
+</tr>
+<tr class="even">
+<td>Brynjolfsson et al. <span class="citation" data-cites="brynjolfsson2025generative">(<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span></td>
+<td>Agent</td>
+<td>Agent</td>
+<td>5,000+</td>
+</tr>
+<tr class="odd">
+<td>Demirci et al. <span class="citation" data-cites="demirci2025who">(<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span></td>
+<td>Job category</td>
+<td>Job category</td>
+<td>5–6 categories per comparison</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -1086,7 +1081,7 @@ treated    0    1
 </details>
 
 </div>
-<img data-src="Lecture-Difference-in-Differences_files/figure-html/unnamed-chunk-5-1.png" width="864" class="r-stretch"><div class="callout callout-note callout-titled callout-style-default">
+<img data-src="Lecture-Difference-in-Differences_files/figure-revealjs/unnamed-chunk-5-1.png" width="864" class="r-stretch"><div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
@@ -2052,6 +2047,44 @@ Sun, Liyang, and Sarah Abraham. 2021. <span>“Estimating Dynamic Treatment Effe
       });
     });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

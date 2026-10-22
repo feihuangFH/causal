@@ -320,10 +320,10 @@ gtag('config', 'G-F11HECZVN7', { 'anonymize_ip': true});
   </ul></li>
   <li><a href="#planning-an-experiment" id="toc-planning-an-experiment" class="nav-link" data-scroll-target="#planning-an-experiment">Planning an Experiment</a>
   <ul class="collapse">
-  <li><a href="#pre-registration-and-pre-analysis-plans" id="toc-pre-registration-and-pre-analysis-plans" class="nav-link" data-scroll-target="#pre-registration-and-pre-analysis-plans">Pre-Registration and Pre-Analysis Plans</a></li>
-  <li><a href="#measuring-outcomes" id="toc-measuring-outcomes" class="nav-link" data-scroll-target="#measuring-outcomes">Measuring Outcomes</a></li>
   <li><a href="#testing-mechanisms" id="toc-testing-mechanisms" class="nav-link" data-scroll-target="#testing-mechanisms">Testing Mechanisms</a></li>
+  <li><a href="#measuring-outcomes" id="toc-measuring-outcomes" class="nav-link" data-scroll-target="#measuring-outcomes">Measuring Outcomes</a></li>
   <li><a href="#between--and-within-subject-designs" id="toc-between--and-within-subject-designs" class="nav-link" data-scroll-target="#between--and-within-subject-designs">Between- and Within-Subject Designs</a></li>
+  <li><a href="#pre-registration-and-pre-analysis-plans" id="toc-pre-registration-and-pre-analysis-plans" class="nav-link" data-scroll-target="#pre-registration-and-pre-analysis-plans">Pre-Registration and Pre-Analysis Plans</a></li>
   <li><a href="#ethics-of-experimentation" id="toc-ethics-of-experimentation" class="nav-link" data-scroll-target="#ethics-of-experimentation">Ethics of Experimentation</a></li>
   </ul></li>
   <li><a href="#case-study-1-cognitive-surrender" id="toc-case-study-1-cognitive-surrender" class="nav-link" data-scroll-target="#case-study-1-cognitive-surrender">Case Study 1: Cognitive Surrender</a>
@@ -587,22 +587,24 @@ gtag('config', 'G-F11HECZVN7', { 'anonymize_ip': true});
 </section>
 <section id="planning-an-experiment" class="level2">
 <h2 class="anchored" data-anchor-id="planning-an-experiment">Planning an Experiment</h2>
-<section id="pre-registration-and-pre-analysis-plans" class="level3">
-<h3 class="anchored" data-anchor-id="pre-registration-and-pre-analysis-plans">Pre-Registration and Pre-Analysis Plans</h3>
-<div class="callout callout-style-default callout-note callout-titled">
+<section id="testing-mechanisms" class="level3">
+<h3 class="anchored" data-anchor-id="testing-mechanisms">Testing Mechanisms</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Record the Plan Before Seeing the Data
+<span class="screen-reader-only">Tip</span>Design Arms to Learn <em>Why</em>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A pre-registration records the hypotheses, design, primary outcomes, and planned analysis in a public registry (AEA RCT Registry, OSF, AsPredicted) before the data are analyzed.</p>
-<p><strong>Why:</strong> with many outcomes, subgroups, controls, and specifications, it is easy to find a significant result by chance and report only that one (the “garden of forking paths”).</p>
-<p><strong>What to include:</strong> primary and secondary outcomes; the estimator and controls; how to handle attrition and outliers; subgroups; multiple-testing corrections.</p>
-<p><strong>What it does not do:</strong> forbid exploration. It separates confirmatory results from exploratory ones, and deviations are reported rather than hidden.</p>
+<ul>
+<li><strong>Vary features of the treatment:</strong> personalized vs.&nbsp;generic letters; early vs.&nbsp;late mailing (Chapter 3)</li>
+<li><strong>Vary the context:</strong> add time pressure, or incentives for accuracy, and see whether the effect changes</li>
+<li><strong>Randomize the treatment’s quality:</strong> make an AI assistant right on some questions and wrong on others to see how much people rely on it</li>
+<li><strong>Measure intermediate outcomes</strong> (take-up, usage, acceptance of suggestions) to trace the path from treatment to outcome</li>
+</ul>
 </div>
 </div>
 </section>
@@ -624,27 +626,6 @@ gtag('config', 'G-F11HECZVN7', { 'anonymize_ip': true});
 <li><strong>Behavioral measures</strong> (decisions, clicks, completed tasks) are objective, but may be proxies: “pull requests completed” is not the same as “useful software written”</li>
 <li><strong>Quality as well as quantity:</strong> if a treatment raises output, check whether it lowers quality</li>
 <li>Decide the primary outcome in advance; everything else is secondary</li>
-</ul>
-</div>
-</div>
-</section>
-<section id="testing-mechanisms" class="level3">
-<h3 class="anchored" data-anchor-id="testing-mechanisms">Testing Mechanisms</h3>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Design Arms to Learn <em>Why</em>
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li><strong>Vary features of the treatment:</strong> personalized vs.&nbsp;generic letters; early vs.&nbsp;late mailing (Chapter 3)</li>
-<li><strong>Vary the context:</strong> add time pressure, or incentives for accuracy, and see whether the effect changes</li>
-<li><strong>Randomize the treatment’s quality:</strong> make an AI assistant right on some questions and wrong on others to see how much people rely on it</li>
-<li><strong>Measure intermediate outcomes</strong> (take-up, usage, acceptance of suggestions) to trace the path from treatment to outcome</li>
 </ul>
 </div>
 </div>
@@ -692,6 +673,25 @@ gtag('config', 'G-F11HECZVN7', { 'anonymize_ip': true});
 </tbody>
 </table>
 <p>Many modern experiments mix both: randomize access between people, and randomize features within people.</p>
+</div>
+</div>
+</section>
+<section id="pre-registration-and-pre-analysis-plans" class="level3">
+<h3 class="anchored" data-anchor-id="pre-registration-and-pre-analysis-plans">Pre-Registration and Pre-Analysis Plans</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Record the Plan Before Seeing the Data
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A pre-registration records the hypotheses, design, primary outcomes, and planned analysis in a public registry (AEA RCT Registry, OSF, AsPredicted) before the data are analyzed.</p>
+<p><strong>Why:</strong> with many outcomes, subgroups, controls, and specifications, it is easy to find a significant result by chance and report only that one (the “garden of forking paths”).</p>
+<p><strong>What to include:</strong> primary and secondary outcomes; the estimator and controls; how to handle attrition and outliers; subgroups; multiple-testing corrections.</p>
+<p><strong>What it does not do:</strong> forbid exploration. It separates confirmatory results from exploratory ones, and deviations are reported rather than hidden.</p>
 </div>
 </div>
 </section>
