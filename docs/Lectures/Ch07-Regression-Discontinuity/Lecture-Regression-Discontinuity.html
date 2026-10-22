@@ -734,7 +734,8 @@ window.Quarto = {
 <section id="simulation-a-sharp-rdd" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-a-sharp-rdd">Simulation: A Sharp RDD</h3>
 <p>5,000 households. Those with income below the cutoff (0) get a subsidy that raises insurance take-up by 8 points (the truth). Take-up also rises with income, with or without the subsidy.</p>
-<div class="cell">
+<p><em>Predict first:</em> will the simple comparison even get the sign right?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>({<span class="fu">library</span>(rdrobust); <span class="fu">library</span>(rddensity)})</span>
@@ -761,7 +762,7 @@ window.Quarto = {
            28.42 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -781,7 +782,7 @@ window.Quarto = {
 <section id="seeing-the-discontinuity" class="level3">
 <h3 class="anchored" data-anchor-id="seeing-the-discontinuity">Seeing the Discontinuity</h3>
 <p>Each dot is average take-up for households in a 5-point income band. The lines are local linear fits within the bandwidth; the gap where they meet the cutoff is the estimated effect.</p>
-<div class="cell">
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>bins <span class="ot">&lt;-</span> <span class="fu">cut</span>(x, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">5</span>))</span>
@@ -832,7 +833,8 @@ window.Quarto = {
 <section id="simulation-a-fuzzy-rdd" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-a-fuzzy-rdd">Simulation: A Fuzzy RDD</h3>
 <p>Above a credit-score cutoff, a lender raises the credit limit by about $1,500 on average, but limits also vary for other reasons. Each extra dollar of limit raises borrowing by 30 cents (the truth).</p>
-<div class="cell">
+<p><em>Predict first:</em> why divide the jump in borrowing by the jump in the credit limit?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Credit score relative to a lender's cutoff; the credit limit jumps by about $1,500 above it</span></span>
@@ -849,7 +851,7 @@ window.Quarto = {
          0.338          0.272          0.422 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -918,7 +920,8 @@ window.Quarto = {
 <section id="manipulation-test-in-r" class="level3">
 <h3 class="anchored" data-anchor-id="manipulation-test-in-r">Manipulation Test in R</h3>
 <p>If households could shift their reported income to get the subsidy, there would be too many just below the cutoff. The density test checks for this bunching.</p>
-<div class="cell">
+<p><em>Predict first:</em> should this test find bunching?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dens <span class="ot">&lt;-</span> <span class="fu">rddensity</span>(x, <span class="at">c =</span> <span class="dv">0</span>)</span>
@@ -929,7 +932,7 @@ window.Quarto = {
                0.249 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>

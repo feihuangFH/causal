@@ -695,7 +695,8 @@ window.Quarto = {
 </section>
 <section id="simulation-selection-bias-can-flip-the-sign" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-selection-bias-can-flip-the-sign">Simulation: Selection Bias Can Flip the Sign</h3>
-<div class="cell">
+<p><em>Predict first:</em> will the simple comparison say insurance raises or lowers mortality?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
@@ -732,7 +733,7 @@ window.Quarto = {
           -0.287 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -1118,7 +1119,8 @@ window.Quarto = {
 <section id="design-1-randomized-experiment" class="level3">
 <h3 class="anchored" data-anchor-id="design-1-randomized-experiment">Design 1: Randomized Experiment</h3>
 <p>The firm considers two ways to roll out the tool. Plan A: managers choose who gets it, and they tend to pick their strongest agents. Plan B: a lottery decides. The plot compares the two plans.</p>
-<div class="cell">
+<p><em>Predict first:</em> which plan will give an estimate closer to the true 0.3?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(fixest))</span>
@@ -1150,7 +1152,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="864"></p>
 </figure>
 </div>
 </div>
@@ -1180,7 +1182,8 @@ window.Quarto = {
 <section id="design-2-instrumental-variables" class="level3">
 <h3 class="anchored" data-anchor-id="design-2-instrumental-variables">Design 2: Instrumental Variables</h3>
 <p>Use of the tool is voluntary. The firm emails a random half of agents encouraging them to try it. Motivated agents use it more, with or without the email.</p>
-<div class="cell">
+<p><em>Predict first:</em> will comparing users with non-users overstate or understate the effect?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12</span>)</span>
@@ -1203,7 +1206,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="864"></p>
 </figure>
 </div>
 </div>
@@ -1232,7 +1235,8 @@ window.Quarto = {
 <section id="design-3-regression-discontinuity" class="level3">
 <h3 class="anchored" data-anchor-id="design-3-regression-discontinuity">Design 3: Regression Discontinuity</h3>
 <p>The firm gives the tool to agents who scored below 70 on a skills test.</p>
-<div class="cell">
+<p><em>Predict first:</em> will comparing everyone below 70 with everyone above even get the sign right?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">13</span>)</span>
@@ -1258,7 +1262,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="864"></p>
 </figure>
 </div>
 </div>
@@ -1287,7 +1291,8 @@ window.Quarto = {
 <section id="design-4-panel-fixed-effects" class="level3">
 <h3 class="anchored" data-anchor-id="design-4-panel-fixed-effects">Design 4: Panel Fixed Effects</h3>
 <p>Managers again give the tool to their strongest agents, at different months. We see every agent’s monthly output for a year.</p>
-<div class="cell">
+<p><em>Predict first:</em> will the pooled comparison be too high or too low?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
@@ -1313,7 +1318,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="864"></p>
 </figure>
 </div>
 </div>
@@ -1342,7 +1347,8 @@ window.Quarto = {
 <section id="design-5-difference-in-differences" class="level3">
 <h3 class="anchored" data-anchor-id="design-5-difference-in-differences">Design 5: Difference-in-Differences</h3>
 <p>Office A switches the tool on in month 7; office B never does. Output is rising in both offices for other reasons.</p>
-<div class="cell">
+<p><em>Predict first:</em> is office A’s before–after change a good estimate of the effect?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">15</span>)</span>
@@ -1365,7 +1371,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="864"></p>
 </figure>
 </div>
 </div>
@@ -1394,7 +1400,8 @@ window.Quarto = {
 <section id="design-6-synthetic-control" class="level3">
 <h3 class="anchored" data-anchor-id="design-6-synthetic-control">Design 6: Synthetic Control</h3>
 <p>Only the Manila office adopts, in month 13. Offices differ in how fast their output grows.</p>
-<div class="cell">
+<p><em>Predict first:</em> will DiD against the average office overstate or understate the effect?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">16</span>)</span>
@@ -1427,7 +1434,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="864"></p>
 </figure>
 </div>
 </div>
@@ -1456,7 +1463,8 @@ window.Quarto = {
 <section id="design-7-regression-and-matching" class="level3">
 <h3 class="anchored" data-anchor-id="design-7-regression-and-matching">Design 7: Regression and Matching</h3>
 <p>Managers give the tool mostly to experienced agents, and experience raises output. We observe each agent’s tenure.</p>
-<div class="cell">
+<p><em>Predict first:</em> will the raw gap be too high or too low?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">17</span>)</span>
@@ -1478,7 +1486,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="864"></p>
 </figure>
 </div>
 </div>
@@ -1526,7 +1534,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="Lecture-Introduction_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="864"></p>
 </figure>
 </div>
 </div>
@@ -1686,44 +1694,6 @@ LaLonde, Robert J. 1986. <span>“Evaluating the Econometric Evaluations of Trai
 </section>
 
 </main> <!-- /main -->
-
-<script>
-  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-  // slide changes (different for each slide format).
-  (function () {
-    // dispatch for htmlwidgets
-    function fireSlideEnter() {
-      const event = window.document.createEvent("Event");
-      event.initEvent("slideenter", true, true);
-      window.document.dispatchEvent(event);
-    }
-
-    function fireSlideChanged(previousSlide, currentSlide) {
-      fireSlideEnter();
-
-      // dispatch for shiny
-      if (window.jQuery) {
-        if (previousSlide) {
-          window.jQuery(previousSlide).trigger("hidden");
-        }
-        if (currentSlide) {
-          window.jQuery(currentSlide).trigger("shown");
-        }
-      }
-    }
-
-    // hookup for slidy
-    if (window.w3c_slidy) {
-      window.w3c_slidy.add_observer(function (slide_num) {
-        // slide_num starts at position 1
-        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-      });
-    }
-
-  })();
-</script>
-
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

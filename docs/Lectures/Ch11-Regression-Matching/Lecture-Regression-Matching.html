@@ -800,7 +800,8 @@ window.Quarto = {
 <section id="matching-and-weighting-in-r" class="level3">
 <h3 class="anchored" data-anchor-id="matching-and-weighting-in-r">Matching and Weighting in R</h3>
 <p>4,000 customers decide whether to join a retailer’s loyalty app. Frequent and loyal customers are more likely to join, and visit more anyway. Joining adds 1 visit (the truth), and we observe both drivers of joining.</p>
-<div class="cell">
+<p><em>Predict first:</em> will the simple comparison be too high or too low?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(MatchIt))</span>
@@ -836,7 +837,7 @@ window.Quarto = {
        1.00        2.64        1.02        1.09        1.08 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -853,7 +854,8 @@ window.Quarto = {
 <section id="checking-balance" class="level3">
 <h3 class="anchored" data-anchor-id="checking-balance">Checking Balance</h3>
 <p>Standardized mean differences between joiners and non-joiners, before and after matching. Below 0.1 is a common rule of thumb for good balance.</p>
-<div class="cell">
+<p><em>Predict first:</em> which covariate will be more imbalanced before matching?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>smd <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">before =</span> <span class="fu">summary</span>(m)<span class="sc">$</span>sum.all[, <span class="st">"Std. Mean Diff."</span>],</span>
@@ -867,7 +869,7 @@ past_visits   0.63  0.05
 loyalty       0.47  0.01</code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -886,7 +888,8 @@ loyalty       0.47  0.01</code></pre>
 <h2 class="anchored" data-anchor-id="real-data">Real Data</h2>
 <section id="real-data-can-matching-recover-the-experiment" class="level3">
 <h3 class="anchored" data-anchor-id="real-data-can-matching-recover-the-experiment">Real Data: Can Matching Recover the Experiment?</h3>
-<div class="cell">
+<p><em>Predict first:</em> will the simple comparison even have the right sign?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"lalonde"</span>, <span class="at">package =</span> <span class="st">"MatchIt"</span>)   <span class="co"># 185 NSW trainees and 429 comparison men from a national survey (PSID)</span></span>
@@ -907,7 +910,7 @@ loyalty       0.47  0.01</code></pre>
                   2039 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
+<div class="fragment callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -932,7 +935,8 @@ loyalty       0.47  0.01</code></pre>
 <section id="when-the-assumption-fails" class="level3">
 <h3 class="anchored" data-anchor-id="when-the-assumption-fails">When the Assumption Fails</h3>
 <p>Same customers, but now an unobserved trait, enthusiasm, also drives both joining and visiting. We match on past visits and loyalty as before.</p>
-<div class="cell">
+<p><em>Predict first:</em> will matching still recover the true effect of 1?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now an unobserved trait (enthusiasm) drives both joining and visiting</span></span>
@@ -951,7 +955,7 @@ loyalty       0.47  0.01</code></pre>
        1.00        2.54 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>

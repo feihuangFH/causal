@@ -717,7 +717,8 @@ window.Quarto = {
 <section id="synthetic-control-vs.-did" class="level3">
 <h3 class="anchored" data-anchor-id="synthetic-control-vs.-did">Synthetic Control vs.&nbsp;DiD</h3>
 <p>21 units are exposed to a common upward trend to different degrees. Unit 1 is treated from period 21 and is more exposed than most donors; the treatment causes a loss that grows over time.</p>
-<div class="cell">
+<p><em>Predict first:</em> which method will miss more of the loss?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
@@ -754,7 +755,7 @@ window.Quarto = {
             -1.50             -1.39              0.06              0.84 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -771,7 +772,7 @@ window.Quarto = {
 <section id="seeing-the-fit-and-the-gap" class="level3">
 <h3 class="anchored" data-anchor-id="seeing-the-fit-and-the-gap">Seeing the Fit and the Gap</h3>
 <p>The synthetic control (dashed) tracks the treated unit until period 20; the gap after that is the estimated effect. The average of all donors (dotted) rises more slowly and is a poor stand-in.</p>
-<div class="cell">
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
@@ -843,7 +844,8 @@ window.Quarto = {
 <section id="placebo-inference" class="level3">
 <h3 class="anchored" data-anchor-id="placebo-inference">Placebo Inference</h3>
 <p>Pretend each unit in turn was treated, build its synthetic control, and compare its fit after period 20 with its fit before (the ratio of root mean squared prediction errors). A real effect should make the treated unit’s ratio stand out.</p>
-<div class="cell">
+<p><em>Predict first:</em> where should the treated unit rank among the 21 units?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ratio of post- to pre-treatment RMSPE for every unit, treating it as if treated</span></span>
@@ -864,7 +866,7 @@ window.Quarto = {
        1.000       21.000        0.048 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -933,7 +935,8 @@ window.Quarto = {
 <section id="real-data-rebuilding-the-synthetic-basque-country" class="level3">
 <h3 class="anchored" data-anchor-id="real-data-rebuilding-the-synthetic-basque-country">Real Data: Rebuilding the Synthetic Basque Country</h3>
 <p>Abadie and Gardeazabal’s data ship with the <code>Synth</code> package. We rebuild the synthetic Basque Country from the other Spanish regions, matching GDP per head, investment, education, and the structure of the economy in the 1960s.</p>
-<div class="cell">
+<p><em>Predict first:</em> which Spanish regions would you expect to resemble the Basque Country?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(Synth))</span>
@@ -959,7 +962,7 @@ window.Quarto = {
                 0.851                 0.149 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -975,7 +978,8 @@ window.Quarto = {
 </section>
 <section id="real-data-the-gap" class="level3">
 <h3 class="anchored" data-anchor-id="real-data-the-gap">Real Data: The Gap</h3>
-<div class="cell">
+<p><em>Predict first:</em> when should the gap open up?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>synth_path <span class="ot">&lt;-</span> dp<span class="sc">$</span>Y0plot <span class="sc">%*%</span> so<span class="sc">$</span>solution.w</span>
@@ -993,7 +997,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
+<div class="fragment callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>

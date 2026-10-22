@@ -925,6 +925,7 @@ Fei Huang, UNSW Sydney
 <section id="simulation-the-bias-and-the-fix" class="slide level2 center">
 <h2>Simulation: The Bias and the Fix</h2>
 <p>1,000 students each take a test four times. Students in hotter places have fewer school and family resources, which we do not observe, so heat and resources are confounded. The truth: each 1°F of heat lowers scores by 0.02 SD. We compare four estimators.</p>
+<p><em>Predict first:</em> will pooled OLS overstate or understate the harm from heat?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -979,6 +980,8 @@ Fei Huang, UNSW Sydney
 <span id="cb2-49"><a></a>  <span class="at">truth    =</span> true_tau</span>
 <span id="cb2-50"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>              model         estimate truth
 1        Pooled OLS -0.0693 (0.0018) -0.02
@@ -987,6 +990,7 @@ Fei Huang, UNSW Sydney
 4 First differences -0.0198 (0.0014) -0.02</code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1001,6 +1005,7 @@ Fei Huang, UNSW Sydney
 <li><strong>Unit fixed effects only:</strong> −0.026, close but slightly off, because nationwide hot and cool years happen to line up with the trend in scores.</li>
 <li><strong>Two-way fixed effects</strong> (−0.019) and <strong>first differences</strong> (−0.020) recover the truth: comparing each student with themselves removes resources, and year effects remove the nationwide shocks.</li>
 </ul>
+</div>
 </div>
 </div>
 </div>
@@ -1256,6 +1261,7 @@ Fei Huang, UNSW Sydney
 <section id="simulation-when-fixed-effects-fail" class="slide level2 center">
 <h2>Simulation: When Fixed Effects Fail</h2>
 <p>Same simulated students as the first simulation, now with a local economic shock that changes from year to year. In a bad year, schools defer air-conditioning maintenance (more heat exposure) and families have fewer resources (lower scores). The truth is still −0.020.</p>
+<p><em>Predict first:</em> can fixed effects remove this shock?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1280,12 +1286,15 @@ Fei Huang, UNSW Sydney
 <span id="cb4-19"><a></a>  <span class="at">truth    =</span> true_tau</span>
 <span id="cb4-20"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>                      model         estimate truth
 1                      TWFE -0.0435 (0.0015) -0.02
 2 TWFE + econ_shock control -0.0192 (0.0018) -0.02</code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1299,6 +1308,7 @@ Fei Huang, UNSW Sydney
 <li><strong>Two-way fixed effects:</strong> −0.044, about twice the truth. The shock changes within each student over time, so fixed effects cannot remove it.</li>
 <li><strong>Adding the shock as a control:</strong> −0.019, back to the truth. In real data the shock is often unobserved, which is why Park et al.&nbsp;control for county payroll in weather-exposed industries.</li>
 </ul>
+</div>
 </div>
 </div>
 </div>
@@ -3009,44 +3019,6 @@ Wooldridge, Jeffrey M. 1999. <span>“Distribution-Free Estimation of Some Nonli
       });
     });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

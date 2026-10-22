@@ -431,6 +431,7 @@ Fei Huang, UNSW Sydney
 <section id="what-happens-when-managers-choose" class="slide level2 center">
 <h2>What Happens When Managers Choose</h2>
 <p>The table shows both outcomes for every agent, which real data never do. We use it to see what an observed comparison would report under two ways of handing out the tool: managers give it to their four strongest agents (E–H), or a lottery picks four agents. Because we know the true average effect (0.25), we can check which comparison gets it right.</p>
+<p><em>Predict first:</em> will the managers’ comparison be above or below the true 0.25?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -457,11 +458,14 @@ Fei Huang, UNSW Sydney
 <span id="cb1-21"><a></a>        <span class="at">lottery_average =</span> <span class="fu">mean</span>(lottery),</span>
 <span id="cb1-22"><a></a>        <span class="at">lottery_sd =</span> <span class="fu">sd</span>(lottery)), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>       true_ATE managers_choose lottery_average      lottery_sd 
           0.250           1.100           0.249           0.375 </code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -475,6 +479,7 @@ Fei Huang, UNSW Sydney
 <li><strong>Managers choose:</strong> agents E–H with the tool against agents A–D without it gives 1.10, more than four times the true 0.25. Most of the gap is the strong agents’ higher output even without AI, and they are the agents who gain least from it.</li>
 <li><strong>Lottery:</strong> averaged over 10,000 lotteries, the comparison gives 0.25, the true effect. With only eight agents, a single lottery can still miss by about 0.37 (the standard deviation). Chapter 3 deals with this chance variation.</li>
 </ul>
+</div>
 </div>
 </div>
 </div>
@@ -914,7 +919,8 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="simulation-collider-bias" class="slide level2 center">
 <h2>Simulation: Collider Bias</h2>
-<p>A business magazine features firms that adopted AI <em>or</em> that are highly productive. Being featured is therefore a collider: AI adoption → featured ← productivity. In this simulation AI has no effect on productivity at all. We estimate its effect twice: across all firms, and only among featured firms, as a researcher would if the data came from magazine stories.</p>
+<p>A business magazine features firms that adopted AI <em>or</em> are highly productive, so being featured is a collider: AI adoption → featured ← productivity. AI has no effect on productivity here. We estimate its effect across all firms, and among featured firms only.</p>
+<p><em>Predict first:</em> among featured firms only, will AI adopters look more or less productive?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -930,11 +936,14 @@ Fei Huang, UNSW Sydney
 <span id="cb3-10"><a></a>est_featured <span class="ot">&lt;-</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(productivity <span class="sc">~</span> ai_adoption, <span class="at">subset =</span> featured))[<span class="st">"ai_adoption"</span>])</span>
 <span id="cb3-11"><a></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">all_firms =</span> est_all, <span class="at">featured_firms =</span> est_featured), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>     all_firms featured_firms 
           0.01          -1.11 </code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -949,6 +958,7 @@ Fei Huang, UNSW Sydney
 <li><strong>Featured firms only:</strong> −1.11. A featured firm that did not adopt AI must have got in by being highly productive, while many adopters got in through AI alone with ordinary productivity. Among featured firms, AI therefore looks harmful, although it does nothing.</li>
 <li><strong>Lesson:</strong> do not control for, or select the sample on, a variable that both the treatment and the outcome affect. Firms in the news, firms that survived a crisis, and firms that published a case study are all selected this way.</li>
 </ul>
+</div>
 </div>
 </div>
 </div>

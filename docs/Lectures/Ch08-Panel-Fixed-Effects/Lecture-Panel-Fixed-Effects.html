@@ -1155,7 +1155,8 @@ window.Quarto = {
 <section id="simulation-the-bias-and-the-fix" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-the-bias-and-the-fix">Simulation: The Bias and the Fix</h3>
 <p>1,000 students each take a test four times. Students in hotter places have fewer school and family resources, which we do not observe, so heat and resources are confounded. The truth: each 1°F of heat lowers scores by 0.02 SD. We compare four estimators.</p>
-<div class="cell">
+<p><em>Predict first:</em> will pooled OLS overstate or understate the harm from heat?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
@@ -1217,7 +1218,7 @@ window.Quarto = {
 4 First differences -0.0198 (0.0014) -0.02</code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -1474,7 +1475,8 @@ window.Quarto = {
 <section id="simulation-when-fixed-effects-fail" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-when-fixed-effects-fail">Simulation: When Fixed Effects Fail</h3>
 <p>Same simulated students as the first simulation, now with a local economic shock that changes from year to year. In a bad year, schools defer air-conditioning maintenance (more heat exposure) and families have fewer resources (lower scores). The truth is still −0.020.</p>
-<div class="cell">
+<p><em>Predict first:</em> can fixed effects remove this shock?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a TIME-VARYING confounder: local economic shocks</span></span>
@@ -1504,7 +1506,7 @@ window.Quarto = {
 2 TWFE + econ_shock control -0.0192 (0.0018) -0.02</code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>

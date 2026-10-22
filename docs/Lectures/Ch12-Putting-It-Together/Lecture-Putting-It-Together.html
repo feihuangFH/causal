@@ -663,7 +663,8 @@ window.Quarto = {
 <section id="pooling-in-r" class="level3">
 <h3 class="anchored" data-anchor-id="pooling-in-r">Pooling in R</h3>
 <p>Three hypothetical experiments estimate the same effect (in %), each too noisy to be significant on its own. We pool them with precision weights, <span class="math inline">1/SE^2</span>.</p>
-<div class="cell">
+<p><em>Predict first:</em> can three studies that are each insignificant add up to a significant result?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Three hypothetical experiments estimating the same effect (in %)</span></span>
@@ -688,7 +689,7 @@ p_heterogeneity
            0.73 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>

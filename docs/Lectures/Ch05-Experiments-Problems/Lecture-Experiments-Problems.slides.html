@@ -569,6 +569,7 @@ Fei Huang, UNSW Sydney
 <section id="simulation-as-treated-vs.-itt-vs.-cace" class="slide level2 center">
 <h2>Simulation: As-Treated vs.&nbsp;ITT vs.&nbsp;CACE</h2>
 <p>4,000 developers; a random half are offered an AI tool. Only those offered can adopt it, and motivated developers adopt more often. Using the tool raises output by 1.5 (the truth), but motivation, which we do not observe, also raises output.</p>
+<p><em>Predict first:</em> which of the three comparisons will be closest to the true 1.5?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -590,11 +591,14 @@ Fei Huang, UNSW Sydney
 <span id="cb1-16"><a></a>        <span class="at">CACE_wald     =</span> itt_y <span class="sc">/</span> itt_d,</span>
 <span id="cb1-17"><a></a>        <span class="at">CACE_2SLS     =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> d <span class="sc">~</span> z, <span class="at">data =</span> <span class="fu">data.frame</span>(y, d, z)))[<span class="st">"fit_d"</span>])), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>   take_up as_treated        ITT  CACE_wald  CACE_2SLS 
       0.39       2.87       0.58       1.47       1.47 </code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -609,6 +613,7 @@ Fei Huang, UNSW Sydney
 <li><strong>ITT</strong> (offered vs.&nbsp;not offered): 0.58. Unbiased for the effect of the offer, but diluted, because only 39% of those offered adopted.</li>
 <li><strong>CACE</strong>: 0.58 ÷ 0.39 = 1.47, close to the true 1.5. Two-stage least squares gives the same number (Chapter 6).</li>
 </ul>
+</div>
 </div>
 </div>
 </div>
@@ -1128,44 +1133,6 @@ Lee, David S. 2009. <span>“Training, Wages, and Sample Selection: Estimating S
       });
     });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

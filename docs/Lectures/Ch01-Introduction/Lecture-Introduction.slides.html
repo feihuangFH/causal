@@ -491,6 +491,7 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="simulation-selection-bias-can-flip-the-sign" class="slide level2 center">
 <h2>Simulation: Selection Bias Can Flip the Sign</h2>
+<p><em>Predict first:</em> will the simple comparison say insurance raises or lowers mortality?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -521,6 +522,8 @@ Fei Huang, UNSW Sydney
 <span id="cb1-25"><a></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">true_ATE =</span> <span class="fu">mean</span>(y1 <span class="sc">-</span> y0), <span class="at">naive_comparison =</span> naive, <span class="at">ATT =</span> att,</span>
 <span id="cb1-26"><a></a>        <span class="at">selection_bias =</span> selection, <span class="at">randomized =</span> rct), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>        true_ATE naive_comparison              ATT   selection_bias 
           -0.286            0.536           -0.299            0.835 
@@ -528,6 +531,7 @@ Fei Huang, UNSW Sydney
           -0.287 </code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -538,6 +542,7 @@ Fei Huang, UNSW Sydney
 </div>
 <div class="callout-content">
 <p>In the observational world the insured die more often, so insurance looks harmful (+0.54 percentage points). That gap is the effect on the insured (−0.30) plus selection bias (+0.83), because sicker people bought insurance. The coin flip balances risk across the two groups, and the comparison recovers the true effect (−0.29).</p>
+</div>
 </div>
 </div>
 </div>
@@ -958,6 +963,7 @@ Fei Huang, UNSW Sydney
 <section id="design-1-randomized-experiment" class="slide level2 center">
 <h2>Design 1: Randomized Experiment</h2>
 <p>The firm considers two ways to roll out the tool. Plan A: managers choose who gets it, and they tend to pick their strongest agents. Plan B: a lottery decides. The plot compares the two plans.</p>
+<p><em>Predict first:</em> which plan will give an estimate closer to the true 0.3?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -987,9 +993,17 @@ Fei Huang, UNSW Sydney
 <span id="cb3-24"><a></a>        <span class="at">main =</span> <span class="st">"Estimated effect"</span>, <span class="at">ylab =</span> <span class="st">"Resolutions per hour"</span>)</span>
 <span id="cb3-25"><a></a><span class="fu">abline</span>(<span class="at">h =</span> tau, <span class="at">col =</span> orange, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-
 </div>
-<img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-2-1.png" width="864" class="r-stretch"></section>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-2-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="design-1-randomized-experiment-continued" class="slide level2 center">
 <h2>Design 1: Randomized Experiment (continued)</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1014,6 +1028,7 @@ Fei Huang, UNSW Sydney
 <section id="design-2-instrumental-variables" class="slide level2 center">
 <h2>Design 2: Instrumental Variables</h2>
 <p>Use of the tool is voluntary. The firm emails a random half of agents encouraging them to try it. Motivated agents use it more, with or without the email.</p>
+<p><em>Predict first:</em> will comparing users with non-users overstate or understate the effect?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1034,9 +1049,17 @@ Fei Huang, UNSW Sydney
 <span id="cb4-15"><a></a><span class="fu">barplot</span>(<span class="fu">tapply</span>(y_iv, email, mean), <span class="at">names.arg =</span> <span class="fu">c</span>(<span class="st">"No email"</span>, <span class="st">"Email"</span>), <span class="at">col =</span> <span class="fu">c</span>(grey, blue), <span class="at">border =</span> <span class="cn">NA</span>,</span>
 <span id="cb4-16"><a></a>        <span class="at">ylim =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">2.3</span>), <span class="at">xpd =</span> <span class="cn">FALSE</span>, <span class="at">main =</span> <span class="st">"Resolutions per hour"</span>, <span class="at">ylab =</span> <span class="st">"Mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-
 </div>
-<img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-3-1.png" width="864" class="r-stretch"></section>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-3-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="design-2-instrumental-variables-continued" class="slide level2 center">
 <h2>Design 2: Instrumental Variables (continued)</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1060,6 +1083,7 @@ Fei Huang, UNSW Sydney
 <section id="design-3-regression-discontinuity" class="slide level2 center">
 <h2>Design 3: Regression Discontinuity</h2>
 <p>The firm gives the tool to agents who scored below 70 on a skills test.</p>
+<p><em>Predict first:</em> will comparing everyone below 70 with everyone above even get the sign right?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1083,9 +1107,17 @@ Fei Huang, UNSW Sydney
 <span id="cb5-18"><a></a>}</span>
 <span id="cb5-19"><a></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">70</span>, <span class="at">col =</span> orange, <span class="at">lty =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-
 </div>
-<img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-4-1.png" width="864" class="r-stretch"></section>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-4-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="design-3-regression-discontinuity-continued" class="slide level2 center">
 <h2>Design 3: Regression Discontinuity (continued)</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1109,6 +1141,7 @@ Fei Huang, UNSW Sydney
 <section id="design-4-panel-fixed-effects" class="slide level2 center">
 <h2>Design 4: Panel Fixed Effects</h2>
 <p>Managers again give the tool to their strongest agents, at different months. We see every agent’s monthly output for a year.</p>
+<p><em>Predict first:</em> will the pooled comparison be too high or too low?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1132,9 +1165,17 @@ Fei Huang, UNSW Sydney
 <span id="cb6-18"><a></a><span class="fu">segments</span>(<span class="dv">1</span>, before, <span class="dv">2</span>, after, <span class="at">col =</span> <span class="fu">adjustcolor</span>(blue, <span class="fl">0.5</span>), <span class="at">lwd =</span> <span class="dv">2</span>)</span>
 <span id="cb6-19"><a></a><span class="fu">points</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">30</span>), before, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> grey); <span class="fu">points</span>(<span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">30</span>), after, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> blue)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-
 </div>
-<img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-5-1.png" width="864" class="r-stretch"></section>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-5-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="design-4-panel-fixed-effects-continued" class="slide level2 center">
 <h2>Design 4: Panel Fixed Effects (continued)</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1158,6 +1199,7 @@ Fei Huang, UNSW Sydney
 <section id="design-5-difference-in-differences" class="slide level2 center">
 <h2>Design 5: Difference-in-Differences</h2>
 <p>Office A switches the tool on in month 7; office B never does. Output is rising in both offices for other reasons.</p>
+<p><em>Predict first:</em> is office A’s before–after change a good estimate of the effect?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1178,9 +1220,17 @@ Fei Huang, UNSW Sydney
 <span id="cb7-15"><a></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"Office A"</span>, <span class="st">"Office B"</span>, <span class="st">"Office A without the tool (implied)"</span>),</span>
 <span id="cb7-16"><a></a>       <span class="at">col =</span> <span class="fu">c</span>(blue, grey, blue), <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="at">lwd =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>), <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-
 </div>
-<img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-6-1.png" width="864" class="r-stretch"></section>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-6-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="design-5-difference-in-differences-continued" class="slide level2 center">
 <h2>Design 5: Difference-in-Differences (continued)</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1204,6 +1254,7 @@ Fei Huang, UNSW Sydney
 <section id="design-6-synthetic-control" class="slide level2 center">
 <h2>Design 6: Synthetic Control</h2>
 <p>Only the Manila office adopts, in month 13. Offices differ in how fast their output grows.</p>
+<p><em>Predict first:</em> will DiD against the average office overstate or understate the effect?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1234,9 +1285,17 @@ Fei Huang, UNSW Sydney
 <span id="cb8-25"><a></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"Manila"</span>, <span class="st">"Synthetic Manila"</span>, <span class="st">"Average of other offices"</span>),</span>
 <span id="cb8-26"><a></a>       <span class="at">col =</span> <span class="fu">c</span>(blue, blue, grey), <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">lwd =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>), <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-
 </div>
-<img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-7-1.png" width="864" class="r-stretch"></section>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-7-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="design-6-synthetic-control-continued" class="slide level2 center">
 <h2>Design 6: Synthetic Control (continued)</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1260,6 +1319,7 @@ Fei Huang, UNSW Sydney
 <section id="design-7-regression-and-matching" class="slide level2 center">
 <h2>Design 7: Regression and Matching</h2>
 <p>Managers give the tool mostly to experienced agents, and experience raises output. We observe each agent’s tenure.</p>
+<p><em>Predict first:</em> will the raw gap be too high or too low?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1279,9 +1339,17 @@ Fei Huang, UNSW Sydney
 <span id="cb9-14"><a></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)</span>
 <span id="cb9-15"><a></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"No tool"</span>, <span class="st">"Tool"</span>), <span class="at">col =</span> <span class="fu">c</span>(grey, blue), <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-
 </div>
-<img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-8-1.png" width="864" class="r-stretch"></section>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="Lecture-Introduction_files/figure-revealjs/unnamed-chunk-8-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="design-7-regression-and-matching-continued" class="slide level2 center">
 <h2>Design 7: Regression and Matching (continued)</h2>
 <div class="callout callout-tip callout-titled callout-style-default">

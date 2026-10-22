@@ -755,7 +755,8 @@ window.Quarto = {
 <section id="simulation-as-treated-vs.-itt-vs.-cace" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-as-treated-vs.-itt-vs.-cace">Simulation: As-Treated vs.&nbsp;ITT vs.&nbsp;CACE</h3>
 <p>4,000 developers; a random half are offered an AI tool. Only those offered can adopt it, and motivated developers adopt more often. Using the tool raises output by 1.5 (the truth), but motivation, which we do not observe, also raises output.</p>
-<div class="cell">
+<p><em>Predict first:</em> which of the three comparisons will be closest to the true 1.5?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
@@ -781,7 +782,7 @@ window.Quarto = {
       0.39       2.87       0.58       1.47       1.47 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>

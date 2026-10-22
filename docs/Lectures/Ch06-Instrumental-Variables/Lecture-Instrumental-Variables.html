@@ -801,7 +801,8 @@ window.Quarto = {
 <section id="simulation-ols-iv-and-weak-instruments" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-ols-iv-and-weak-instruments">Simulation: OLS, IV, and Weak Instruments</h3>
 <p>Treatment depends on an unobserved confounder that also raises the outcome; the true effect is 1. We simulate 500 datasets with a strong instrument and 500 with a weak one, and report the median estimates.</p>
-<div class="cell">
+<p><em>Predict first:</em> with a weak instrument, will IV land closer to the truth or to OLS?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
@@ -835,7 +836,7 @@ weak_IQR_low  1.98 0.27   0.38
 weak_IQR_high 2.02 2.08   3.31</code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>

@@ -553,6 +553,7 @@ Fei Huang, UNSW Sydney
 <section id="power-for-a-rare-outcome" class="slide level2 center">
 <h2>Power for a Rare Outcome</h2>
 <p>How many people does an experiment need to detect a fall in annual mortality from 1.0% to 0.94% (a 6% reduction), with 80% power at the 5% level? And how many if only 10% of those offered the treatment take it up?</p>
+<p><em>Predict first:</em> hundreds, thousands, or hundreds of thousands of people per group?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -561,6 +562,8 @@ Fei Huang, UNSW Sydney
 <span id="cb1-3"><a></a>pw <span class="ot">&lt;-</span> <span class="fu">power.prop.test</span>(<span class="at">p1 =</span> <span class="fl">0.0100</span>, <span class="at">p2 =</span> <span class="fl">0.0094</span>, <span class="at">power =</span> <span class="fl">0.80</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>)</span>
 <span id="cb1-4"><a></a><span class="fu">ceiling</span>(pw<span class="sc">$</span>n)                                   <span class="co"># required per group</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 418864</code></pre>
 </div>
@@ -575,6 +578,7 @@ Fei Huang, UNSW Sydney
 <pre><code>[1] 43040636</code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -585,6 +589,7 @@ Fei Huang, UNSW Sydney
 </div>
 <div class="callout-content">
 <p>About 418,864 people per group. With 10% take-up, the intent-to-treat difference is ten times smaller, so the requirement grows about 100-fold, to 43,040,636 per group. This is why credible experiments on insurance and mortality need millions of participants, or focus on higher-risk groups, as Goldin et al.&nbsp;do.</p>
+</div>
 </div>
 </div>
 </div>
@@ -685,6 +690,7 @@ Fei Huang, UNSW Sydney
 <section id="randomization-inference-in-r" class="slide level2 center">
 <h2>Randomization Inference in R</h2>
 <p>A program is randomly assigned to 50 of 100 people and raises their outcome by 4 points (the truth). We test the sharp null of no effect: re-run the lottery 10,000 times and count how often chance alone produces a gap as large as the one observed.</p>
+<p><em>Predict first:</em> out of 10,000 re-randomizations, roughly how many will produce a gap as large as the one observed?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -705,11 +711,14 @@ Fei Huang, UNSW Sydney
 <span id="cb5-15"><a></a>  <span class="at">p_randomization =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(perm) <span class="sc">&gt;=</span> <span class="fu">abs</span>(observed)),</span>
 <span id="cb5-16"><a></a>  <span class="at">p_t_test =</span> <span class="fu">round</span>(<span class="fu">t.test</span>(y <span class="sc">~</span> d)<span class="sc">$</span>p.value, <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>       estimate p_randomization        p_t_test 
          4.8400          0.0012          0.0011 </code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -720,6 +729,7 @@ Fei Huang, UNSW Sydney
 </div>
 <div class="callout-content">
 <p>The observed difference is 4.84. Only 12 of the 10,000 re-randomized gaps are as large, so the randomization p-value is 0.0012, close to the t-test’s 0.0011. With 100 people the two agree; randomization inference matters most in small experiments, where the t-test’s approximations are weakest.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1162,44 +1172,6 @@ Lin, Winston. 2013. <span>“Agnostic Notes on Regression Adjustments to Experim
       });
     });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

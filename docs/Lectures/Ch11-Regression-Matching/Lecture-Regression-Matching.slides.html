@@ -593,6 +593,7 @@ Fei Huang, UNSW Sydney
 <section id="matching-and-weighting-in-r" class="slide level2 center">
 <h2>Matching and Weighting in R</h2>
 <p>4,000 customers decide whether to join a retailer’s loyalty app. Frequent and loyal customers are more likely to join, and visit more anyway. Joining adds 1 visit (the truth), and we observe both drivers of joining.</p>
+<p><em>Predict first:</em> will the simple comparison be too high or too low?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -624,11 +625,14 @@ Fei Huang, UNSW Sydney
 <span id="cb1-26"><a></a>        <span class="at">IPW         =</span> <span class="fu">weighted.mean</span>(visits[join <span class="sc">==</span> <span class="dv">1</span>], w[join <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span></span>
 <span id="cb1-27"><a></a>                      <span class="fu">weighted.mean</span>(visits[join <span class="sc">==</span> <span class="dv">0</span>], w[join <span class="sc">==</span> <span class="dv">0</span>])), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>true_effect       naive  regression PS_matching         IPW 
        1.00        2.64        1.02        1.09        1.08 </code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -642,10 +646,12 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </div>
+</div>
 </section>
 <section id="checking-balance" class="slide level2 center">
 <h2>Checking Balance</h2>
 <p>Standardized mean differences between joiners and non-joiners, before and after matching. Below 0.1 is a common rule of thumb for good balance.</p>
+<p><em>Predict first:</em> which covariate will be more imbalanced before matching?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -653,6 +659,8 @@ Fei Huang, UNSW Sydney
 <span id="cb3-2"><a></a>             <span class="at">after  =</span> <span class="fu">summary</span>(m)<span class="sc">$</span>sum.matched[, <span class="st">"Std. Mean Diff."</span>])</span>
 <span id="cb3-3"><a></a><span class="fu">round</span>(smd, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>            before after
 distance      0.83  0.05
@@ -660,6 +668,7 @@ past_visits   0.63  0.05
 loyalty       0.47  0.01</code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -673,6 +682,7 @@ loyalty       0.47  0.01</code></pre>
 </div>
 </div>
 </div>
+</div>
 </section></section>
 <section>
 <section id="real-data" class="title-slide slide level1 center">
@@ -681,6 +691,7 @@ loyalty       0.47  0.01</code></pre>
 </section>
 <section id="real-data-can-matching-recover-the-experiment" class="slide level2 center">
 <h2>Real Data: Can Matching Recover the Experiment?</h2>
+<p><em>Predict first:</em> will the simple comparison even have the right sign?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -695,6 +706,8 @@ loyalty       0.47  0.01</code></pre>
 <span id="cb5-9"><a></a>        <span class="at">regression =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(<span class="fu">update</span>(f, re78 <span class="sc">~</span> treat <span class="sc">+</span> .), lalonde))[<span class="st">"treat"</span>]),</span>
 <span id="cb5-10"><a></a>        <span class="at">PS_matching =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(re78 <span class="sc">~</span> treat, md_ll, <span class="at">weights =</span> weights))[<span class="st">"treat"</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>experimental_benchmark                  naive             regression 
                   1794                   -635                   1548 
@@ -702,6 +715,7 @@ loyalty       0.47  0.01</code></pre>
                   2039 </code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -712,6 +726,7 @@ loyalty       0.47  0.01</code></pre>
 </div>
 <div class="callout-content">
 <p>The raw comparison says training lowered 1978 earnings by about $600, because the survey men earned far more to begin with. Controlling for earnings in 1974 and 1975 moves the estimate close to the experimental $1,794; matching does as well. The experiment is what tells us so: with observational data alone, we could not have known which estimate to trust <span class="citation" data-cites="dehejia1999causal">(<a href="#/references" role="doc-biblioref" onclick="">Dehejia and Wahba 1999</a>)</span>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -739,6 +754,7 @@ loyalty       0.47  0.01</code></pre>
 <section id="when-the-assumption-fails" class="slide level2 center">
 <h2>When the Assumption Fails</h2>
 <p>Same customers, but now an unobserved trait, enthusiasm, also drives both joining and visiting. We match on past visits and loyalty as before.</p>
+<p><em>Predict first:</em> will matching still recover the true effect of 1?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -753,11 +769,14 @@ loyalty       0.47  0.01</code></pre>
 <span id="cb7-9"><a></a><span class="fu">c</span>(<span class="at">true_effect =</span> <span class="dv">1</span>,</span>
 <span id="cb7-10"><a></a>  <span class="at">PS_matching =</span> <span class="fu">round</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(visits <span class="sc">~</span> join, <span class="fu">match.data</span>(m2), <span class="at">weights =</span> weights))[<span class="st">"join"</span>]), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>true_effect PS_matching 
        1.00        2.54 </code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -768,6 +787,7 @@ loyalty       0.47  0.01</code></pre>
 </div>
 <div class="callout-content">
 <p>Matching gives 2.54, against a true 1. Balance on past visits and loyalty can look perfect, but matching cannot balance what it cannot see. The next slides ask how strong such a hidden factor would need to be.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1458,44 +1478,6 @@ Smith, Jeffrey A, and Petra E Todd. 2005. <span>“Does Matching Overcome <span 
       });
     });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

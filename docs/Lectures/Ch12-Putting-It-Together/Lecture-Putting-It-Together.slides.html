@@ -490,6 +490,7 @@ Fei Huang, UNSW Sydney
 <section id="pooling-in-r" class="slide level2 center">
 <h2>Pooling in R</h2>
 <p>Three hypothetical experiments estimate the same effect (in %), each too noisy to be significant on its own. We pool them with precision weights, <span class="math inline">1/SE^2</span>.</p>
+<p><em>Predict first:</em> can three studies that are each insignificant add up to a significant result?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -508,6 +509,8 @@ Fei Huang, UNSW Sydney
 <span id="cb1-13"><a></a>        <span class="at">lower_95 =</span> pooled <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> pooled_se, <span class="at">upper_95 =</span> pooled <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> pooled_se,</span>
 <span id="cb1-14"><a></a>        <span class="at">Q =</span> Q, <span class="at">p_heterogeneity =</span> <span class="fu">pchisq</span>(Q, <span class="at">df =</span> <span class="fu">length</span>(est) <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>         pooled              se        lower_95        upper_95               Q 
           22.97            8.77            5.77           40.17            0.64 
@@ -515,6 +518,7 @@ p_heterogeneity
            0.73 </code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -525,6 +529,7 @@ p_heterogeneity
 </div>
 <div class="callout-content">
 <p>Pooled estimate 22.97% (SE 8.77), 95% interval 5.77% to 40.17%: significant, although no single experiment is. Cochran’s Q = 0.64 (p = 0.73) shows no sign that the effects differ, but with three studies the test has little power, so this does not prove they are identical.</p>
+</div>
 </div>
 </div>
 </div>
@@ -946,44 +951,6 @@ Shaw, Steven D, and Gideon Nave. 2026. <em>Thinking—Fast, Slow, and Artificial
       });
     });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

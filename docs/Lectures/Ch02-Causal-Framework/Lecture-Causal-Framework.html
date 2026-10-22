@@ -606,7 +606,8 @@ window.Quarto = {
 <section id="what-happens-when-managers-choose" class="level3">
 <h3 class="anchored" data-anchor-id="what-happens-when-managers-choose">What Happens When Managers Choose</h3>
 <p>The table shows both outcomes for every agent, which real data never do. We use it to see what an observed comparison would report under two ways of handing out the tool: managers give it to their four strongest agents (E–H), or a lottery picks four agents. Because we know the true average effect (0.25), we can check which comparison gets it right.</p>
-<div class="cell">
+<p><em>Predict first:</em> will the managers’ comparison be above or below the true 0.25?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>po <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
@@ -637,7 +638,7 @@ window.Quarto = {
           0.250           1.100           0.249           0.375 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -1071,8 +1072,9 @@ window.Quarto = {
 </section>
 <section id="simulation-collider-bias" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-collider-bias">Simulation: Collider Bias</h3>
-<p>A business magazine features firms that adopted AI <em>or</em> that are highly productive. Being featured is therefore a collider: AI adoption → featured ← productivity. In this simulation AI has no effect on productivity at all. We estimate its effect twice: across all firms, and only among featured firms, as a researcher would if the data came from magazine stories.</p>
-<div class="cell">
+<p>A business magazine features firms that adopted AI <em>or</em> are highly productive, so being featured is a collider: AI adoption → featured ← productivity. AI has no effect on productivity here. We estimate its effect across all firms, and among featured firms only.</p>
+<p><em>Predict first:</em> among featured firms only, will AI adopters look more or less productive?</p>
+<div class="cell" data-output-location="fragment">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
@@ -1092,7 +1094,7 @@ window.Quarto = {
           0.01          -1.11 </code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="fragment callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -1206,44 +1208,6 @@ Holland, Paul W. 1986. <span>“Statistics and Causal Inference.”</span> <em>J
 </section>
 
 </main> <!-- /main -->
-
-<script>
-  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-  // slide changes (different for each slide format).
-  (function () {
-    // dispatch for htmlwidgets
-    function fireSlideEnter() {
-      const event = window.document.createEvent("Event");
-      event.initEvent("slideenter", true, true);
-      window.document.dispatchEvent(event);
-    }
-
-    function fireSlideChanged(previousSlide, currentSlide) {
-      fireSlideEnter();
-
-      // dispatch for shiny
-      if (window.jQuery) {
-        if (previousSlide) {
-          window.jQuery(previousSlide).trigger("hidden");
-        }
-        if (currentSlide) {
-          window.jQuery(currentSlide).trigger("shown");
-        }
-      }
-    }
-
-    // hookup for slidy
-    if (window.w3c_slidy) {
-      window.w3c_slidy.add_observer(function (slide_num) {
-        // slide_num starts at position 1
-        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-      });
-    }
-
-  })();
-</script>
-
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

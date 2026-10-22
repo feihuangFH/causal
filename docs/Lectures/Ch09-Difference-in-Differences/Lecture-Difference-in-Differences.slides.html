@@ -646,6 +646,7 @@ Fei Huang, UNSW Sydney
 <section id="a-22-did-by-hand-and-by-regression" class="slide level2 center">
 <h2>A 2×2 DiD by Hand and by Regression</h2>
 <p>200 units are observed before and after a policy; half are treated. Treated units start at a higher level, which parallel trends allows, and everyone’s outcome rises by 0.5 over time. The true effect is 1.</p>
+<p><em>Predict first:</em> will the regression give the same number as the four means?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -667,6 +668,8 @@ Fei Huang, UNSW Sydney
 <span id="cb1-16"><a></a>means <span class="ot">&lt;-</span> <span class="fu">with</span>(d22, <span class="fu">tapply</span>(y, <span class="fu">list</span>(<span class="at">treated =</span> treated, <span class="at">post =</span> post), mean))</span>
 <span id="cb1-17"><a></a><span class="fu">round</span>(means, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>       post
 treated    0    1
@@ -898,6 +901,7 @@ treated    0    1
 <section id="staggered-adoption-twfe-vs.-a-robust-estimator" class="slide level2 center">
 <h2>Staggered Adoption: TWFE vs.&nbsp;a Robust Estimator</h2>
 <p>300 units: three groups adopt in periods 6, 11, and 16, and some never adopt. The effect grows the longer a unit has been treated.</p>
+<p><em>Predict first:</em> will TWFE be above or below the true effect?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -925,6 +929,8 @@ treated    0    1
 <span id="cb7-22"><a></a>                      <span class="fu">summary</span>(m_sa, <span class="at">agg =</span> <span class="st">"ATT"</span>)<span class="sc">$</span>coeftable[<span class="st">"ATT"</span>, <span class="st">"Estimate"</span>]), <span class="dv">2</span>)</span>
 <span id="cb7-23"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>      estimator estimate
 1      True ATT     1.97
@@ -932,6 +938,7 @@ treated    0    1
 3 Sun &amp; Abraham     2.01</code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -942,6 +949,7 @@ treated    0    1
 </div>
 <div class="callout-content">
 <p>The true average effect on the treated is 1.97. Static TWFE gives 0.75, well under half, because already-treated units act as controls for later adopters while their own effects are still growing. Sun &amp; Abraham, which compares only with never-treated units, gives 2.01. With a constant effect, the two would agree.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1047,6 +1055,7 @@ treated    0    1
 <section id="real-data-minimum-wages-and-teen-employment" class="slide level2 center">
 <h2>Real Data: Minimum Wages and Teen Employment</h2>
 <p>Data that ship with the <code>did</code> package: log teen employment in 500 US counties, 2003–2007, a subset of the data in Callaway &amp; Sant’Anna (2021). Treated counties are in states that raised the minimum wage in 2004, 2006, or 2007; controls stayed at the federal minimum.</p>
+<p><em>Predict first:</em> will TWFE and Callaway &amp; Sant’Anna agree here?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1061,11 +1070,14 @@ treated    0    1
 <span id="cb10-9"><a></a></span>
 <span id="cb10-10"><a></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">TWFE =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(twfe)), <span class="at">Callaway_SantAnna =</span> <span class="fu">aggte</span>(cs, <span class="at">type =</span> <span class="st">"simple"</span>)<span class="sc">$</span>overall.att), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>             TWFE Callaway_SantAnna 
            -0.037            -0.040 </code></pre>
 </div>
 </div>
+<div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1079,9 +1091,11 @@ treated    0    1
 </div>
 </div>
 </div>
+</div>
 </section>
 <section id="real-data-the-event-study" class="slide level2 center">
 <h2>Real Data: The Event Study</h2>
+<p><em>Predict first:</em> do you expect the effect to grow or fade after the increase?</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1092,9 +1106,18 @@ treated    0    1
 <span id="cb12-5"><a></a><span class="fu">arrows</span>(es<span class="sc">$</span>egt, es<span class="sc">$</span>att.egt <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> es<span class="sc">$</span>se.egt, es<span class="sc">$</span>egt, es<span class="sc">$</span>att.egt <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> es<span class="sc">$</span>se.egt, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.04</span>)</span>
 <span id="cb12-6"><a></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>); <span class="fu">abline</span>(<span class="at">v =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">col =</span> <span class="st">"#c2410c"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-
 </div>
-<img data-src="Lecture-Difference-in-Differences_files/figure-revealjs/unnamed-chunk-5-1.png" width="864" class="r-stretch"><div class="callout callout-note callout-titled callout-style-default">
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="Lecture-Difference-in-Differences_files/figure-revealjs/unnamed-chunk-5-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
@@ -1104,6 +1127,7 @@ treated    0    1
 </div>
 <div class="callout-content">
 <p>The effect grows with time since the increase. Before the increase, the estimates are close to zero but not perfectly flat, which is when the power of the pre-trend test and a sensitivity analysis <span class="citation" data-cites="rambachan2023more">(<a href="#/references" role="doc-biblioref" onclick="">Rambachan and Roth 2023</a>)</span> matter.</p>
+</div>
 </div>
 </div>
 </div>
