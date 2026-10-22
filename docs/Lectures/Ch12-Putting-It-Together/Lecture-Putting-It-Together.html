@@ -662,6 +662,7 @@ window.Quarto = {
 </section>
 <section id="pooling-in-r" class="level3">
 <h3 class="anchored" data-anchor-id="pooling-in-r">Pooling in R</h3>
+<p>Three hypothetical experiments estimate the same effect (in %), each too noisy to be significant on its own. We pool them with precision weights, <span class="math inline">1/SE^2</span>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -687,11 +688,18 @@ p_heterogeneity
            0.73 </code></pre>
 </div>
 </div>
-<div class="notes">
-<ul>
-<li>None of the three hypothetical experiments is significant on its own at the 5% level, but the pooled estimate is.</li>
-<li>The heterogeneity test has little power with three studies; a non-significant Q does not prove effects are identical.</li>
-</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Pooled estimate 22.97% (SE 8.77), 95% interval 5.77% to 40.17%: significant, although no single experiment is. Cochran’s Q = 0.64 (p = 0.73) shows no sign that the effects differ, but with three studies the test has little power, so this does not prove they are identical.</p>
+</div>
 </div>
 </section>
 <section id="what-goes-wrong-at-the-level-of-a-literature" class="level3">

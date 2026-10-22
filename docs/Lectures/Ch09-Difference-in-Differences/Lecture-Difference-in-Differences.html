@@ -403,6 +403,7 @@ window.Quarto = {
   <li><a href="#what-parallel-trends-does-and-does-not-allow" id="toc-what-parallel-trends-does-and-does-not-allow" class="nav-link" data-scroll-target="#what-parallel-trends-does-and-does-not-allow">What Parallel Trends Does and Does Not Allow</a></li>
   <li><a href="#regression-form" id="toc-regression-form" class="nav-link" data-scroll-target="#regression-form">Regression Form</a></li>
   <li><a href="#a-22-did-by-hand-and-by-regression" id="toc-a-22-did-by-hand-and-by-regression" class="nav-link" data-scroll-target="#a-22-did-by-hand-and-by-regression">A 2×2 DiD by Hand and by Regression</a></li>
+  <li><a href="#a-22-did-by-hand-and-by-regression-continued" id="toc-a-22-did-by-hand-and-by-regression-continued" class="nav-link" data-scroll-target="#a-22-did-by-hand-and-by-regression-continued">A 2×2 DiD by Hand and by Regression (continued)</a></li>
   </ul></li>
   <li><a href="#event-studies" id="toc-event-studies" class="nav-link" data-scroll-target="#event-studies">Event Studies</a>
   <ul class="collapse">
@@ -851,6 +852,7 @@ window.Quarto = {
 </section>
 <section id="a-22-did-by-hand-and-by-regression" class="level3">
 <h3 class="anchored" data-anchor-id="a-22-did-by-hand-and-by-regression">A 2×2 DiD by Hand and by Regression</h3>
+<p>200 units are observed before and after a policy; half are treated. Treated units start at a higher level, which parallel trends allows, and everyone’s outcome rises by 0.5 over time. The true effect is 1.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -893,6 +895,22 @@ treated    0    1
 <div class="cell-output cell-output-stdout">
 <pre><code>  Estimate Std. Error 
  0.9062927  0.1025802 </code></pre>
+</div>
+</div>
+</section>
+<section id="a-22-did-by-hand-and-by-regression-continued" class="level3">
+<h3 class="anchored" data-anchor-id="a-22-did-by-hand-and-by-regression-continued">A 2×2 DiD by Hand and by Regression (continued)</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Treated units change by 2.27 − 0.75 = 1.52; controls by 0.70 − 0.08 = 0.62. The difference, 0.91, computed before rounding, is the DiD estimate (true effect 1). The interaction term in the regression gives the same number, with a standard error (0.10).</p>
 </div>
 </div>
 </section>
@@ -1072,6 +1090,7 @@ treated    0    1
 </section>
 <section id="staggered-adoption-twfe-vs.-a-robust-estimator" class="level3">
 <h3 class="anchored" data-anchor-id="staggered-adoption-twfe-vs.-a-robust-estimator">Staggered Adoption: TWFE vs.&nbsp;a Robust Estimator</h3>
+<p>300 units: three groups adopt in periods 6, 11, and 16, and some never adopt. The effect grows the longer a unit has been treated.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1106,11 +1125,18 @@ treated    0    1
 3 Sun &amp; Abraham     2.01</code></pre>
 </div>
 </div>
-<div class="notes">
-<ul>
-<li>TWFE recovers well under half of the true average effect here, because effects grow over time and already-treated units serve as controls for later cohorts.</li>
-<li>Ask students to set the effect to a constant (e.g., tau = 1 for all treated observations) and re-run: TWFE and Sun &amp; Abraham then agree.</li>
-</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The true average effect on the treated is 1.97. Static TWFE gives 0.75, well under half, because already-treated units act as controls for later adopters while their own effects are still growing. Sun &amp; Abraham, which compares only with never-treated units, gives 2.01. With a constant effect, the two would agree.</p>
+</div>
 </div>
 </section>
 <section id="where-the-static-bias-comes-from" class="level3">
@@ -1215,6 +1241,7 @@ treated    0    1
 <h2 class="anchored" data-anchor-id="real-data">Real Data</h2>
 <section id="real-data-minimum-wages-and-teen-employment" class="level3">
 <h3 class="anchored" data-anchor-id="real-data-minimum-wages-and-teen-employment">Real Data: Minimum Wages and Teen Employment</h3>
+<p>Data that ship with the <code>did</code> package: log teen employment in 500 US counties, 2003–2007, a subset of the data in Callaway &amp; Sant’Anna (2021). Treated counties are in states that raised the minimum wage in 2004, 2006, or 2007; controls stayed at the federal minimum.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1234,11 +1261,18 @@ treated    0    1
            -0.037            -0.040 </code></pre>
 </div>
 </div>
-<div class="notes">
-<ul>
-<li><code>mpdta</code> ships with the <code>did</code> package: log teen employment by county, a subset of the data in Callaway &amp; Sant’Anna (2021). Treated counties are in states that raised the minimum wage; controls are counties at the federal minimum throughout.</li>
-<li>The two estimates are close here (about −4% teen employment), so TWFE does little harm. That is a finding, not a guarantee: always check.</li>
-</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>TWFE gives −0.037 and Callaway &amp; Sant’Anna −0.040, about 4% lower teen employment. They are close here, so the TWFE weighting problem does little harm. That is a finding for this dataset, not a guarantee: always check.</p>
+</div>
 </div>
 </section>
 <section id="real-data-the-event-study" class="level3">
@@ -1477,7 +1511,7 @@ treated    0    1
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-30-contents" aria-controls="callout-30" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-33-contents" aria-controls="callout-33" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1486,7 +1520,7 @@ treated    0    1
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-30" class="callout-30-contents callout-collapse collapse">
+<div id="callout-33" class="callout-33-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>DiD allows expanding states to differ in levels, for example in income or politics. The design fails only if the expansion decision was related to trends in mortality, or coincided with other changes affecting low-income adults’ health.</li>
@@ -1648,7 +1682,7 @@ treated    0    1
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-36-contents" aria-controls="callout-36" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-39-contents" aria-controls="callout-39" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1657,7 +1691,7 @@ treated    0    1
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-36" class="callout-36-contents callout-collapse collapse">
+<div id="callout-39" class="callout-39-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>A cross-section compares strong agents with weaker ones, which credits AI with pre-existing differences. With agent fixed effects each agent is compared with themselves, so level differences cancel; only differences in trends would bias the result.</li>
@@ -1788,7 +1822,7 @@ treated    0    1
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-42-contents" aria-controls="callout-42" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-45-contents" aria-controls="callout-45" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1797,7 +1831,7 @@ treated    0    1
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-42" class="callout-42-contents callout-collapse collapse">
+<div id="callout-45" class="callout-45-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Freelance demand changes for other reasons at the same time: seasonality, platform growth, interest rates, and tech-sector layoffs in 2022–23. A before–after comparison of writing jobs would attribute all of these to ChatGPT.</li>

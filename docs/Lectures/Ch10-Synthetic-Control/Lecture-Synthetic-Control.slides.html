@@ -510,6 +510,7 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="synthetic-control-vs.-did" class="slide level2 center">
 <h2>Synthetic Control vs.&nbsp;DiD</h2>
+<p>21 units are exposed to a common upward trend to different degrees. Unit 1 is treated from period 21 and is more exposed than most donors; the treatment causes a loss that grows over time.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -547,25 +548,23 @@ Fei Huang, UNSW Sydney
             -1.50             -1.39              0.06              0.84 </code></pre>
 </div>
 </div>
-<aside class="notes">
-<ul>
-<li>The treated unit is more exposed to the common trend than the average donor. DiD against all donors assumes they share the trend, and misses the loss almost entirely.</li>
-<li>Synthetic control puts most weight on the donors with similar exposure and recovers most of the effect.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
+<p>The true average effect is −1.50. Synthetic control gives −1.39, putting most weight (up to 0.84) on donors with similar exposure. DiD against all donors gives 0.06, missing the loss almost entirely, because it assumes the treated unit shares the donors’ average trend.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="seeing-the-fit-and-the-gap" class="slide level2 center">
 <h2>Seeing the Fit and the Gap</h2>
+<p>The synthetic control (dashed) tracks the treated unit until period 20; the gap after that is the estimated effect. The average of all donors (dotted) rises more slowly and is a poor stand-in.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -633,6 +632,7 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="placebo-inference" class="slide level2 center">
 <h2>Placebo Inference</h2>
+<p>Pretend each unit in turn was treated, build its synthetic control, and compare its fit after period 20 with its fit before (the ratio of root mean squared prediction errors). A real effect should make the treated unit’s ratio stand out.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -654,21 +654,19 @@ Fei Huang, UNSW Sydney
        1.000       21.000        0.048 </code></pre>
 </div>
 </div>
-<aside class="notes">
-<ul>
-<li>If the treated unit’s ratio is the largest of all 21, the p-value is 1/21. This is the smallest p-value achievable with 20 donors: synthetic control inference is limited by the size of the donor pool.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
+<p>The treated unit ranks 1 of 21, so p = 0.048. With 20 donors that is the smallest p-value possible: inference is limited by the size of the donor pool.</p>
+</div>
+</div>
+</div>
 </section></section>
 <section>
 <section id="extensions" class="title-slide slide level1 center">
@@ -728,6 +726,7 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="real-data-rebuilding-the-synthetic-basque-country" class="slide level2 center">
 <h2>Real Data: Rebuilding the Synthetic Basque Country</h2>
+<p>Abadie and Gardeazabal’s data ship with the <code>Synth</code> package. We rebuild the synthetic Basque Country from the other Spanish regions, matching GDP per head, investment, education, and the structure of the economy in the 1960s.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -754,21 +753,19 @@ Fei Huang, UNSW Sydney
                 0.851                 0.149 </code></pre>
 </div>
 </div>
-<aside class="notes">
-<ul>
-<li><code>basque</code> ships with the <code>Synth</code> package. The weights reproduce the paper exactly: Catalonia 0.8508, Madrid 0.1492.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
+<p>The weights match the paper: Catalonia 0.851 and Madrid 0.149. Every other region gets essentially zero.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="real-data-the-gap" class="slide level2 center">
 <h2>Real Data: The Gap</h2>

@@ -716,6 +716,7 @@ window.Quarto = {
 </section>
 <section id="synthetic-control-vs.-did" class="level3">
 <h3 class="anchored" data-anchor-id="synthetic-control-vs.-did">Synthetic Control vs.&nbsp;DiD</h3>
+<p>21 units are exposed to a common upward trend to different degrees. Unit 1 is treated from period 21 and is more exposed than most donors; the treatment causes a loss that grows over time.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -753,15 +754,23 @@ window.Quarto = {
             -1.50             -1.39              0.06              0.84 </code></pre>
 </div>
 </div>
-<div class="notes">
-<ul>
-<li>The treated unit is more exposed to the common trend than the average donor. DiD against all donors assumes they share the trend, and misses the loss almost entirely.</li>
-<li>Synthetic control puts most weight on the donors with similar exposure and recovers most of the effect.</li>
-</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The true average effect is −1.50. Synthetic control gives −1.39, putting most weight (up to 0.84) on donors with similar exposure. DiD against all donors gives 0.06, missing the loss almost entirely, because it assumes the treated unit shares the donors’ average trend.</p>
+</div>
 </div>
 </section>
 <section id="seeing-the-fit-and-the-gap" class="level3">
 <h3 class="anchored" data-anchor-id="seeing-the-fit-and-the-gap">Seeing the Fit and the Gap</h3>
+<p>The synthetic control (dashed) tracks the treated unit until period 20; the gap after that is the estimated effect. The average of all donors (dotted) rises more slowly and is a poor stand-in.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -833,6 +842,7 @@ window.Quarto = {
 </section>
 <section id="placebo-inference" class="level3">
 <h3 class="anchored" data-anchor-id="placebo-inference">Placebo Inference</h3>
+<p>Pretend each unit in turn was treated, build its synthetic control, and compare its fit after period 20 with its fit before (the ratio of root mean squared prediction errors). A real effect should make the treated unit’s ratio stand out.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -854,10 +864,18 @@ window.Quarto = {
        1.000       21.000        0.048 </code></pre>
 </div>
 </div>
-<div class="notes">
-<ul>
-<li>If the treated unit’s ratio is the largest of all 21, the p-value is 1/21. This is the smallest p-value achievable with 20 donors: synthetic control inference is limited by the size of the donor pool.</li>
-</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The treated unit ranks 1 of 21, so p = 0.048. With 20 donors that is the smallest p-value possible: inference is limited by the size of the donor pool.</p>
+</div>
 </div>
 </section>
 </section>
@@ -914,6 +932,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="real-data">Real Data</h2>
 <section id="real-data-rebuilding-the-synthetic-basque-country" class="level3">
 <h3 class="anchored" data-anchor-id="real-data-rebuilding-the-synthetic-basque-country">Real Data: Rebuilding the Synthetic Basque Country</h3>
+<p>Abadie and Gardeazabal’s data ship with the <code>Synth</code> package. We rebuild the synthetic Basque Country from the other Spanish regions, matching GDP per head, investment, education, and the structure of the economy in the 1960s.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -940,10 +959,18 @@ window.Quarto = {
                 0.851                 0.149 </code></pre>
 </div>
 </div>
-<div class="notes">
-<ul>
-<li><code>basque</code> ships with the <code>Synth</code> package. The weights reproduce the paper exactly: Catalonia 0.8508, Madrid 0.1492.</li>
-</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The weights match the paper: Catalonia 0.851 and Madrid 0.149. Every other region gets essentially zero.</p>
+</div>
 </div>
 </section>
 <section id="real-data-the-gap" class="level3">
@@ -1118,7 +1145,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1127,7 +1154,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-20" class="callout-20-contents callout-collapse collapse">
+<div id="callout-23" class="callout-23-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>The other regions were on average poorer, less industrial, and less densely populated, and followed different paths before terrorism. Their average is a poor guide to what the Basque economy would have done.</li>
@@ -1251,7 +1278,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-26-contents" aria-controls="callout-26" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-29-contents" aria-controls="callout-29" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1260,7 +1287,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-26" class="callout-26-contents callout-collapse collapse">
+<div id="callout-29" class="callout-29-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Matching the actual co-movement of returns captures each firm’s exposure to all common risks (sector, funding, credit), whether measured or not. Size and leverage capture only a few observed characteristics.</li>

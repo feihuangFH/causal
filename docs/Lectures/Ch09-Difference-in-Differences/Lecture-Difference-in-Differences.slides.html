@@ -645,6 +645,7 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="a-22-did-by-hand-and-by-regression" class="slide level2 center">
 <h2>A 2×2 DiD by Hand and by Regression</h2>
+<p>200 units are observed before and after a policy; half are treated. Treated units start at a higher level, which parallel trends allows, and everyone’s outcome rises by 0.5 over time. The true effect is 1.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -687,6 +688,22 @@ treated    0    1
 <div class="cell-output cell-output-stdout">
 <pre><code>  Estimate Std. Error 
  0.9062927  0.1025802 </code></pre>
+</div>
+</div>
+</section>
+<section id="a-22-did-by-hand-and-by-regression-continued" class="slide level2 center">
+<h2>A 2×2 DiD by Hand and by Regression (continued)</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
+<p>Treated units change by 2.27 − 0.75 = 1.52; controls by 0.70 − 0.08 = 0.62. The difference, 0.91, computed before rounding, is the DiD estimate (true effect 1). The interaction term in the regression gives the same number, with a standard error (0.10).</p>
+</div>
 </div>
 </div>
 </section></section>
@@ -880,6 +897,7 @@ treated    0    1
 </section>
 <section id="staggered-adoption-twfe-vs.-a-robust-estimator" class="slide level2 center">
 <h2>Staggered Adoption: TWFE vs.&nbsp;a Robust Estimator</h2>
+<p>300 units: three groups adopt in periods 6, 11, and 16, and some never adopt. The effect grows the longer a unit has been treated.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -914,22 +932,19 @@ treated    0    1
 3 Sun &amp; Abraham     2.01</code></pre>
 </div>
 </div>
-<aside class="notes">
-<ul>
-<li>TWFE recovers well under half of the true average effect here, because effects grow over time and already-treated units serve as controls for later cohorts.</li>
-<li>Ask students to set the effect to a constant (e.g., tau = 1 for all treated observations) and re-run: TWFE and Sun &amp; Abraham then agree.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
+<p>The true average effect on the treated is 1.97. Static TWFE gives 0.75, well under half, because already-treated units act as controls for later adopters while their own effects are still growing. Sun &amp; Abraham, which compares only with never-treated units, gives 2.01. With a constant effect, the two would agree.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="where-the-static-bias-comes-from" class="slide level2 center">
 <h2>Where the Static Bias Comes From</h2>
@@ -1031,6 +1046,7 @@ treated    0    1
 </section>
 <section id="real-data-minimum-wages-and-teen-employment" class="slide level2 center">
 <h2>Real Data: Minimum Wages and Teen Employment</h2>
+<p>Data that ship with the <code>did</code> package: log teen employment in 500 US counties, 2003–2007, a subset of the data in Callaway &amp; Sant’Anna (2021). Treated counties are in states that raised the minimum wage in 2004, 2006, or 2007; controls stayed at the federal minimum.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1050,22 +1066,19 @@ treated    0    1
            -0.037            -0.040 </code></pre>
 </div>
 </div>
-<aside class="notes">
-<ul>
-<li><code>mpdta</code> ships with the <code>did</code> package: log teen employment by county, a subset of the data in Callaway &amp; Sant’Anna (2021). Treated counties are in states that raised the minimum wage; controls are counties at the federal minimum throughout.</li>
-<li>The two estimates are close here (about −4% teen employment), so TWFE does little harm. That is a finding, not a guarantee: always check.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
+<p>TWFE gives −0.037 and Callaway &amp; Sant’Anna −0.040, about 4% lower teen employment. They are close here, so the TWFE weighting problem does little harm. That is a finding for this dataset, not a guarantee: always check.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="real-data-the-event-study" class="slide level2 center">
 <h2>Real Data: The Event Study</h2>
