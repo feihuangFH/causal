@@ -471,6 +471,7 @@ window.Quarto = {
   <li><a href="#case-study-5-what-to-copy" id="toc-case-study-5-what-to-copy" class="nav-link" data-scroll-target="#case-study-5-what-to-copy">Case Study 5: What to Copy</a></li>
   <li><a href="#case-study-5-discussion-questions" id="toc-case-study-5-discussion-questions" class="nav-link" data-scroll-target="#case-study-5-discussion-questions">Case Study 5: Discussion Questions</a></li>
   <li><a href="#comparing-the-designs" id="toc-comparing-the-designs" class="nav-link" data-scroll-target="#comparing-the-designs">Comparing the Designs</a></li>
+  <li><a href="#controls-in-the-five-case-studies" id="toc-controls-in-the-five-case-studies" class="nav-link" data-scroll-target="#controls-in-the-five-case-studies">Controls in the Five Case Studies</a></li>
   <li><a href="#implementing-the-case-study-specifications" id="toc-implementing-the-case-study-specifications" class="nav-link" data-scroll-target="#implementing-the-case-study-specifications">Implementing the Case Study Specifications</a></li>
   </ul></li>
   <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a>
@@ -1573,7 +1574,7 @@ window.Quarto = {
 <li><span class="math inline">\gamma_t</span>: year FE: tournament-edition differences</li>
 <li><span class="math inline">\lambda_r</span>: round FE: dynamics over the 8-week tournament</li>
 <li><span class="math inline">\theta_m</span>: move FE: game phase (e.g., players err more near the time control at move 40 regardless of air quality)</li>
-<li><span class="math inline">X</span>: other indoor conditions (CO2, temperature, humidity, noise), Elo difference with opponent and its square, points so far, board position before the move</li>
+<li><strong>Controls</strong> <span class="math inline">X</span>: other indoor conditions that could move with PM2.5 (CO2, temperature, humidity, noise), and factors that affect errors in a game (Elo difference with the opponent and its square, points so far, board position before the move)</li>
 </ul>
 <p><strong>Identifying assumption:</strong> players do not control when games are scheduled or the venue’s conditions, and opponents are assigned by tournament rules, so the remaining variation in PM2.5 is as good as random.</p>
 </div>
@@ -1720,7 +1721,7 @@ window.Quarto = {
 <li><span class="math inline">c_i</span>: firm FE (firm-specific average return)</li>
 <li><span class="math inline">lGHG_{i,t}</span>: cross-sectionally standardized log emissions intensity</li>
 <li><span class="math inline">UMC_t</span>: daily unexpected change in climate concerns (common to all firms)</li>
-<li><span class="math inline">\beta_i</span>: firm-specific loadings on market, factor, energy, and macro controls</li>
+<li><strong>Controls</strong> <span class="math inline">\text{CTRL}_t</span>, each with a firm-specific coefficient <span class="math inline">\beta_i</span>: four nested sets of 1, 3, 6, and 15 daily variables, from the market return up to the Fama–French and momentum factors, oil, gas, and propane returns, policy uncertainty, the VIX, interest-rate spreads, and a flight-to-safety index</li>
 <li><strong>Parameter of interest:</strong> <span class="math inline">\gamma^{UMC}_{lGHG}</span>: do higher-emitting firms react more negatively to climate concern shocks? Prediction: <span class="math inline">&lt; 0</span></li>
 </ul>
 </div>
@@ -1902,6 +1903,7 @@ window.Quarto = {
 <li><strong>Agent FE</strong> remove permanent differences between agents. Treated agents were already more productive before access, so the drop from 0.47 to 0.37 is consistent with stronger agents getting access earlier</li>
 <li><strong>Tenure FE</strong> account for experience, which changes over time: new agents improve quickly whether or not they have AI. AI access cannot change tenure, so it is a valid control, not a bad control</li>
 <li><strong>Identifying variation:</strong> the same agent before vs.&nbsp;after access, compared with agents in the same month and at the same tenure who do not (yet) have access</li>
+<li><strong>Controls:</strong> no separate control variables. Experience enters as tenure fixed effects, alongside agent, location, and year-month fixed effects</li>
 <li>Standard errors clustered by agent, the level at which access was assigned</li>
 </ul>
 </div>
@@ -2059,6 +2061,7 @@ window.Quarto = {
 <li><span class="math inline">\gamma_{cyn}</span>: cohort × test year × take number FE: test difficulty on a given date, practice effects from retaking, national trends</li>
 </ul>
 <p><strong>Identifying variation:</strong> the same student’s score after a hotter vs.&nbsp;cooler school year, relative to all other students taking the test on the same date for the same time.</p>
+<p><strong>Controls:</strong> none in the main specification, which relies on the fixed effects. Prior-year rainfall and snowfall, test-day weather, pollution, county payroll in weather-exposed industries, and state-specific trends are added as robustness checks and barely change the estimate.</p>
 <p><strong>Standard errors:</strong> clustered by weather station, the level at which heat varies.</p>
 </div>
 </div>
@@ -2216,7 +2219,7 @@ window.Quarto = {
 <ul>
 <li>Absorbs local industry mix, workforce size, seasonality, local economic conditions, and any slow-moving changes</li>
 </ul></li>
-<li><span class="math inline">X_{pt}</span>: day-of-week dummies, precipitation</li>
+<li><strong>Controls</strong> <span class="math inline">X_{pt}</span>: day-of-week dummies (hours and industry mix differ by weekday) and precipitation (related to both heat and injury risk). PM2.5 is left out of the main specification because it may be a mediator</li>
 <li>Sample: weekdays; postcode-months with zero claims on every day are dropped (no within variation)</li>
 </ul>
 <p><strong>Identifying variation:</strong> day-to-day temperature differences within the same postcode in the same month.</p>
@@ -2425,19 +2428,76 @@ window.Quarto = {
 <td>Managers selecting agents on trends</td>
 </tr>
 <tr class="even">
-<td><em>Park</em></td>
+<td><strong>Park</strong></td>
 <td>Student ability, background, location, climate; test-date difficulty</td>
 <td>Year-to-year school-day heat for the same student</td>
 <td>Time-varying local shocks; measurement error</td>
 </tr>
 <tr class="odd">
-<td><em>Ireland</em></td>
+<td><strong>Ireland</strong></td>
 <td>Postcode industry mix, workforce, seasonality, local economy in that month</td>
 <td>Day-to-day temperature within postcode-month</td>
 <td>Unobserved hours worked; extreme-heat work stoppages</td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="controls-in-the-five-case-studies" class="level3">
+<h3 class="anchored" data-anchor-id="controls-in-the-five-case-studies">Controls in the Five Case Studies</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>What Each Paper Controls For
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 46%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Case</th>
+<th>Controls in the main specification</th>
+<th>Added only as checks, or left out</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Künn</strong></td>
+<td>Indoor temperature, CO2, humidity, noise; Elo difference and its square; points so far; board position</td>
+<td>Traffic and flexible weather controls (checks)</td>
+</tr>
+<tr class="even">
+<td><strong>Ardia</strong></td>
+<td>Up to 15 daily market, energy, and macro factors, each with a firm-specific coefficient</td>
+<td>Results reported for four nested sets (1, 3, 6, 15 controls)</td>
+</tr>
+<tr class="odd">
+<td><strong>Brynjolfsson</strong></td>
+<td>None beyond fixed effects (agent, location, year-month, tenure)</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td><strong>Park</strong></td>
+<td>None beyond fixed effects (student; cohort × test date × take)</td>
+<td>Weather, pollution, county payroll, state-specific trends (checks)</td>
+</tr>
+<tr class="odd">
+<td><strong>Ireland</strong></td>
+<td>Day of week, precipitation</td>
+<td>PM2.5 left out as a possible mediator; 0.20 with it vs.&nbsp;0.24 without</td>
+</tr>
+</tbody>
+</table>
+<p>In panels, fixed effects often do most of the work, and time-varying controls are added only where something changes within units alongside treatment.</p>
+</div>
+</div>
 </section>
 <section id="implementing-the-case-study-specifications" class="level3">
 <h3 class="anchored" data-anchor-id="implementing-the-case-study-specifications">Implementing the Case Study Specifications</h3>
