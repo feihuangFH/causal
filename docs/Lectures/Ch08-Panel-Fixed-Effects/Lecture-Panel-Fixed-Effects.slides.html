@@ -382,7 +382,7 @@ Fei Huang, UNSW Sydney
 </tr>
 </tbody>
 </table>
-<p>Each step is covered later in this chapter. The checklist at the end repeats them as questions to review a finished analysis.</p>
+<p>Each step is covered later in this chapter. The checklist before the case studies repeats them as questions to review a finished analysis.</p>
 </div>
 </div>
 </div>
@@ -406,6 +406,7 @@ Fei Huang, UNSW Sydney
 <p><strong>Across countries:</strong> a 1°F increase in average annual temperature is associated with 0.02 SD lower PISA math scores.</p>
 <p><strong>Across US counties:</strong> students in the hottest decile score about 0.12 SD lower on grades 3–8 math tests.</p>
 <p><strong>Question:</strong> Is this relationship <em>causal</em>?</p>
+<p>This example runs through the chapter, and we study the paper in full as Case Study 4.</p>
 </div>
 </div>
 </div>
@@ -873,11 +874,121 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </div>
+</section>
+<section id="simulating-the-bias-and-the-fix" class="slide level2 center">
+<h2>Simulating the Bias and the Fix</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(fixest)</span>
+<span id="cb2-2"><a></a><span class="fu">setFixest_notes</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb2-3"><a></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb2-4"><a></a></span>
+<span id="cb2-5"><a></a><span class="co"># Helper: "estimate (SE)" for the heat coefficient</span></span>
+<span id="cb2-6"><a></a>heat_est <span class="ot">&lt;-</span> <span class="cf">function</span>(m) {</span>
+<span id="cb2-7"><a></a>  b <span class="ot">&lt;-</span> <span class="fu">coef</span>(m)[<span class="fu">grep</span>(<span class="st">"heat"</span>, <span class="fu">names</span>(<span class="fu">coef</span>(m)))][<span class="dv">1</span>]</span>
+<span id="cb2-8"><a></a>  <span class="fu">sprintf</span>(<span class="st">"%.4f (%.4f)"</span>, b, <span class="fu">se</span>(m)[<span class="fu">names</span>(b)])</span>
+<span id="cb2-9"><a></a>}</span>
+<span id="cb2-10"><a></a></span>
+<span id="cb2-11"><a></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span>   <span class="co"># students</span></span>
+<span id="cb2-12"><a></a>n_t <span class="ot">&lt;-</span> <span class="dv">4</span>    <span class="co"># test sittings</span></span>
+<span id="cb2-13"><a></a></span>
+<span id="cb2-14"><a></a><span class="co"># Long-run climate of each student's location (°F)</span></span>
+<span id="cb2-15"><a></a>climate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">65</span>, <span class="at">sd =</span> <span class="dv">5</span>)</span>
+<span id="cb2-16"><a></a></span>
+<span id="cb2-17"><a></a><span class="co"># Unobserved resources: lower in hotter places (the confounder)</span></span>
+<span id="cb2-18"><a></a>alpha <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.05</span> <span class="sc">*</span> (climate <span class="sc">-</span> <span class="dv">65</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">0.3</span>)</span>
+<span id="cb2-19"><a></a></span>
+<span id="cb2-20"><a></a>panel <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>N, <span class="at">t =</span> <span class="dv">1</span><span class="sc">:</span>n_t)</span>
+<span id="cb2-21"><a></a>year_shock <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.5</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.5</span>)   <span class="co"># nationwide hot/cool years</span></span>
+<span id="cb2-22"><a></a></span>
+<span id="cb2-23"><a></a>panel<span class="sc">$</span>heat  <span class="ot">&lt;-</span> climate[panel<span class="sc">$</span>id] <span class="sc">+</span> year_shock[panel<span class="sc">$</span>t] <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb2-24"><a></a>true_tau    <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.02</span></span>
+<span id="cb2-25"><a></a>panel<span class="sc">$</span>score <span class="ot">&lt;-</span> alpha[panel<span class="sc">$</span>id] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> panel<span class="sc">$</span>t <span class="sc">+</span> true_tau <span class="sc">*</span> panel<span class="sc">$</span>heat <span class="sc">+</span></span>
+<span id="cb2-26"><a></a>               <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="fl">0.1</span>)</span>
+<span id="cb2-27"><a></a></span>
+<span id="cb2-28"><a></a><span class="co"># 1. Pooled OLS: confounded by alpha</span></span>
+<span id="cb2-29"><a></a>m_pooled <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">+</span> <span class="fu">i</span>(t), <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb2-30"><a></a></span>
+<span id="cb2-31"><a></a><span class="co"># 2. Unit fixed effects only</span></span>
+<span id="cb2-32"><a></a>m_fe     <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">|</span> id, <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb2-33"><a></a></span>
+<span id="cb2-34"><a></a><span class="co"># 3. Two-way fixed effects</span></span>
+<span id="cb2-35"><a></a>m_twfe   <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">|</span> id <span class="sc">+</span> t, <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb2-36"><a></a></span>
+<span id="cb2-37"><a></a><span class="co"># 4. First differences</span></span>
+<span id="cb2-38"><a></a>panel    <span class="ot">&lt;-</span> panel[<span class="fu">order</span>(panel<span class="sc">$</span>id, panel<span class="sc">$</span>t), ]</span>
+<span id="cb2-39"><a></a>m_fd     <span class="ot">&lt;-</span> <span class="fu">feols</span>(<span class="fu">d</span>(score) <span class="sc">~</span> <span class="fu">d</span>(heat), <span class="at">data =</span> panel,</span>
+<span id="cb2-40"><a></a>                  <span class="at">panel.id =</span> <span class="sc">~</span>id <span class="sc">+</span> t, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb2-41"><a></a></span>
+<span id="cb2-42"><a></a><span class="co"># Pooled OLS is over 3x too large. TWFE and FD recover the truth.</span></span>
+<span id="cb2-43"><a></a><span class="co"># Unit FE alone is slightly off: the year shocks happen to correlate with the score trend.</span></span>
+<span id="cb2-44"><a></a><span class="fu">data.frame</span>(</span>
+<span id="cb2-45"><a></a>  <span class="at">model    =</span> <span class="fu">c</span>(<span class="st">"Pooled OLS"</span>, <span class="st">"Unit FE"</span>, <span class="st">"Two-way FE"</span>, <span class="st">"First differences"</span>),</span>
+<span id="cb2-46"><a></a>  <span class="at">estimate =</span> <span class="fu">sapply</span>(<span class="fu">list</span>(m_pooled, m_fe, m_twfe, m_fd), heat_est),</span>
+<span id="cb2-47"><a></a>  <span class="at">truth    =</span> true_tau</span>
+<span id="cb2-48"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              model         estimate truth
+1        Pooled OLS -0.0693 (0.0018) -0.02
+2           Unit FE -0.0256 (0.0016) -0.02
+3        Two-way FE -0.0185 (0.0019) -0.02
+4 First differences -0.0198 (0.0014) -0.02</code></pre>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Ask students to predict the sign of the pooled OLS bias before running it.</li>
+<li>Note why the unit-FE-only model (m_fe) is also biased here: the nationwide year shocks are correlated with the time trend in scores. Adding year FE fixes this.</li>
+<li>Then compare sd(panel$heat) (about 5°F) with the SD of heat after demeaning (about 0.9°F). This mirrors Park et al.’s point about residual variation.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="identification" class="title-slide slide level1 center">
 <h1>Identification</h1>
 
+</section>
+<section id="what-exogeneity-means" class="slide level2 center">
+<h2>What Exogeneity Means</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Exogenous and Endogenous Treatment</strong></p>
+</div>
+<div class="callout-content">
+<p>A treatment is <em>exogenous</em> if it is unrelated to everything else that affects the outcome, the error term <span class="math inline">\varepsilon_{it}</span>: <span class="math inline">E[\varepsilon_{it} \mid D_{it}] = 0</span>. “Exo” means decided from outside, by something like a lottery or the weather. A treatment is <em>endogenous</em> if it is tied up with the outcome’s other causes.</p>
+<p><em>Example:</em> if a lottery decides which agents get an AI assistant, access is exogenous. If managers give it to their strongest agents, access is endogenous, because skill sits in the error term.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Why Fixed Effects Need the <em>Strict</em> Version</strong></p>
+</div>
+<div class="callout-content">
+<p>Fixed effects compare each period with the unit’s average over all periods, so a shock in one month enters the comparison for every month. Treatment must therefore be unrelated to the shocks in every period, past and future, not only the current one. <em>Example:</em> if an agent gets the tool because of a bad month, treatment depends on a past shock, and strict exogeneity fails.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="the-key-assumption-strict-exogeneity" class="slide level2 center">
 <h2>The Key Assumption: Strict Exogeneity</h2>
@@ -913,100 +1024,6 @@ Fei Huang, UNSW Sydney
 <p><strong>3. Anticipation and dynamic effects</strong> Future treatment affects current outcomes, or past treatment still matters today.</p>
 <p><strong>4. Lagged dependent variables</strong> Including <span class="math inline">Y_{i,t-1}</span> as a regressor with unit FE violates strict exogeneity mechanically. This is the Nickell bias, of order <span class="math inline">1/T</span> <span class="citation" data-cites="nickell1981biases">(<a href="#/references" role="doc-biblioref" onclick="">Nickell 1981</a>)</span>.</p>
 <p><strong>5. Selection into the panel</strong> Whether unit <span class="math inline">i</span> appears in period <span class="math inline">t</span> depends on the treatment. <em>Example:</em> hot weather discourages students from retaking the test.</p>
-</div>
-</div>
-</div>
-</section>
-<section id="what-to-do-about-each-threat" class="slide level2 center">
-<h2>What to Do About Each Threat</h2>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Mitigation</strong></p>
-</div>
-<div class="callout-content">
-<table class="caption-top">
-<colgroup>
-<col style="width: 28%">
-<col style="width: 72%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Threat</th>
-<th>What to do</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>1. Time-varying confounders</strong></td>
-<td>Control for the ones you can measure; add region × time fixed effects or unit-specific trends; find a second source of variation, such as the wind-driven instrument in Case Study 1</td>
-</tr>
-<tr class="even">
-<td><strong>2. Feedback</strong></td>
-<td>Test whether past outcomes predict treatment, and whether future treatment predicts today’s outcome (leads). If feedback is real, use estimators that allow it, such as Arellano–Bond, which uses earlier values as instruments</td>
-</tr>
-<tr class="odd">
-<td><strong>3. Anticipation and dynamic effects</strong></td>
-<td>Include leads and lags of treatment (an event study); date treatment from when it was announced, if behaviour changed then</td>
-</tr>
-<tr class="even">
-<td><strong>4. Lagged dependent variable</strong></td>
-<td>Leave it out in short panels, or use Arellano–Bond. The bias shrinks as the number of periods grows</td>
-</tr>
-<tr class="odd">
-<td><strong>5. Selection into the panel</strong></td>
-<td>Test whether treatment predicts who appears in the data (as Case Study 4 does); compare with a balanced panel; bound the effect if selection is likely</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</section>
-<section id="choosing-time-varying-controls" class="slide level2 center scrollable">
-<h2>Choosing Time-Varying Controls</h2>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Which <span class="math inline">X_{it}</span> to Include</strong></p>
-</div>
-<div class="callout-content">
-<ol type="1">
-<li><strong>Only time-varying variables matter.</strong> Anything fixed within a unit is already absorbed by <span class="math inline">\alpha_i</span>, so adding it changes nothing.</li>
-<li><strong>Include variables that change within units and affect both treatment and the outcome</strong> (time-varying confounders). <em>Example:</em> rain is related to both temperature and injury risk (Case Study 5).</li>
-<li><strong>Exclude anything the treatment can change.</strong> Hours worked respond to AI access, and pollution may respond to heat. Controlling for them removes part of the effect.</li>
-<li><strong>Watch for feedback.</strong> A control affected by past outcomes, or a lagged outcome, breaks strict exogeneity (Nickell bias).</li>
-<li><strong>Variables that only predict the outcome are optional.</strong> They can improve precision but do not remove bias.</li>
-<li><strong>Report results with and without debatable controls.</strong> <em>Example:</em> Case Study 5 reports 0.24% per 1°C without a pollution control and 0.20% with it.</li>
-</ol>
-</div>
-</div>
-</div>
-</section>
-<section id="why-weather-is-the-ideal-fe-treatment" class="slide level2 center">
-<h2>Why Weather Is the Ideal FE Treatment</h2>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>The “Weather Design” <span class="citation" data-cites="dell2014what hsiang2016climate">(<a href="#/references" role="doc-biblioref" onclick="">Dell et al. 2014</a>; <a href="#/references" role="doc-biblioref" onclick="">Hsiang 2016</a>)</span></strong></p>
-</div>
-<div class="callout-content">
-<p>Three of this chapter’s case studies <span class="citation" data-cites="kunn2023indoor park2020heat ireland2023heat">(<a href="#/references" role="doc-biblioref" onclick="">Künn et al. 2023</a>; <a href="#/references" role="doc-biblioref" onclick="">Park et al. 2020</a>; <a href="#/references" role="doc-biblioref" onclick="">Ireland et al. 2023</a>)</span> use weather or air quality fluctuations as the treatment.</p>
-<ul>
-<li><strong>Climate</strong> (long-run averages) is correlated with everything: income, institutions, culture</li>
-<li><strong>Weather</strong> (deviations from the local norm) is plausibly random: no one chooses whether next Tuesday is 35°C</li>
-</ul>
-<p>Unit (location) fixed effects remove climate. Time fixed effects remove seasonality and trends. What remains is weather, which is as close to a natural experiment as observational data get.</p>
-<p><strong>Caveat:</strong> weather effects ≠ climate effects. People adapt to persistent changes (AC, schedules, migration) in ways they cannot adapt to a single hot day.</p>
 </div>
 </div>
 </div>
@@ -1097,11 +1114,208 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </div>
+</section>
+<section id="what-to-do-about-each-threat" class="slide level2 center">
+<h2>What to Do About Each Threat</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Mitigation</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Threat</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Time-varying confounders</strong></td>
+<td>Control for the ones you can measure; add region × time fixed effects or unit-specific trends; find a second source of variation, such as the wind-driven instrument in Case Study 1</td>
+</tr>
+<tr class="even">
+<td><strong>2. Feedback</strong></td>
+<td>Test whether past outcomes predict treatment, and whether future treatment predicts today’s outcome (leads). If feedback is real, use estimators that allow it, such as Arellano–Bond, which uses earlier values as instruments</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Anticipation and dynamic effects</strong></td>
+<td>Include leads and lags of treatment (an event study); date treatment from when it was announced, if behaviour changed then</td>
+</tr>
+<tr class="even">
+<td><strong>4. Lagged dependent variable</strong></td>
+<td>Leave it out in short panels, or use Arellano–Bond. The bias shrinks as the number of periods grows</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Selection into the panel</strong></td>
+<td>Test whether treatment predicts who appears in the data (as Case Study 4 does); compare with a balanced panel; bound the effect if selection is likely</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="choosing-time-varying-controls" class="slide level2 center scrollable">
+<h2>Choosing Time-Varying Controls</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Which <span class="math inline">X_{it}</span> to Include</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><strong>Only time-varying variables matter.</strong> Anything fixed within a unit is already absorbed by <span class="math inline">\alpha_i</span>, so adding it changes nothing.</li>
+<li><strong>Include variables that change within units and affect both treatment and the outcome</strong> (time-varying confounders). <em>Example:</em> rain is related to both temperature and injury risk (Case Study 5).</li>
+<li><strong>Exclude anything the treatment can change.</strong> Hours worked respond to AI access, and pollution may respond to heat. Controlling for them removes part of the effect.</li>
+<li><strong>Watch for feedback.</strong> A control affected by past outcomes, or a lagged outcome, breaks strict exogeneity (Nickell bias).</li>
+<li><strong>Variables that only predict the outcome are optional.</strong> They can improve precision but do not remove bias.</li>
+<li><strong>Report results with and without debatable controls.</strong> <em>Example:</em> Case Study 5 reports 0.24% per 1°C without a pollution control and 0.20% with it.</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="simulation-when-fe-fails" class="slide level2 center">
+<h2>Simulation: When FE Fails</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co"># Add a TIME-VARYING confounder: local economic shocks</span></span>
+<span id="cb4-2"><a></a><span class="co"># Bad economic years -&gt; schools defer AC maintenance (more heat exposure)</span></span>
+<span id="cb4-3"><a></a><span class="co">#                    -&gt; families have fewer resources (lower scores)</span></span>
+<span id="cb4-4"><a></a>panel<span class="sc">$</span>econ_shock <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb4-5"><a></a>panel<span class="sc">$</span>heat_ec    <span class="ot">&lt;-</span> panel<span class="sc">$</span>heat <span class="sc">-</span> <span class="fl">0.8</span> <span class="sc">*</span> panel<span class="sc">$</span>econ_shock</span>
+<span id="cb4-6"><a></a>panel<span class="sc">$</span>score_ec   <span class="ot">&lt;-</span> alpha[panel<span class="sc">$</span>id] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> panel<span class="sc">$</span>t <span class="sc">+</span> true_tau <span class="sc">*</span> panel<span class="sc">$</span>heat_ec <span class="sc">+</span></span>
+<span id="cb4-7"><a></a>                    <span class="fl">0.05</span> <span class="sc">*</span> panel<span class="sc">$</span>econ_shock <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="fl">0.1</span>)</span>
+<span id="cb4-8"><a></a></span>
+<span id="cb4-9"><a></a>m_twfe_bad  <span class="ot">&lt;-</span> <span class="fu">feols</span>(score_ec <span class="sc">~</span> heat_ec <span class="sc">|</span> id <span class="sc">+</span> t, <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb4-10"><a></a>m_twfe_ctrl <span class="ot">&lt;-</span> <span class="fu">feols</span>(score_ec <span class="sc">~</span> heat_ec <span class="sc">+</span> econ_shock <span class="sc">|</span> id <span class="sc">+</span> t, <span class="at">data =</span> panel,</span>
+<span id="cb4-11"><a></a>                     <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb4-12"><a></a></span>
+<span id="cb4-13"><a></a><span class="co"># FE cannot remove a confounder that varies within unit over time.</span></span>
+<span id="cb4-14"><a></a><span class="co"># Only measuring and controlling for it (or a better design) helps.</span></span>
+<span id="cb4-15"><a></a><span class="co"># This is why Park et al. control for county payroll in weather-exposed industries.</span></span>
+<span id="cb4-16"><a></a><span class="fu">data.frame</span>(</span>
+<span id="cb4-17"><a></a>  <span class="at">model    =</span> <span class="fu">c</span>(<span class="st">"TWFE"</span>, <span class="st">"TWFE + econ_shock control"</span>),</span>
+<span id="cb4-18"><a></a>  <span class="at">estimate =</span> <span class="fu">sapply</span>(<span class="fu">list</span>(m_twfe_bad, m_twfe_ctrl), heat_est),</span>
+<span id="cb4-19"><a></a>  <span class="at">truth    =</span> true_tau</span>
+<span id="cb4-20"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      model         estimate truth
+1                      TWFE -0.0435 (0.0015) -0.02
+2 TWFE + econ_shock control -0.0192 (0.0018) -0.02</code></pre>
+</div>
+</div>
 </section></section>
 <section>
 <section id="practical-issues" class="title-slide slide level1 center">
 <h1>Practical Issues</h1>
 
+</section>
+<section id="count-outcomes" class="slide level2 center">
+<h2>Count Outcomes</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Count Outcomes: Poisson Fixed Effects</strong></p>
+</div>
+<div class="callout-content">
+<p>For counts with many zeros (e.g., injury claims per postcode-day), use Poisson pseudo-maximum likelihood with FE:</p>
+<p><span class="math display">E[Y_{it} \mid \cdot] = \exp(\alpha_i + \tau D_{it} + X_{it}'\beta)</span></p>
+<ul>
+<li><span class="math inline">\tau</span> is a semi-elasticity: <span class="math inline">100 \cdot \tau</span> ≈ percent change in <span class="math inline">Y</span> per unit of <span class="math inline">D</span></li>
+<li>Consistent even if the data are not Poisson, as long as the mean is correctly specified <span class="citation" data-cites="wooldridge1999distribution">(<a href="#/references" role="doc-biblioref" onclick="">Wooldridge 1999</a>)</span></li>
+<li>Groups with all-zero outcomes carry no information and are dropped automatically</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="nonlinear-effects-temperature-bins" class="slide level2 center">
+<h2>Nonlinear Effects: Temperature Bins</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Flexible Treatment: Bins</strong></p>
+</div>
+<div class="callout-content">
+<p>Rather than a linear term in temperature, count the days in each temperature bin:</p>
+<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \sum_{b \neq \text{ref}} \beta_b \cdot \text{Days}^{(b)}_{it} + \varepsilon_{it}</span></p>
+<p>Each <span class="math inline">\beta_b</span> is the effect of replacing one day in the reference bin with one day in bin <span class="math inline">b</span>. Both Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> and Ireland et al. <span class="citation" data-cites="ireland2023heat">(<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span> use this to show damages that rise steeply at high temperatures.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="inference-clustering-standard-errors" class="slide level2 center">
+<h2>Inference: Clustering Standard Errors</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Errors Are Correlated Within Units and Within Shocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>The same student’s scores are correlated over time → cluster by unit</li>
+<li>All students near the same weather station receive the same heat shock → cluster by level of treatment variation <span class="citation" data-cites="abadie2023when">(<a href="#/references" role="doc-biblioref" onclick="">Abadie et al. 2023</a>)</span></li>
+<li>Nearby stations have correlated weather → consider spatial correlation <span class="citation" data-cites="conley1999gmm">(<a href="#/references" role="doc-biblioref" onclick="">Conley 1999</a>)</span> or cluster at a coarser level (e.g., state)</li>
+</ul>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paper</th>
+<th>Clustering level</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span></td>
+<td>Weather station</td>
+<td>Treatment assigned at station level</td>
+</tr>
+<tr class="even">
+<td>Ireland et al. <span class="citation" data-cites="ireland2023heat">(<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span></td>
+<td>Postcode</td>
+<td>Unit of observation and treatment</td>
+</tr>
+<tr class="odd">
+<td>Künn et al. <span class="citation" data-cites="kunn2023indoor">(<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span></td>
+<td>Round × year (21 clusters)</td>
+<td>All players in a round share the same air</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Few clusters (fewer than ~40–50):</strong> cluster-robust SEs are biased downward. Use the wild cluster bootstrap <span class="citation" data-cites="cameron2008bootstrap">(<a href="#/references" role="doc-biblioref" onclick="">Cameron et al. 2008</a>)</span>.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="how-much-variation-is-left" class="slide level2 center">
 <h2>How Much Variation Is Left?</h2>
@@ -1168,214 +1382,50 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </div>
-</section>
-<section id="inference-clustering-standard-errors" class="slide level2 center">
-<h2>Inference: Clustering Standard Errors</h2>
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Errors Are Correlated Within Units and Within Shocks</strong></p>
-</div>
-<div class="callout-content">
-<ul>
-<li>The same student’s scores are correlated over time → cluster by unit</li>
-<li>All students near the same weather station receive the same heat shock → cluster by level of treatment variation <span class="citation" data-cites="abadie2023when">(<a href="#/references" role="doc-biblioref" onclick="">Abadie et al. 2023</a>)</span></li>
-<li>Nearby stations have correlated weather → consider spatial correlation <span class="citation" data-cites="conley1999gmm">(<a href="#/references" role="doc-biblioref" onclick="">Conley 1999</a>)</span> or cluster at a coarser level (e.g., state)</li>
-</ul>
-<table class="caption-top">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Paper</th>
-<th>Clustering level</th>
-<th>Why</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span></td>
-<td>Weather station</td>
-<td>Treatment assigned at station level</td>
-</tr>
-<tr class="even">
-<td>Ireland et al. <span class="citation" data-cites="ireland2023heat">(<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span></td>
-<td>Postcode</td>
-<td>Unit of observation and treatment</td>
-</tr>
-<tr class="odd">
-<td>Künn et al. <span class="citation" data-cites="kunn2023indoor">(<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span></td>
-<td>Round × year (21 clusters)</td>
-<td>All players in a round share the same air</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Few clusters (fewer than ~40–50):</strong> cluster-robust SEs are biased downward. Use the wild cluster bootstrap <span class="citation" data-cites="cameron2008bootstrap">(<a href="#/references" role="doc-biblioref" onclick="">Cameron et al. 2008</a>)</span>.</p>
-</div>
-</div>
-</div>
-</section>
-<section id="nonlinear-effects-temperature-bins" class="slide level2 center">
-<h2>Nonlinear Effects: Temperature Bins</h2>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Flexible Treatment: Bins</strong></p>
-</div>
-<div class="callout-content">
-<p>Rather than a linear term in temperature, count the days in each temperature bin:</p>
-<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \sum_{b \neq \text{ref}} \beta_b \cdot \text{Days}^{(b)}_{it} + \varepsilon_{it}</span></p>
-<p>Each <span class="math inline">\beta_b</span> is the effect of replacing one day in the reference bin with one day in bin <span class="math inline">b</span>. Both Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> and Ireland et al. <span class="citation" data-cites="ireland2023heat">(<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span> use this to show damages that rise steeply at high temperatures.</p>
-</div>
-</div>
-</div>
-</section>
-<section id="count-outcomes" class="slide level2 center">
-<h2>Count Outcomes</h2>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Count Outcomes: Poisson Fixed Effects</strong></p>
-</div>
-<div class="callout-content">
-<p>For counts with many zeros (e.g., injury claims per postcode-day), use Poisson pseudo-maximum likelihood with FE:</p>
-<p><span class="math display">E[Y_{it} \mid \cdot] = \exp(\alpha_i + \tau D_{it} + X_{it}'\beta)</span></p>
-<ul>
-<li><span class="math inline">\tau</span> is a semi-elasticity: <span class="math inline">100 \cdot \tau</span> ≈ percent change in <span class="math inline">Y</span> per unit of <span class="math inline">D</span></li>
-<li>Consistent even if the data are not Poisson, as long as the mean is correctly specified <span class="citation" data-cites="wooldridge1999distribution">(<a href="#/references" role="doc-biblioref" onclick="">Wooldridge 1999</a>)</span></li>
-<li>Groups with all-zero outcomes carry no information and are dropped automatically</li>
-</ul>
-</div>
-</div>
-</div>
 </section></section>
 <section>
-<section id="simulation" class="title-slide slide level1 center">
-<h1>Simulation</h1>
+<section id="checklist" class="title-slide slide level1 center">
+<h1>Checklist</h1>
 
 </section>
-<section id="simulating-the-bias-and-the-fix" class="slide level2 center">
-<h2>Simulating the Bias and the Fix</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(fixest)</span>
-<span id="cb2-2"><a></a><span class="fu">setFixest_notes</span>(<span class="cn">FALSE</span>)</span>
-<span id="cb2-3"><a></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
-<span id="cb2-4"><a></a></span>
-<span id="cb2-5"><a></a><span class="co"># Helper: "estimate (SE)" for the heat coefficient</span></span>
-<span id="cb2-6"><a></a>heat_est <span class="ot">&lt;-</span> <span class="cf">function</span>(m) {</span>
-<span id="cb2-7"><a></a>  b <span class="ot">&lt;-</span> <span class="fu">coef</span>(m)[<span class="fu">grep</span>(<span class="st">"heat"</span>, <span class="fu">names</span>(<span class="fu">coef</span>(m)))][<span class="dv">1</span>]</span>
-<span id="cb2-8"><a></a>  <span class="fu">sprintf</span>(<span class="st">"%.4f (%.4f)"</span>, b, <span class="fu">se</span>(m)[<span class="fu">names</span>(b)])</span>
-<span id="cb2-9"><a></a>}</span>
-<span id="cb2-10"><a></a></span>
-<span id="cb2-11"><a></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span>   <span class="co"># students</span></span>
-<span id="cb2-12"><a></a>n_t <span class="ot">&lt;-</span> <span class="dv">4</span>    <span class="co"># test sittings</span></span>
-<span id="cb2-13"><a></a></span>
-<span id="cb2-14"><a></a><span class="co"># Long-run climate of each student's location (°F)</span></span>
-<span id="cb2-15"><a></a>climate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">65</span>, <span class="at">sd =</span> <span class="dv">5</span>)</span>
-<span id="cb2-16"><a></a></span>
-<span id="cb2-17"><a></a><span class="co"># Unobserved resources: lower in hotter places (the confounder)</span></span>
-<span id="cb2-18"><a></a>alpha <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.05</span> <span class="sc">*</span> (climate <span class="sc">-</span> <span class="dv">65</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">0.3</span>)</span>
-<span id="cb2-19"><a></a></span>
-<span id="cb2-20"><a></a>panel <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>N, <span class="at">t =</span> <span class="dv">1</span><span class="sc">:</span>n_t)</span>
-<span id="cb2-21"><a></a>year_shock <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.5</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.5</span>)   <span class="co"># nationwide hot/cool years</span></span>
-<span id="cb2-22"><a></a></span>
-<span id="cb2-23"><a></a>panel<span class="sc">$</span>heat  <span class="ot">&lt;-</span> climate[panel<span class="sc">$</span>id] <span class="sc">+</span> year_shock[panel<span class="sc">$</span>t] <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb2-24"><a></a>true_tau    <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.02</span></span>
-<span id="cb2-25"><a></a>panel<span class="sc">$</span>score <span class="ot">&lt;-</span> alpha[panel<span class="sc">$</span>id] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> panel<span class="sc">$</span>t <span class="sc">+</span> true_tau <span class="sc">*</span> panel<span class="sc">$</span>heat <span class="sc">+</span></span>
-<span id="cb2-26"><a></a>               <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="fl">0.1</span>)</span>
-<span id="cb2-27"><a></a></span>
-<span id="cb2-28"><a></a><span class="co"># 1. Pooled OLS: confounded by alpha</span></span>
-<span id="cb2-29"><a></a>m_pooled <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">+</span> <span class="fu">i</span>(t), <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb2-30"><a></a></span>
-<span id="cb2-31"><a></a><span class="co"># 2. Unit fixed effects only</span></span>
-<span id="cb2-32"><a></a>m_fe     <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">|</span> id, <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb2-33"><a></a></span>
-<span id="cb2-34"><a></a><span class="co"># 3. Two-way fixed effects</span></span>
-<span id="cb2-35"><a></a>m_twfe   <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">|</span> id <span class="sc">+</span> t, <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb2-36"><a></a></span>
-<span id="cb2-37"><a></a><span class="co"># 4. First differences</span></span>
-<span id="cb2-38"><a></a>panel    <span class="ot">&lt;-</span> panel[<span class="fu">order</span>(panel<span class="sc">$</span>id, panel<span class="sc">$</span>t), ]</span>
-<span id="cb2-39"><a></a>m_fd     <span class="ot">&lt;-</span> <span class="fu">feols</span>(<span class="fu">d</span>(score) <span class="sc">~</span> <span class="fu">d</span>(heat), <span class="at">data =</span> panel,</span>
-<span id="cb2-40"><a></a>                  <span class="at">panel.id =</span> <span class="sc">~</span>id <span class="sc">+</span> t, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb2-41"><a></a></span>
-<span id="cb2-42"><a></a><span class="co"># Pooled OLS is over 3x too large. TWFE and FD recover the truth.</span></span>
-<span id="cb2-43"><a></a><span class="co"># Unit FE alone is slightly off: the year shocks happen to correlate with the score trend.</span></span>
-<span id="cb2-44"><a></a><span class="fu">data.frame</span>(</span>
-<span id="cb2-45"><a></a>  <span class="at">model    =</span> <span class="fu">c</span>(<span class="st">"Pooled OLS"</span>, <span class="st">"Unit FE"</span>, <span class="st">"Two-way FE"</span>, <span class="st">"First differences"</span>),</span>
-<span id="cb2-46"><a></a>  <span class="at">estimate =</span> <span class="fu">sapply</span>(<span class="fu">list</span>(m_pooled, m_fe, m_twfe, m_fd), heat_est),</span>
-<span id="cb2-47"><a></a>  <span class="at">truth    =</span> true_tau</span>
-<span id="cb2-48"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>              model         estimate truth
-1        Pooled OLS -0.0693 (0.0018) -0.02
-2           Unit FE -0.0256 (0.0016) -0.02
-3        Two-way FE -0.0185 (0.0019) -0.02
-4 First differences -0.0198 (0.0014) -0.02</code></pre>
+<section id="checklist-for-a-fixed-effects-analysis" class="slide level2 center scrollable">
+<h2>Checklist for a Fixed Effects Analysis</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Before Estimating</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><strong>State the comparison</strong> your FE impose in plain language (“same student, different years”)</li>
+<li><strong>Argue why the remaining variation is as good as random.</strong> Which confounders could vary within unit over time?</li>
+<li><strong>Pick the FE structure to match that argument</strong>, not to maximize <span class="math inline">R^2</span></li>
+<li><strong>Decide the clustering level</strong> from how treatment is assigned</li>
+</ol>
 </div>
 </div>
-<aside class="notes">
-<ul>
-<li>Ask students to predict the sign of the pooled OLS bias before running it.</li>
-<li>Note why the unit-FE-only model (m_fe) is also biased here: the nationwide year shocks are correlated with the time trend in scores. Adding year FE fixes this.</li>
-<li>Then compare sd(panel$heat) (about 5°F) with the SD of heat after demeaning (about 0.9°F). This mirrors Park et al.’s point about residual variation.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="simulation-when-fe-fails" class="slide level2 center">
-<h2>Simulation: When FE Fails</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co"># Add a TIME-VARYING confounder: local economic shocks</span></span>
-<span id="cb4-2"><a></a><span class="co"># Bad economic years -&gt; schools defer AC maintenance (more heat exposure)</span></span>
-<span id="cb4-3"><a></a><span class="co">#                    -&gt; families have fewer resources (lower scores)</span></span>
-<span id="cb4-4"><a></a>panel<span class="sc">$</span>econ_shock <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb4-5"><a></a>panel<span class="sc">$</span>heat_ec    <span class="ot">&lt;-</span> panel<span class="sc">$</span>heat <span class="sc">-</span> <span class="fl">0.8</span> <span class="sc">*</span> panel<span class="sc">$</span>econ_shock</span>
-<span id="cb4-6"><a></a>panel<span class="sc">$</span>score_ec   <span class="ot">&lt;-</span> alpha[panel<span class="sc">$</span>id] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> panel<span class="sc">$</span>t <span class="sc">+</span> true_tau <span class="sc">*</span> panel<span class="sc">$</span>heat_ec <span class="sc">+</span></span>
-<span id="cb4-7"><a></a>                    <span class="fl">0.05</span> <span class="sc">*</span> panel<span class="sc">$</span>econ_shock <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="fl">0.1</span>)</span>
-<span id="cb4-8"><a></a></span>
-<span id="cb4-9"><a></a>m_twfe_bad  <span class="ot">&lt;-</span> <span class="fu">feols</span>(score_ec <span class="sc">~</span> heat_ec <span class="sc">|</span> id <span class="sc">+</span> t, <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb4-10"><a></a>m_twfe_ctrl <span class="ot">&lt;-</span> <span class="fu">feols</span>(score_ec <span class="sc">~</span> heat_ec <span class="sc">+</span> econ_shock <span class="sc">|</span> id <span class="sc">+</span> t, <span class="at">data =</span> panel,</span>
-<span id="cb4-11"><a></a>                     <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb4-12"><a></a></span>
-<span id="cb4-13"><a></a><span class="co"># FE cannot remove a confounder that varies within unit over time.</span></span>
-<span id="cb4-14"><a></a><span class="co"># Only measuring and controlling for it (or a better design) helps.</span></span>
-<span id="cb4-15"><a></a><span class="co"># This is why Park et al. control for county payroll in weather-exposed industries.</span></span>
-<span id="cb4-16"><a></a><span class="fu">data.frame</span>(</span>
-<span id="cb4-17"><a></a>  <span class="at">model    =</span> <span class="fu">c</span>(<span class="st">"TWFE"</span>, <span class="st">"TWFE + econ_shock control"</span>),</span>
-<span id="cb4-18"><a></a>  <span class="at">estimate =</span> <span class="fu">sapply</span>(<span class="fu">list</span>(m_twfe_bad, m_twfe_ctrl), heat_est),</span>
-<span id="cb4-19"><a></a>  <span class="at">truth    =</span> true_tau</span>
-<span id="cb4-20"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>                      model         estimate truth
-1                      TWFE -0.0435 (0.0015) -0.02
-2 TWFE + econ_shock control -0.0192 (0.0018) -0.02</code></pre>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>After Estimating</strong></p>
+</div>
+<div class="callout-content">
+<ol start="5" type="1">
+<li><strong>Report residual variation</strong> in treatment after FE</li>
+<li><strong>Show robustness</strong> to alternative FE structures, trends, and controls</li>
+<li><strong>Run placebo tests</strong>: leads of treatment, placebo outcomes or periods</li>
+<li><strong>Test for selection</strong> into the panel and attrition</li>
+<li><strong>Discuss whose effect</strong> is estimated (who has within variation?) and over what time horizon</li>
+<li><strong>Separate short-run weather effects from long-run climate effects</strong> when relevant</li>
+</ol>
+</div>
 </div>
 </div>
 </section></section>
@@ -1383,6 +1433,28 @@ Fei Huang, UNSW Sydney
 <section id="case-studies" class="title-slide slide level1 center">
 <h1>Case Studies</h1>
 
+</section>
+<section id="why-weather-works-as-a-treatment" class="slide level2 center">
+<h2>Why Weather Works as a Treatment</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The “Weather Design” <span class="citation" data-cites="dell2014what hsiang2016climate">(<a href="#/references" role="doc-biblioref" onclick="">Dell et al. 2014</a>; <a href="#/references" role="doc-biblioref" onclick="">Hsiang 2016</a>)</span></strong></p>
+</div>
+<div class="callout-content">
+<p>Three of this chapter’s case studies <span class="citation" data-cites="kunn2023indoor park2020heat ireland2023heat">(<a href="#/references" role="doc-biblioref" onclick="">Künn et al. 2023</a>; <a href="#/references" role="doc-biblioref" onclick="">Park et al. 2020</a>; <a href="#/references" role="doc-biblioref" onclick="">Ireland et al. 2023</a>)</span> use weather or air quality fluctuations as the treatment.</p>
+<ul>
+<li><strong>Climate</strong> (long-run averages) is correlated with everything: income, institutions, culture</li>
+<li><strong>Weather</strong> (deviations from the local norm) is plausibly random: no one chooses whether next Tuesday is 35°C</li>
+</ul>
+<p>Unit (location) fixed effects remove climate. Time fixed effects remove seasonality and trends. What remains is weather, which is as close to a natural experiment as observational data get.</p>
+<p><strong>Caveat:</strong> weather effects ≠ climate effects. People adapt to persistent changes (AC, schedules, migration) in ways they cannot adapt to a single hot day.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="case-studies-at-a-glance" class="slide level2 smaller center">
 <h2>Case Studies at a Glance</h2>
@@ -1445,6 +1517,7 @@ Fei Huang, UNSW Sydney
 <ul>
 <li>The two weather papers (Case Studies 4 and 5) show fixed-effect choices the first three cases do not: student vs.&nbsp;school FE, and postcode × month-year FE with a Poisson model.</li>
 <li>For every case, ask: (1) What comparison do the FE force? (2) Why is the remaining variation plausibly random? (3) What could still go wrong?</li>
+<li>In a single lecture, consider covering Case Studies 1 and 3 in class (a treatment nobody chooses vs.&nbsp;one managers choose) and assigning 2, 4, and 5 as reading.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -2209,7 +2282,7 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="case-study-5-running-the-checklist" class="slide level2 center scrollable">
 <h2>Case Study 5: Running the Checklist</h2>
-<p>The fixed-effects checklist from the end of this chapter, applied to this paper. Try each question before revealing the answer.</p>
+<p>The fixed-effects checklist from before the case studies, applied to this paper. Try each question before revealing the answer.</p>
 <ol type="1">
 <li><strong>State the comparison the fixed effects impose.</strong> <span class="fragment">A hotter weekday against a cooler weekday in the same postcode, in the same month of the same year.</span></li>
 <li><strong>Why is the remaining variation as good as random? Which confounders could still vary within a postcode-month?</strong> <span class="fragment">Nobody chooses the day’s temperature, and within a postcode-month it is unrelated to the local economy, workforce, or industry mix. Rain and the day of the week do vary from day to day and relate to both heat and injuries, so the model controls for them.</span></li>
@@ -2443,50 +2516,9 @@ Fei Huang, UNSW Sydney
       }</style></aside>
 </section></section>
 <section>
-<section id="best-practices" class="title-slide slide level1 center">
-<h1>Best Practices</h1>
+<section id="pitfalls-and-summary" class="title-slide slide level1 center">
+<h1>Pitfalls and Summary</h1>
 
-</section>
-<section id="checklist-for-a-fixed-effects-analysis" class="slide level2 center scrollable">
-<h2>Checklist for a Fixed Effects Analysis</h2>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Before Estimating</strong></p>
-</div>
-<div class="callout-content">
-<ol type="1">
-<li><strong>State the comparison</strong> your FE impose in plain language (“same student, different years”)</li>
-<li><strong>Argue why the remaining variation is as good as random.</strong> Which confounders could vary within unit over time?</li>
-<li><strong>Pick the FE structure to match that argument</strong>, not to maximize <span class="math inline">R^2</span></li>
-<li><strong>Decide the clustering level</strong> from how treatment is assigned</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>After Estimating</strong></p>
-</div>
-<div class="callout-content">
-<ol start="5" type="1">
-<li><strong>Report residual variation</strong> in treatment after FE</li>
-<li><strong>Show robustness</strong> to alternative FE structures, trends, and controls</li>
-<li><strong>Run placebo tests</strong>: leads of treatment, placebo outcomes or periods</li>
-<li><strong>Test for selection</strong> into the panel and attrition</li>
-<li><strong>Discuss whose effect</strong> is estimated (who has within variation?) and over what time horizon</li>
-<li><strong>Separate short-run weather effects from long-run climate effects</strong> when relevant</li>
-</ol>
-</div>
-</div>
-</div>
 </section>
 <section id="common-pitfalls" class="slide level2 center">
 <h2>Common Pitfalls</h2>
