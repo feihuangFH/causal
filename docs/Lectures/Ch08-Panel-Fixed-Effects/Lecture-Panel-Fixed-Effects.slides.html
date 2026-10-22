@@ -850,6 +850,29 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
+<section id="choosing-time-varying-controls" class="slide level2 center scrollable">
+<h2>Choosing Time-Varying Controls</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Which <span class="math inline">X_{it}</span> to Include</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><strong>Only time-varying variables matter.</strong> Anything fixed within a unit is already absorbed by <span class="math inline">\alpha_i</span>, so adding it changes nothing.</li>
+<li><strong>Include variables that change within units and affect both treatment and the outcome</strong> (time-varying confounders). <em>Example:</em> rain is related to both temperature and injury risk (Case Study 5).</li>
+<li><strong>Exclude anything the treatment can change.</strong> Hours worked respond to AI access, and pollution may respond to heat. Controlling for them removes part of the effect.</li>
+<li><strong>Watch for feedback.</strong> A control affected by past outcomes, or a lagged outcome, breaks strict exogeneity (Nickell bias).</li>
+<li><strong>Variables that only predict the outcome are optional.</strong> They can improve precision but do not remove bias.</li>
+<li><strong>Report results with and without debatable controls.</strong> <em>Example:</em> Case Study 5 reports 0.24% per 1°C without a pollution control and 0.20% with it.</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
 <section id="why-weather-is-the-ideal-fe-treatment" class="slide level2 center">
 <h2>Why Weather Is the Ideal FE Treatment</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1287,14 +1310,14 @@ Fei Huang, UNSW Sydney
 <td>Agent; month; tenure</td>
 </tr>
 <tr class="even">
-<td><em>Supplementary:</em> Park, Goodman, Hurwitz &amp; Smith <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span></td>
+<td>Park, Goodman, Hurwitz &amp; Smith <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span></td>
 <td><em>AEJ: Economic Policy</em></td>
 <td>Does heat reduce learning?</td>
 <td>Student × test sitting</td>
 <td>Student; cohort × date × take</td>
 </tr>
 <tr class="odd">
-<td><em>Supplementary:</em> Ireland, Johnston &amp; Knott <span class="citation" data-cites="ireland2023heat">(<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span></td>
+<td>Ireland, Johnston &amp; Knott <span class="citation" data-cites="ireland2023heat">(<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span></td>
 <td><em>J. Health Economics</em></td>
 <td>Does heat cause workplace injuries?</td>
 <td>Postcode × day</td>
@@ -1304,7 +1327,7 @@ Fei Huang, UNSW Sydney
 </table>
 <aside class="notes">
 <ul>
-<li>The three main cases come from FT50 journals; the two supplementary weather papers are included because they show fixed-effect choices the main cases do not (student vs.&nbsp;school FE; postcode × month-year FE with a Poisson model).</li>
+<li>The two weather papers (Case Studies 4 and 5) show fixed-effect choices the first three cases do not: student vs.&nbsp;school FE, and postcode × month-year FE with a Poisson model.</li>
 <li>For every case, ask: (1) What comparison do the FE force? (2) Why is the remaining variation plausibly random? (3) What could still go wrong?</li>
 </ul>
 <style type="text/css">
@@ -1598,7 +1621,7 @@ Fei Huang, UNSW Sydney
 <li class="fragment">Why do the authors use the unexpected component of the concern index rather than its level?</li>
 <li class="fragment">Firm FE absorb a firm’s average return. What does the <span class="math inline">lGHG_{i,t}</span> coefficient then capture, given that emissions intensity changes slowly within firm?</li>
 <li class="fragment">The model allows firm-specific loadings <span class="math inline">\beta_i</span> on the controls. Why is this more flexible than a common <span class="math inline">\beta</span>?</li>
-<li class="fragment">Compare to Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>, Supplementary Case A)</span>: in both papers a common shock (weather / news) interacts with heterogeneous exposure (AC / emissions). What is the analogue of the triple-difference AC design here?</li>
+<li class="fragment">Compare to Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>, Case Study 4)</span>: in both papers a common shock (weather / news) interacts with heterogeneous exposure (AC / emissions). What is the analogue of the triple-difference AC design here?</li>
 <li class="fragment">Would you call this paper a policy evaluation? What policy questions could it inform (e.g., climate disclosure rules, carbon pricing announcements)?</li>
 </ol>
 </section>
@@ -1762,18 +1785,18 @@ Fei Huang, UNSW Sydney
 <li class="fragment">When nobody chooses the treatment, within-unit variation is plausibly as good as random. When managers choose, selection on trends is possible, so fixed effects need support from other evidence, such as the team-level instrument and the pilot.</li>
 </ol>
 </section>
-<section id="supplementary-case-studies" class="slide level2 center">
-<h2>Supplementary Case Studies</h2>
+<section id="case-studies-4-and-5" class="slide level2 center">
+<h2>Case Studies 4 and 5</h2>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Two Weather Panels Beyond the FT50 List</strong></p>
+<p><strong>Two Weather Panels</strong></p>
 </div>
 <div class="callout-content">
-<p>The next two papers appear in field journals rather than FT50 journals. They are included because they show fixed-effect choices the main cases do not:</p>
+<p>Case Studies 4 and 5 use weather to show fixed-effect choices the first three cases do not:</p>
 <ul>
 <li><strong>Student vs.&nbsp;school fixed effects</strong>, and why the choice matters for selection <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">Park et al. 2020</a>, <em>AEJ: Economic Policy</em>)</span></li>
 <li><strong>Postcode × month-year fixed effects</strong> with a Poisson model for count data, using Australian workers’ compensation records <span class="citation" data-cites="ireland2023heat">(<a href="#/references" role="doc-biblioref" onclick="">Ireland et al. 2023</a>, <em>Journal of Health Economics</em>)</span></li>
@@ -1783,8 +1806,8 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="supplementary-case-a-heat-and-learning" class="slide level2 center">
-<h2>Supplementary Case A: Heat and Learning</h2>
+<section id="case-study-4-heat-and-learning" class="slide level2 center">
+<h2>Case Study 4: Heat and Learning</h2>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1806,8 +1829,8 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="supplementary-case-a-specification" class="slide level2 center">
-<h2>Supplementary Case A: Specification</h2>
+<section id="case-study-4-specification" class="slide level2 center">
+<h2>Case Study 4: Specification</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1830,8 +1853,8 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="supplementary-case-a-design-choices-worth-discussing" class="slide level2 center">
-<h2>Supplementary Case A: Design Choices Worth Discussing</h2>
+<section id="case-study-4-design-choices-worth-discussing" class="slide level2 center">
+<h2>Case Study 4: Design Choices Worth Discussing</h2>
 <div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1863,8 +1886,8 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="supplementary-case-a-results" class="slide level2 center">
-<h2>Supplementary Case A: Results</h2>
+<section id="case-study-4-results" class="slide level2 center">
+<h2>Case Study 4: Results</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1887,8 +1910,8 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="supplementary-case-a-what-to-copy" class="slide level2 center">
-<h2>Supplementary Case A: What to Copy</h2>
+<section id="case-study-4-what-to-copy" class="slide level2 center">
+<h2>Case Study 4: What to Copy</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1907,8 +1930,8 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="supplementary-case-a-discussion-questions" class="slide level2 center scrollable">
-<h2>Supplementary Case A: Discussion Questions</h2>
+<section id="case-study-4-discussion-questions" class="slide level2 center scrollable">
+<h2>Case Study 4: Discussion Questions</h2>
 <ol type="1">
 <li class="fragment">The cross-country slope is about −0.02 SD per °F; the within-student estimate is about −0.002 SD per °F. What does the gap tell you about omitted variable bias in the cross section?</li>
 <li class="fragment">Only retakers identify <span class="math inline">\beta</span>. To whom does the estimate apply? How would you assess external validity?</li>
@@ -1917,28 +1940,28 @@ Fei Huang, UNSW Sydney
 <li class="fragment">Why cluster by weather station rather than by student?</li>
 </ol>
 </section>
-<section id="supplementary-case-a-suggested-answers-12" class="slide level2 center scrollable">
-<h2>Supplementary Case A: Suggested Answers (1–2)</h2>
+<section id="case-study-4-suggested-answers-12" class="slide level2 center scrollable">
+<h2>Case Study 4: Suggested Answers (1–2)</h2>
 <ol type="1">
 <li class="fragment">The within-student estimate is about a tenth of the cross-country slope, so most of the cross-sectional association reflects differences between places (income, institutions, schools), not heat. The comparison is rough, since the tests and units differ.</li>
 <li class="fragment">To students who take the PSAT more than once, who are more advantaged than average. Compare retakers with all takers, check whether effects vary with income, or reweight to the wider population.</li>
 </ol>
 </section>
-<section id="supplementary-case-a-suggested-answers-34" class="slide level2 center scrollable">
-<h2>Supplementary Case A: Suggested Answers (3–4)</h2>
+<section id="case-study-4-suggested-answers-34" class="slide level2 center scrollable">
+<h2>Case Study 4: Suggested Answers (3–4)</h2>
 <ol start="3" type="1">
 <li class="fragment">If heat only proxied for local economic or health shocks, summer and weekend heat would also predict scores. They do not, which points to lost learning on school days.</li>
 <li class="fragment">Air conditioning installed over time, changes to school calendars, teachers moving, and families moving. Fixed-effect estimates from year-to-year swings may overstate long-run damage if people adapt, or understate it if harm accumulates.</li>
 </ol>
 </section>
-<section id="supplementary-case-a-suggested-answers-5" class="slide level2 center scrollable">
-<h2>Supplementary Case A: Suggested Answers (5)</h2>
+<section id="case-study-4-suggested-answers-5" class="slide level2 center scrollable">
+<h2>Case Study 4: Suggested Answers (5)</h2>
 <ol start="5" type="1">
 <li class="fragment">Heat varies at the weather-station level, so all students near a station share the same shocks and their errors are correlated. Clustering by student would treat those shocks as independent and understate standard errors.</li>
 </ol>
 </section>
-<section id="supplementary-case-b-heat-and-worker-health" class="slide level2 center">
-<h2>Supplementary Case B: Heat and Worker Health</h2>
+<section id="case-study-5-heat-and-worker-health" class="slide level2 center">
+<h2>Case Study 5: Heat and Worker Health</h2>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1960,8 +1983,8 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="supplementary-case-b-specification" class="slide level2 center">
-<h2>Supplementary Case B: Specification</h2>
+<section id="case-study-5-specification" class="slide level2 center">
+<h2>Case Study 5: Specification</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -2002,8 +2025,8 @@ Fei Huang, UNSW Sydney
           display:block!important;
       }</style></aside>
 </section>
-<section id="supplementary-case-b-results" class="slide level2 center">
-<h2>Supplementary Case B: Results</h2>
+<section id="case-study-5-results" class="slide level2 center">
+<h2>Case Study 5: Results</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -2024,8 +2047,8 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="supplementary-case-b-sensitivity-to-the-fe-structure" class="slide level2 center">
-<h2>Supplementary Case B: Sensitivity to the FE Structure</h2>
+<section id="case-study-5-sensitivity-to-the-fe-structure" class="slide level2 center">
+<h2>Case Study 5: Sensitivity to the FE Structure</h2>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -2066,8 +2089,39 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="supplementary-case-b-what-to-copy" class="slide level2 center">
-<h2>Supplementary Case B: What to Copy</h2>
+<section id="case-study-5-running-the-checklist" class="slide level2 center scrollable">
+<h2>Case Study 5: Running the Checklist</h2>
+<p>The fixed-effects checklist from the end of this chapter, applied to this paper. Try each question before revealing the answer.</p>
+<ol type="1">
+<li><strong>State the comparison the fixed effects impose.</strong> <span class="fragment">A hotter weekday against a cooler weekday in the same postcode, in the same month of the same year.</span></li>
+<li><strong>Why is the remaining variation as good as random? Which confounders could still vary within a postcode-month?</strong> <span class="fragment">Nobody chooses the day’s temperature, and within a postcode-month it is unrelated to the local economy, workforce, or industry mix. Rain and the day of the week do vary from day to day and relate to both heat and injuries, so the model controls for them.</span></li>
+<li><strong>Does the fixed-effect structure match that argument?</strong> <span class="fragment">Yes. Postcode × month-year fixed effects absorb anything specific to one place in one month: seasonal work, local booms and slumps, the size of the workforce, and changes to the compensation scheme over 35 years.</span></li>
+</ol>
+</section>
+<section id="case-study-5-running-the-checklist-46" class="slide level2 center scrollable">
+<h2>Case Study 5: Running the Checklist (4–6)</h2>
+<ol start="4" type="1">
+<li><strong>At what level should standard errors be clustered?</strong> <span class="fragment">Temperature is measured for each postcode, so standard errors are clustered by postcode. Neighbouring postcodes share weather; standard errors that allow for this spatial correlation (Conley) barely change, in a check using OLS.</span></li>
+<li><strong>How much variation in treatment is left after the fixed effects?</strong> <span class="fragment">A lot. In Melbourne the hottest and coolest days in a month differ by about 19°C in summer and 10°C in winter.</span></li>
+<li><strong>Is the result robust to other fixed effects and controls?</strong> <span class="fragment">Yes. The main estimate is 0.24% more claims per 1°C; 0.20 with a PM2.5 control, 0.27 with calendar-date fixed effects, and 0.22 with separate postcode × month and month-year fixed effects. It is similar using only accepted claims, OLS, dry days only, and including weekends.</span></li>
+</ol>
+</section>
+<section id="case-study-5-running-the-checklist-78" class="slide level2 center scrollable">
+<h2>Case Study 5: Running the Checklist (7–8)</h2>
+<ol start="7" type="1">
+<li><strong>Do placebo tests support the design?</strong> <span class="fragment">Partly. The paper checks past, not future, temperatures: yesterday’s heat adds 0.14% per 1°C, the day before has no effect (−0.01%), and last night’s minimum has no effect. A natural addition is a lead test: tomorrow’s temperature should not predict today’s claims.</span></li>
+<li><strong>Could selection into the data bias the result?</strong> <span class="fragment">Claims appear only if lodged, so heat could change reporting rather than injuries. The result holds using only claims the insurer accepted. Postcode-months with no claims drop out of the Poisson model because they carry no information. Workers may choose jobs by heat tolerance, which the authors argue makes the gap between manual and other occupations conservative.</span></li>
+</ol>
+</section>
+<section id="case-study-5-running-the-checklist-910" class="slide level2 center scrollable">
+<h2>Case Study 5: Running the Checklist (9–10)</h2>
+<ol start="9" type="1">
+<li><strong>Whose effect is estimated, and over what horizon?</strong> <span class="fragment">Workers in Victoria’s compulsory scheme, which leaves out some groups such as federal government employees. It is the effect of one hot day on that day’s and the next day’s claims, net of responses such as working less on hot days, because the number of workers at risk is not observed.</span></li>
+<li><strong>Does it separate short-run weather effects from long-run climate effects?</strong> <span class="fragment">The estimates come from day-to-day weather. The authors translate them with a simple calculation: 1.5°C of warming would add about 0.38% to claims (about 156 claims and AU$40.3 million a year), assuming current adaptation stays the same. Heat effects for high-risk workers did not fall over 35 years, a sign that adaptation has been limited.</span></li>
+</ol>
+</section>
+<section id="case-study-5-what-to-copy" class="slide level2 center">
+<h2>Case Study 5: What to Copy</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -2086,8 +2140,8 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="supplementary-case-b-discussion-questions" class="slide level2 center scrollable">
-<h2>Supplementary Case B: Discussion Questions</h2>
+<section id="case-study-5-discussion-questions" class="slide level2 center scrollable">
+<h2>Case Study 5: Discussion Questions</h2>
 <ol type="1">
 <li class="fragment">Why is the outcome a count and the estimator Poisson rather than OLS on log claims? What happens to postcode-days with zero claims under each approach?</li>
 <li class="fragment">The authors exclude PM2.5 from the preferred specification because industrial activity, itself affected by accidents and heat, contributes to pollution. Is pollution a confounder or a bad control (a mediator)?</li>
@@ -2095,15 +2149,15 @@ Fei Huang, UNSW Sydney
 <li class="fragment">Days above 36°C show smaller effects than 33–36°C. Name two explanations (policy thresholds that stop work? measurement?) and how you would test them.</li>
 </ol>
 </section>
-<section id="supplementary-case-b-suggested-answers-12" class="slide level2 center scrollable">
-<h2>Supplementary Case B: Suggested Answers (1–2)</h2>
+<section id="case-study-5-suggested-answers-12" class="slide level2 center scrollable">
+<h2>Case Study 5: Suggested Answers (1–2)</h2>
 <ol type="1">
 <li class="fragment">Most postcode-days have zero claims, and the log of zero is undefined. OLS on logs drops those days or needs an arbitrary transformation such as log(y + 1). Poisson keeps zero days and gives a percentage effect; only postcode-months with no claims at all drop out, because they carry no information.</li>
 <li class="fragment">Both are possible. If heat raises industrial activity or accidents that create pollution, pollution lies on the path from heat to claims and is a bad control. If weather drives both heat and pollution, it is a confounder. The authors report both versions (0.24 without, 0.20 with).</li>
 </ol>
 </section>
-<section id="supplementary-case-b-suggested-answers-34" class="slide level2 center scrollable">
-<h2>Supplementary Case B: Suggested Answers (3–4)</h2>
+<section id="case-study-5-suggested-answers-34" class="slide level2 center scrollable">
+<h2>Case Study 5: Suggested Answers (3–4)</h2>
 <ol start="3" type="1">
 <li class="fragment">The net effect: claims change through risk per worker and through fewer people working or shorter hours on hot days. If exposure falls on hot days, the effect on risk per worker is larger than the estimate.</li>
 <li class="fragment">Work may stop on extreme days, through employer rules or agreements, so fewer people are exposed; and very hot days are rare, so estimates are imprecise and temperature interpolation is noisiest at the extremes. Test with data on hours, occupations covered by stop-work rules, and the confidence intervals.</li>
@@ -2186,11 +2240,11 @@ Fei Huang, UNSW Sydney
 <span id="cb6-19"><a></a>m_bryn <span class="ot">&lt;-</span> <span class="fu">feols</span>(rph <span class="sc">~</span> ai_access <span class="sc">|</span> <span class="fu">csw</span>(year_month <span class="sc">+</span> location, agent, tenure_months),</span>
 <span id="cb6-20"><a></a>                <span class="at">data =</span> agents, <span class="at">cluster =</span> <span class="sc">~</span>agent)   <span class="co"># csw() adds FE step by step</span></span>
 <span id="cb6-21"><a></a></span>
-<span id="cb6-22"><a></a><span class="co"># Supplementary A — Park et al.: student FE + cohort x test-date x take FE</span></span>
+<span id="cb6-22"><a></a><span class="co"># Case 4 — Park et al.: student FE + cohort x test-date x take FE</span></span>
 <span id="cb6-23"><a></a>m_park <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat_school_days <span class="sc">|</span> student_id <span class="sc">+</span> cohort<span class="sc">^</span>test_date<span class="sc">^</span>take,</span>
 <span id="cb6-24"><a></a>                <span class="at">data =</span> psat, <span class="at">cluster =</span> <span class="sc">~</span>weather_station)</span>
 <span id="cb6-25"><a></a></span>
-<span id="cb6-26"><a></a><span class="co"># Supplementary B — Ireland et al.: Poisson with postcode x month-year FE</span></span>
+<span id="cb6-26"><a></a><span class="co"># Case 5 — Ireland et al.: Poisson with postcode x month-year FE</span></span>
 <span id="cb6-27"><a></a>m_ireland <span class="ot">&lt;-</span> <span class="fu">fepois</span>(claims <span class="sc">~</span> maxtemp <span class="sc">+</span> precip <span class="sc">+</span> <span class="fu">i</span>(day_of_week) <span class="sc">|</span></span>
 <span id="cb6-28"><a></a>                      postcode<span class="sc">^</span>month_year,</span>
 <span id="cb6-29"><a></a>                    <span class="at">data =</span> claims_daily, <span class="at">cluster =</span> <span class="sc">~</span>postcode)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
