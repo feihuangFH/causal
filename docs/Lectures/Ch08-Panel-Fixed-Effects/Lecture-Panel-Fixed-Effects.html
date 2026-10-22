@@ -406,6 +406,7 @@ window.Quarto = {
   <li><a href="#the-fixed-effects-model" id="toc-the-fixed-effects-model" class="nav-link" data-scroll-target="#the-fixed-effects-model">The Fixed Effects Model</a>
   <ul class="collapse">
   <li><a href="#the-model" id="toc-the-model" class="nav-link" data-scroll-target="#the-model">The Model</a></li>
+  <li><a href="#potential-outcomes-interpretation" id="toc-potential-outcomes-interpretation" class="nav-link" data-scroll-target="#potential-outcomes-interpretation">Potential Outcomes Interpretation</a></li>
   <li><a href="#why-pooled-ols-fails" id="toc-why-pooled-ols-fails" class="nav-link" data-scroll-target="#why-pooled-ols-fails">Why Pooled OLS Fails</a></li>
   <li><a href="#removing-alpha_i-the-within-transformation" id="toc-removing-alpha_i-the-within-transformation" class="nav-link" data-scroll-target="#removing-alpha_i-the-within-transformation">Removing <span class="math inline">\alpha_i</span>: The Within Transformation</a></li>
   <li><a href="#whose-effect-does-fixed-effects-estimate" id="toc-whose-effect-does-fixed-effects-estimate" class="nav-link" data-scroll-target="#whose-effect-does-fixed-effects-estimate">Whose Effect Does Fixed Effects Estimate?</a></li>
@@ -487,7 +488,6 @@ window.Quarto = {
   </ul></li>
   <li><a href="#going-deeper-optional" id="toc-going-deeper-optional" class="nav-link" data-scroll-target="#going-deeper-optional">Going Deeper (Optional)</a>
   <ul class="collapse">
-  <li><a href="#potential-outcomes-interpretation" id="toc-potential-outcomes-interpretation" class="nav-link" data-scroll-target="#potential-outcomes-interpretation">Potential Outcomes Interpretation</a></li>
   <li><a href="#other-ways-to-remove-alpha_i" id="toc-other-ways-to-remove-alpha_i" class="nav-link" data-scroll-target="#other-ways-to-remove-alpha_i">Other Ways to Remove <span class="math inline">\alpha_i</span></a></li>
   <li><a href="#the-within-estimator-and-its-weights" id="toc-the-within-estimator-and-its-weights" class="nav-link" data-scroll-target="#the-within-estimator-and-its-weights">The Within Estimator and Its Weights</a></li>
   <li><a href="#fixed-effects-vs.-random-effects" id="toc-fixed-effects-vs.-random-effects" class="nav-link" data-scroll-target="#fixed-effects-vs.-random-effects">Fixed Effects vs.&nbsp;Random Effects</a></li>
@@ -800,35 +800,66 @@ window.Quarto = {
 </section>
 <section id="data-structure-long-format" class="level3">
 <h3 class="anchored" data-anchor-id="data-structure-long-format">Data Structure: Long Format</h3>
+<p>Fixed-effects software expects panel data in long format: one row per unit per period, with columns that identify the unit and the period. The period need not be calendar time. In Case Study 4 it is the test sitting; in Case Study 1 it is the move within a game.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>student_id</th>
+<th>school</th>
+<th>take</th>
+<th>test_year</th>
+<th>heat_prior_yr</th>
+<th>score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1001</td>
+<td>A</td>
+<td>1</td>
+<td>2008</td>
+<td>71.2</td>
+<td>−0.10</td>
+</tr>
+<tr class="even">
+<td>1001</td>
+<td>A</td>
+<td>2</td>
+<td>2009</td>
+<td>74.8</td>
+<td>−0.05</td>
+</tr>
+<tr class="odd">
+<td>1002</td>
+<td>A</td>
+<td>1</td>
+<td>2008</td>
+<td>71.2</td>
+<td>0.35</td>
+</tr>
+<tr class="even">
+<td>1002</td>
+<td>A</td>
+<td>2</td>
+<td>2009</td>
+<td>74.8</td>
+<td>0.31</td>
+</tr>
+</tbody>
+</table>
+<p>If your data have one row per unit and one column per period (wide format), reshape them first:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Panel data should be stored in "long" format: one row per unit-period</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: students who took the PSAT more than once</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  student_id  school  take  test_year  heat_prior_yr  score</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  1001        A       1     2008       71.2           -0.10</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  1001        A       2     2009       74.8           -0.05</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#  1002        A       1     2008       71.2            0.35</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  1002        A       2     2009       74.8            0.31</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  2001        B       1     2010       63.5            0.62</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  2001        B       2     2011       62.1            0.97</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Converting from wide to long</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>panel_long <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  wide_data,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"score_"</span>),</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">names_to =</span> <span class="st">"take"</span>,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">names_prefix =</span> <span class="st">"score_"</span>,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">values_to =</span> <span class="st">"score"</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>panel_long <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  wide_data,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"score_"</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">names_to =</span> <span class="st">"take"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">names_prefix =</span> <span class="st">"score_"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">values_to =</span> <span class="st">"score"</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-</div>
-<div class="notes">
-<ul>
-<li>Emphasize that the “time” index need not be calendar time. In Park et al.&nbsp;it is the test sitting; in Künn et al.&nbsp;it is the move within a game within a round.</li>
-</ul>
 </div>
 </section>
 <section id="sources-of-variation-in-a-panel" class="level3">
@@ -878,6 +909,32 @@ window.Quarto = {
 <li><span class="math inline">\varepsilon_{it}</span>: idiosyncratic shocks</li>
 </ul>
 <p><strong>The problem:</strong> <span class="math inline">\alpha_i</span> is unobserved and likely correlated with <span class="math inline">D_{it}</span>.</p>
+</div>
+</div>
+</section>
+<section id="potential-outcomes-interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="potential-outcomes-interpretation">Potential Outcomes Interpretation</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Connecting to the Causal Framework
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Write potential outcomes for unit <span class="math inline">i</span> at time <span class="math inline">t</span> under treatment level <span class="math inline">d</span>:</p>
+<p><span class="math display">Y_{it}(d) = \alpha_i + \lambda_t + \tau d + \varepsilon_{it}</span></p>
+<p>The observed outcome is <span class="math inline">Y_{it} = Y_{it}(D_{it})</span>.</p>
+<p><strong>Implicit assumptions in this model:</strong></p>
+<ol type="1">
+<li><strong>Additivity:</strong> unit and time heterogeneity enter as level shifts</li>
+<li><strong>Constant effect:</strong> <span class="math inline">\tau</span> is the same for all <span class="math inline">i, t</span> (we relax this later)</li>
+<li><strong>No carryover:</strong> <span class="math inline">Y_{it}</span> depends on <span class="math inline">D_{it}</span> but not on <span class="math inline">D_{i,t-1}</span> (unless we model it)</li>
+<li><strong>No interference:</strong> unit <span class="math inline">i</span>’s outcome does not depend on unit <span class="math inline">j</span>’s treatment (SUTVA)</li>
+</ol>
+<p>Fixed effects allow selection on time-invariant unobservables: units can choose their treatment based on <span class="math inline">\alpha_i</span>.</p>
 </div>
 </div>
 </section>
@@ -1886,7 +1943,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-42-contents" aria-controls="callout-42" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-43-contents" aria-controls="callout-43" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1895,7 +1952,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-42" class="callout-42-contents callout-collapse collapse">
+<div id="callout-43" class="callout-43-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Errors are more frequent at certain stages of a game, such as the moves before the time control. If high-pollution rounds happened to have more late-game moves, pollution would appear to cause errors through game length alone.</li>
@@ -2048,7 +2105,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-49-contents" aria-controls="callout-49" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-50-contents" aria-controls="callout-50" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2057,7 +2114,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-49" class="callout-49-contents callout-collapse collapse">
+<div id="callout-50" class="callout-50-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Prices should react to news, not to what investors already expected. The predictable part of the concern index is already in prices and may move with other market conditions; the surprise is closer to new information.</li>
@@ -2203,7 +2260,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-55-contents" aria-controls="callout-55" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-56-contents" aria-controls="callout-56" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2212,7 +2269,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-55" class="callout-55-contents callout-collapse collapse">
+<div id="callout-56" class="callout-56-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Agent fixed effects remove permanent differences between agents. The estimate falls because agents who got access had higher productivity to begin with, so stronger agents tended to get access earlier.</li>
@@ -2383,7 +2440,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-63-contents" aria-controls="callout-63" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-64-contents" aria-controls="callout-64" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2392,7 +2449,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-63" class="callout-63-contents callout-collapse collapse">
+<div id="callout-64" class="callout-64-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>The within-student estimate is about a tenth of the cross-country slope, so most of the cross-sectional association reflects differences between places (income, institutions, schools), not heat. The comparison is rough, since the tests and units differ.</li>
@@ -2540,7 +2597,7 @@ window.Quarto = {
 <li>Does it separate short-run weather effects from long-run climate effects?</li>
 </ol>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-68-contents" aria-controls="callout-68" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-69-contents" aria-controls="callout-69" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2549,7 +2606,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-68" class="callout-68-contents callout-collapse collapse">
+<div id="callout-69" class="callout-69-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>A hotter weekday against a cooler weekday in the same postcode, in the same month of the same year.</li>
@@ -2598,7 +2655,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-70-contents" aria-controls="callout-70" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-71-contents" aria-controls="callout-71" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2607,7 +2664,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-70" class="callout-70-contents callout-collapse collapse">
+<div id="callout-71" class="callout-71-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Most postcode-days have zero claims, and the log of zero is undefined. OLS on logs drops those days or needs an arbitrary transformation such as log(y + 1). Poisson keeps zero days and gives a percentage effect; only postcode-months with no claims at all drop out, because they carry no information.</li>
@@ -2840,32 +2897,6 @@ window.Quarto = {
 </section>
 <section id="going-deeper-optional" class="level2">
 <h2 class="anchored" data-anchor-id="going-deeper-optional">Going Deeper (Optional)</h2>
-<section id="potential-outcomes-interpretation" class="level3">
-<h3 class="anchored" data-anchor-id="potential-outcomes-interpretation">Potential Outcomes Interpretation</h3>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Connecting to the Causal Framework
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Write potential outcomes for unit <span class="math inline">i</span> at time <span class="math inline">t</span> under treatment level <span class="math inline">d</span>:</p>
-<p><span class="math display">Y_{it}(d) = \alpha_i + \lambda_t + \tau d + \varepsilon_{it}</span></p>
-<p>The observed outcome is <span class="math inline">Y_{it} = Y_{it}(D_{it})</span>.</p>
-<p><strong>Implicit assumptions in this model:</strong></p>
-<ol type="1">
-<li><strong>Additivity:</strong> unit and time heterogeneity enter as level shifts</li>
-<li><strong>Constant effect:</strong> <span class="math inline">\tau</span> is the same for all <span class="math inline">i, t</span> (we relax this later)</li>
-<li><strong>No carryover:</strong> <span class="math inline">Y_{it}</span> depends on <span class="math inline">D_{it}</span> but not on <span class="math inline">D_{i,t-1}</span> (unless we model it)</li>
-<li><strong>No interference:</strong> unit <span class="math inline">i</span>’s outcome does not depend on unit <span class="math inline">j</span>’s treatment (SUTVA)</li>
-</ol>
-<p>Fixed effects allow selection on time-invariant unobservables: units can choose their treatment based on <span class="math inline">\alpha_i</span>.</p>
-</div>
-</div>
-</section>
 <section id="other-ways-to-remove-alpha_i" class="level3">
 <h3 class="anchored" data-anchor-id="other-ways-to-remove-alpha_i">Other Ways to Remove <span class="math inline">\alpha_i</span></h3>
 <div class="callout callout-style-default callout-tip callout-titled">

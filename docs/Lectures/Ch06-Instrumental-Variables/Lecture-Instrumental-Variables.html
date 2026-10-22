@@ -800,6 +800,7 @@ window.Quarto = {
 </section>
 <section id="simulation-ols-iv-and-weak-instruments" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-ols-iv-and-weak-instruments">Simulation: OLS, IV, and Weak Instruments</h3>
+<p>Treatment depends on an unobserved confounder that also raises the outcome; the true effect is 1. We simulate 500 datasets with a strong instrument and 500 with a weak one, and report the median estimates.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -834,11 +835,21 @@ weak_IQR_low  1.98 0.27   0.38
 weak_IQR_high 2.02 2.08   3.31</code></pre>
 </div>
 </div>
-<div class="notes">
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
-<li>With a strong instrument, IV centres on the true effect (1) while OLS is biased upwards by the confounder.</li>
-<li>With a weak instrument (first-stage F around 1), IV estimates are widely dispersed and their median drifts towards the OLS estimate.</li>
+<li><strong>Strong instrument</strong> (median first-stage F 500): OLS gives 1.67, biased upwards by the confounder; IV gives 1.00, the truth.</li>
+<li><strong>Weak instrument</strong> (median F 1.23): IV estimates spread widely, with the middle half between 0.27 and 2.08, and their median (1.26) drifts towards OLS (2.00).</li>
 </ul>
+</div>
 </div>
 </section>
 <section id="defending-the-exclusion-restriction" class="level3">
@@ -992,7 +1003,7 @@ weak_IQR_high 2.02 2.08   3.31</code></pre>
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1001,7 +1012,7 @@ weak_IQR_high 2.02 2.08   3.31</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div id="callout-18" class="callout-18-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>A local demand shock raises both imports and local production. It pushes imports and employment up together, hiding part of the negative effect of import competition. The diagram has demand → imports and demand → employment, alongside imports → employment.</li>
@@ -1118,7 +1129,7 @@ weak_IQR_high 2.02 2.08   3.31</code></pre>
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1127,7 +1138,7 @@ weak_IQR_high 2.02 2.08   3.31</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-23" class="callout-23-contents callout-collapse collapse">
+<div id="callout-24" class="callout-24-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Both groups wanted to go public, so they are more alike than public and private firms. But withdrawal is a choice that may reflect bad news about the firm’s prospects, which could also affect innovation.</li>

@@ -532,6 +532,7 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="simulation-a-sharp-rdd" class="slide level2 center">
 <h2>Simulation: A Sharp RDD</h2>
+<p>5,000 households. Those with income below the cutoff (0) get a subsidy that raises insurance take-up by 8 points (the truth). Take-up also rises with income, with or without the subsidy.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -559,25 +560,26 @@ Fei Huang, UNSW Sydney
            28.42 </code></pre>
 </div>
 </div>
-<aside class="notes">
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
 <ul>
-<li>The naive comparison of eligible and ineligible households even has the wrong sign: richer households buy more insurance regardless of the subsidy.</li>
-<li>RDD compares households near the cutoff and recovers the true 8-point effect.</li>
+<li><strong>Simple comparison</strong> (everyone below vs.&nbsp;above the cutoff): −7.02, the wrong sign, because richer households buy more insurance anyway.</li>
+<li><strong>Regression discontinuity:</strong> 8.10 (robust 95% interval 6.57 to 9.71), using households within 28.42 points of the cutoff.</li>
 </ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+</div>
+</div>
+</div>
 </section>
 <section id="seeing-the-discontinuity" class="slide level2 center">
 <h2>Seeing the Discontinuity</h2>
+<p>Each dot is average take-up for households in a 5-point income band. The lines are local linear fits within the bandwidth; the gap where they meet the cutoff is the estimated effect.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -594,7 +596,7 @@ Fei Huang, UNSW Sydney
 </details>
 
 </div>
-<img data-src="Lecture-Regression-Discontinuity_files/figure-html/unnamed-chunk-2-1.png" width="768" class="r-stretch"></section></section>
+<img data-src="Lecture-Regression-Discontinuity_files/figure-revealjs/unnamed-chunk-2-1.png" width="768" class="r-stretch"></section></section>
 <section>
 <section id="the-fuzzy-design" class="title-slide slide level1 center">
 <h1>The Fuzzy Design</h1>
@@ -624,6 +626,7 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="simulation-a-fuzzy-rdd" class="slide level2 center">
 <h2>Simulation: A Fuzzy RDD</h2>
+<p>Above a credit-score cutoff, a lender raises the credit limit by about $1,500 on average, but limits also vary for other reasons. Each extra dollar of limit raises borrowing by 30 cents (the truth).</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -639,6 +642,19 @@ Fei Huang, UNSW Sydney
 <div class="cell-output cell-output-stdout">
 <pre><code>      estimate  robust_CI_low robust_CI_high 
          0.338          0.272          0.422 </code></pre>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
+<p>The fuzzy RD estimate is 0.338 (robust 95% interval 0.272 to 0.422): the jump in borrowing at the cutoff divided by the jump in the credit limit. The interval includes the true 0.30.</p>
+</div>
 </div>
 </div>
 </section></section>
@@ -698,6 +714,7 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="manipulation-test-in-r" class="slide level2 center">
 <h2>Manipulation Test in R</h2>
+<p>If households could shift their reported income to get the subsidy, there would be too many just below the cutoff. The density test checks for this bunching.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -709,22 +726,19 @@ Fei Huang, UNSW Sydney
                0.249 </code></pre>
 </div>
 </div>
-<aside class="notes">
-<ul>
-<li>A large p-value means no evidence that units bunch on one side. In the simulation, incomes were drawn without manipulation, so the test should not reject.</li>
-<li>In real data, think about who controls the score: households can sometimes adjust reported income; it is much harder for consumers to fine-tune a credit score to land just above a particular lender’s cutoff.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
+<p>p-value 0.249: no evidence of bunching, as expected, since incomes here were drawn without manipulation. In real data, ask who controls the score. Households can sometimes adjust reported income; consumers find it much harder to move a credit score precisely across a lender’s cutoff.</p>
+</div>
+</div>
+</div>
 </section></section>
 <section>
 <section id="case-study-1-subsidized-health-insurance" class="title-slide slide level1 center">
@@ -1362,6 +1376,44 @@ McCrary, Justin. 2008. <span>“Manipulation of the Running Variable in the Regr
       });
     });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

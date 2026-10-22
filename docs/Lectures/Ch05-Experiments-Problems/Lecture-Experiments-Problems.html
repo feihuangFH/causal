@@ -754,6 +754,7 @@ window.Quarto = {
 </section>
 <section id="simulation-as-treated-vs.-itt-vs.-cace" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-as-treated-vs.-itt-vs.-cace">Simulation: As-Treated vs.&nbsp;ITT vs.&nbsp;CACE</h3>
+<p>4,000 developers; a random half are offered an AI tool. Only those offered can adopt it, and motivated developers adopt more often. Using the tool raises output by 1.5 (the truth), but motivation, which we do not observe, also raises output.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -780,12 +781,22 @@ window.Quarto = {
       0.39       2.87       0.58       1.47       1.47 </code></pre>
 </div>
 </div>
-<div class="notes">
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
-<li>As-treated is badly biased upwards: motivated developers both adopt more and produce more.</li>
-<li>The ITT is unbiased for the effect of the <em>offer</em>, but diluted by non-adopters.</li>
-<li>Dividing by take-up recovers the effect of use for compliers. Two-stage least squares gives the same number; Chapter 6 develops it in general.</li>
+<li><strong>As-treated</strong> (users vs.&nbsp;non-users): 2.87, far above the truth, because motivated developers both adopt more and produce more.</li>
+<li><strong>ITT</strong> (offered vs.&nbsp;not offered): 0.58. Unbiased for the effect of the offer, but diluted, because only 39% of those offered adopted.</li>
+<li><strong>CACE</strong>: 0.58 ÷ 0.39 = 1.47, close to the true 1.5. Two-stage least squares gives the same number (Chapter 6).</li>
 </ul>
+</div>
 </div>
 </section>
 <section id="two-sided-non-compliance" class="level3">
@@ -1034,7 +1045,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1043,7 +1054,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Developers choose whether to use the tool. Those who do may be more motivated, more junior, or working on tasks where it helps, so the comparison mixes the tool’s effect with these differences.</li>

@@ -558,46 +558,67 @@ Fei Huang, UNSW Sydney
 </section>
 <section id="data-structure-long-format" class="slide level2 center">
 <h2>Data Structure: Long Format</h2>
+<p>Fixed-effects software expects panel data in long format: one row per unit per period, with columns that identify the unit and the period. The period need not be calendar time. In Case Study 4 it is the test sitting; in Case Study 1 it is the move within a game.</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>student_id</th>
+<th>school</th>
+<th>take</th>
+<th>test_year</th>
+<th>heat_prior_yr</th>
+<th>score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1001</td>
+<td>A</td>
+<td>1</td>
+<td>2008</td>
+<td>71.2</td>
+<td>−0.10</td>
+</tr>
+<tr class="even">
+<td>1001</td>
+<td>A</td>
+<td>2</td>
+<td>2009</td>
+<td>74.8</td>
+<td>−0.05</td>
+</tr>
+<tr class="odd">
+<td>1002</td>
+<td>A</td>
+<td>1</td>
+<td>2008</td>
+<td>71.2</td>
+<td>0.35</td>
+</tr>
+<tr class="even">
+<td>1002</td>
+<td>A</td>
+<td>2</td>
+<td>2009</td>
+<td>74.8</td>
+<td>0.31</td>
+</tr>
+</tbody>
+</table>
+<p>If your data have one row per unit and one column per period (wide format), reshape them first:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Panel data should be stored in "long" format: one row per unit-period</span></span>
-<span id="cb1-2"><a></a><span class="co"># Example: students who took the PSAT more than once</span></span>
-<span id="cb1-3"><a></a><span class="co">#</span></span>
-<span id="cb1-4"><a></a><span class="co">#  student_id  school  take  test_year  heat_prior_yr  score</span></span>
-<span id="cb1-5"><a></a><span class="co">#  1001        A       1     2008       71.2           -0.10</span></span>
-<span id="cb1-6"><a></a><span class="co">#  1001        A       2     2009       74.8           -0.05</span></span>
-<span id="cb1-7"><a></a><span class="co">#  1002        A       1     2008       71.2            0.35</span></span>
-<span id="cb1-8"><a></a><span class="co">#  1002        A       2     2009       74.8            0.31</span></span>
-<span id="cb1-9"><a></a><span class="co">#  2001        B       1     2010       63.5            0.62</span></span>
-<span id="cb1-10"><a></a><span class="co">#  2001        B       2     2011       62.1            0.97</span></span>
-<span id="cb1-11"><a></a></span>
-<span id="cb1-12"><a></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb1-13"><a></a><span class="co"># Converting from wide to long</span></span>
-<span id="cb1-14"><a></a>panel_long <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(</span>
-<span id="cb1-15"><a></a>  wide_data,</span>
-<span id="cb1-16"><a></a>  <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"score_"</span>),</span>
-<span id="cb1-17"><a></a>  <span class="at">names_to =</span> <span class="st">"take"</span>,</span>
-<span id="cb1-18"><a></a>  <span class="at">names_prefix =</span> <span class="st">"score_"</span>,</span>
-<span id="cb1-19"><a></a>  <span class="at">values_to =</span> <span class="st">"score"</span></span>
-<span id="cb1-20"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-2"><a></a>panel_long <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(</span>
+<span id="cb1-3"><a></a>  wide_data,</span>
+<span id="cb1-4"><a></a>  <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"score_"</span>),</span>
+<span id="cb1-5"><a></a>  <span class="at">names_to =</span> <span class="st">"take"</span>,</span>
+<span id="cb1-6"><a></a>  <span class="at">names_prefix =</span> <span class="st">"score_"</span>,</span>
+<span id="cb1-7"><a></a>  <span class="at">values_to =</span> <span class="st">"score"</span></span>
+<span id="cb1-8"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<aside class="notes">
-<ul>
-<li>Emphasize that the “time” index need not be calendar time. In Park et al.&nbsp;it is the test sitting; in Künn et al.&nbsp;it is the move within a game within a round.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section>
 <section id="sources-of-variation-in-a-panel" class="slide level2 center">
 <h2>Sources of Variation in a Panel</h2>
@@ -647,6 +668,32 @@ Fei Huang, UNSW Sydney
 <li><span class="math inline">\varepsilon_{it}</span>: idiosyncratic shocks</li>
 </ul>
 <p><strong>The problem:</strong> <span class="math inline">\alpha_i</span> is unobserved and likely correlated with <span class="math inline">D_{it}</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="potential-outcomes-interpretation" class="slide level2 center scrollable">
+<h2>Potential Outcomes Interpretation</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Connecting to the Causal Framework</strong></p>
+</div>
+<div class="callout-content">
+<p>Write potential outcomes for unit <span class="math inline">i</span> at time <span class="math inline">t</span> under treatment level <span class="math inline">d</span>:</p>
+<p><span class="math display">Y_{it}(d) = \alpha_i + \lambda_t + \tau d + \varepsilon_{it}</span></p>
+<p>The observed outcome is <span class="math inline">Y_{it} = Y_{it}(D_{it})</span>.</p>
+<p><strong>Implicit assumptions in this model:</strong></p>
+<ol type="1">
+<li><strong>Additivity:</strong> unit and time heterogeneity enter as level shifts</li>
+<li><strong>Constant effect:</strong> <span class="math inline">\tau</span> is the same for all <span class="math inline">i, t</span> (we relax this later)</li>
+<li><strong>No carryover:</strong> <span class="math inline">Y_{it}</span> depends on <span class="math inline">D_{it}</span> but not on <span class="math inline">D_{i,t-1}</span> (unless we model it)</li>
+<li><strong>No interference:</strong> unit <span class="math inline">i</span>’s outcome does not depend on unit <span class="math inline">j</span>’s treatment (SUTVA)</li>
+</ol>
+<p>Fixed effects allow selection on time-invariant unobservables: units can choose their treatment based on <span class="math inline">\alpha_i</span>.</p>
 </div>
 </div>
 </div>
@@ -2618,32 +2665,6 @@ Fei Huang, UNSW Sydney
 <section id="going-deeper-optional" class="title-slide slide level1 center">
 <h1>Going Deeper (Optional)</h1>
 
-</section>
-<section id="potential-outcomes-interpretation" class="slide level2 center scrollable">
-<h2>Potential Outcomes Interpretation</h2>
-<div class="callout callout-note callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Connecting to the Causal Framework</strong></p>
-</div>
-<div class="callout-content">
-<p>Write potential outcomes for unit <span class="math inline">i</span> at time <span class="math inline">t</span> under treatment level <span class="math inline">d</span>:</p>
-<p><span class="math display">Y_{it}(d) = \alpha_i + \lambda_t + \tau d + \varepsilon_{it}</span></p>
-<p>The observed outcome is <span class="math inline">Y_{it} = Y_{it}(D_{it})</span>.</p>
-<p><strong>Implicit assumptions in this model:</strong></p>
-<ol type="1">
-<li><strong>Additivity:</strong> unit and time heterogeneity enter as level shifts</li>
-<li><strong>Constant effect:</strong> <span class="math inline">\tau</span> is the same for all <span class="math inline">i, t</span> (we relax this later)</li>
-<li><strong>No carryover:</strong> <span class="math inline">Y_{it}</span> depends on <span class="math inline">D_{it}</span> but not on <span class="math inline">D_{i,t-1}</span> (unless we model it)</li>
-<li><strong>No interference:</strong> unit <span class="math inline">i</span>’s outcome does not depend on unit <span class="math inline">j</span>’s treatment (SUTVA)</li>
-</ol>
-<p>Fixed effects allow selection on time-invariant unobservables: units can choose their treatment based on <span class="math inline">\alpha_i</span>.</p>
-</div>
-</div>
-</div>
 </section>
 <section id="other-ways-to-remove-alpha_i" class="slide level2 center">
 <h2>Other Ways to Remove <span class="math inline">\alpha_i</span></h2>
