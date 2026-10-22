@@ -417,6 +417,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#the-key-assumption-strict-exogeneity" id="toc-the-key-assumption-strict-exogeneity" class="nav-link" data-scroll-target="#the-key-assumption-strict-exogeneity">The Key Assumption: Strict Exogeneity</a></li>
   <li><a href="#what-strict-exogeneity-rules-out" id="toc-what-strict-exogeneity-rules-out" class="nav-link" data-scroll-target="#what-strict-exogeneity-rules-out">What Strict Exogeneity Rules Out</a></li>
+  <li><a href="#what-to-do-about-each-threat" id="toc-what-to-do-about-each-threat" class="nav-link" data-scroll-target="#what-to-do-about-each-threat">What to Do About Each Threat</a></li>
   <li><a href="#choosing-time-varying-controls" id="toc-choosing-time-varying-controls" class="nav-link" data-scroll-target="#choosing-time-varying-controls">Choosing Time-Varying Controls</a></li>
   <li><a href="#why-weather-is-the-ideal-fe-treatment" id="toc-why-weather-is-the-ideal-fe-treatment" class="nav-link" data-scroll-target="#why-weather-is-the-ideal-fe-treatment">Why Weather Is the Ideal FE Treatment</a></li>
   <li><a href="#checking-the-assumption" id="toc-checking-the-assumption" class="nav-link" data-scroll-target="#checking-the-assumption">Checking the Assumption</a></li>
@@ -1133,6 +1134,55 @@ window.Quarto = {
 </div>
 </div>
 </section>
+<section id="what-to-do-about-each-threat" class="level3">
+<h3 class="anchored" data-anchor-id="what-to-do-about-each-threat">What to Do About Each Threat</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Mitigation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Threat</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Time-varying confounders</strong></td>
+<td>Control for the ones you can measure; add region × time fixed effects or unit-specific trends; find a second source of variation, such as the wind-driven instrument in Case Study 1</td>
+</tr>
+<tr class="even">
+<td><strong>2. Feedback</strong></td>
+<td>Test whether past outcomes predict treatment, and whether future treatment predicts today’s outcome (leads). If feedback is real, use estimators that allow it, such as Arellano–Bond, which uses earlier values as instruments</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Anticipation and dynamic effects</strong></td>
+<td>Include leads and lags of treatment (an event study); date treatment from when it was announced, if behaviour changed then</td>
+</tr>
+<tr class="even">
+<td><strong>4. Lagged dependent variable</strong></td>
+<td>Leave it out in short panels, or use Arellano–Bond. The bias shrinks as the number of periods grows</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Selection into the panel</strong></td>
+<td>Test whether treatment predicts who appears in the data (as Case Study 4 does); compare with a balanced panel; bound the effect if selection is likely</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
 <section id="choosing-time-varying-controls" class="level3">
 <h3 class="anchored" data-anchor-id="choosing-time-varying-controls">Choosing Time-Varying Controls</h3>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -1726,7 +1776,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-35-contents" aria-controls="callout-35" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-36-contents" aria-controls="callout-36" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1735,7 +1785,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-35" class="callout-35-contents callout-collapse collapse">
+<div id="callout-36" class="callout-36-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Errors are more frequent at certain stages of a game, such as the moves before the time control. If high-pollution rounds happened to have more late-game moves, pollution would appear to cause errors through game length alone.</li>
@@ -1888,7 +1938,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-42-contents" aria-controls="callout-42" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-43-contents" aria-controls="callout-43" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1897,7 +1947,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-42" class="callout-42-contents callout-collapse collapse">
+<div id="callout-43" class="callout-43-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Prices should react to news, not to what investors already expected. The predictable part of the concern index is already in prices and may move with other market conditions; the surprise is closer to new information.</li>
@@ -2043,7 +2093,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-48-contents" aria-controls="callout-48" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-49-contents" aria-controls="callout-49" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2052,7 +2102,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-48" class="callout-48-contents callout-collapse collapse">
+<div id="callout-49" class="callout-49-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Agent fixed effects remove permanent differences between agents. The estimate falls because agents who got access had higher productivity to begin with, so stronger agents tended to get access earlier.</li>
@@ -2223,7 +2273,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-56-contents" aria-controls="callout-56" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-57-contents" aria-controls="callout-57" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2232,7 +2282,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-56" class="callout-56-contents callout-collapse collapse">
+<div id="callout-57" class="callout-57-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>The within-student estimate is about a tenth of the cross-country slope, so most of the cross-sectional association reflects differences between places (income, institutions, schools), not heat. The comparison is rough, since the tests and units differ.</li>
@@ -2380,7 +2430,7 @@ window.Quarto = {
 <li>Does it separate short-run weather effects from long-run climate effects?</li>
 </ol>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-61-contents" aria-controls="callout-61" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-62-contents" aria-controls="callout-62" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2389,7 +2439,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-61" class="callout-61-contents callout-collapse collapse">
+<div id="callout-62" class="callout-62-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>A hotter weekday against a cooler weekday in the same postcode, in the same month of the same year.</li>
@@ -2438,7 +2488,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-63-contents" aria-controls="callout-63" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-64-contents" aria-controls="callout-64" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2447,7 +2497,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-63" class="callout-63-contents callout-collapse collapse">
+<div id="callout-64" class="callout-64-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Most postcode-days have zero claims, and the log of zero is undefined. OLS on logs drops those days or needs an arbitrary transformation such as log(y + 1). Poisson keeps zero days and gives a percentage effect; only postcode-months with no claims at all drop out, because they carry no information.</li>
@@ -2882,44 +2932,6 @@ Wooldridge, Jeffrey M. 1999. <span>“Distribution-Free Estimation of Some Nonli
 </section>
 
 </main> <!-- /main -->
-
-<script>
-  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-  // slide changes (different for each slide format).
-  (function () {
-    // dispatch for htmlwidgets
-    function fireSlideEnter() {
-      const event = window.document.createEvent("Event");
-      event.initEvent("slideenter", true, true);
-      window.document.dispatchEvent(event);
-    }
-
-    function fireSlideChanged(previousSlide, currentSlide) {
-      fireSlideEnter();
-
-      // dispatch for shiny
-      if (window.jQuery) {
-        if (previousSlide) {
-          window.jQuery(previousSlide).trigger("hidden");
-        }
-        if (currentSlide) {
-          window.jQuery(currentSlide).trigger("shown");
-        }
-      }
-    }
-
-    // hookup for slidy
-    if (window.w3c_slidy) {
-      window.w3c_slidy.add_observer(function (slide_num) {
-        // slide_num starts at position 1
-        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-      });
-    }
-
-  })();
-</script>
-
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
