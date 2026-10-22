@@ -398,6 +398,7 @@ window.Quarto = {
   <li><a href="#potential-outcomes" id="toc-potential-outcomes" class="nav-link" data-scroll-target="#potential-outcomes">Potential Outcomes</a></li>
   <li><a href="#estimand-estimator-estimate" id="toc-estimand-estimator-estimate" class="nav-link" data-scroll-target="#estimand-estimator-estimate">Estimand, Estimator, Estimate</a></li>
   <li><a href="#why-naive-comparisons-fail" id="toc-why-naive-comparisons-fail" class="nav-link" data-scroll-target="#why-naive-comparisons-fail">Why Naive Comparisons Fail</a></li>
+  <li><a href="#simulation-design" id="toc-simulation-design" class="nav-link" data-scroll-target="#simulation-design">Simulation Design</a></li>
   <li><a href="#simulation-selection-bias-can-flip-the-sign" id="toc-simulation-selection-bias-can-flip-the-sign" class="nav-link" data-scroll-target="#simulation-selection-bias-can-flip-the-sign">Simulation: Selection Bias Can Flip the Sign</a></li>
   <li><a href="#other-ways-correlations-mislead" id="toc-other-ways-correlations-mislead" class="nav-link" data-scroll-target="#other-ways-correlations-mislead">Other Ways Correlations Mislead</a></li>
   <li><a href="#internal-and-external-validity" id="toc-internal-and-external-validity" class="nav-link" data-scroll-target="#internal-and-external-validity">Internal and External Validity</a></li>
@@ -662,6 +663,29 @@ window.Quarto = {
 </div>
 </div>
 </section>
+<section id="simulation-design" class="level3">
+<h3 class="anchored" data-anchor-id="simulation-design">Simulation Design</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Insurance and Mortality in Two Worlds
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>People:</strong> 100,000 adults, each with an underlying health risk. The researcher does not observe it.</li>
+<li><strong>Without insurance:</strong> a person’s annual chance of dying (in percent) is 1.5 + 0.8 × risk, so sicker people die more often.</li>
+<li><strong>With insurance:</strong> that chance falls by 0.3 percentage points, or less for the few people already close to zero. The true average effect is therefore about −0.29.</li>
+<li><strong>Observational world:</strong> the sicker a person is, the more likely they are to buy insurance (adverse selection).</li>
+<li><strong>Experimental world:</strong> a coin flip decides who is insured.</li>
+</ul>
+<p>In each world we compare the death rates of the insured and the uninsured.</p>
+</div>
+</div>
+</section>
 <section id="simulation-selection-bias-can-flip-the-sign" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-selection-bias-can-flip-the-sign">Simulation: Selection Bias Can Flip the Sign</h3>
 <div class="cell">
@@ -687,11 +711,31 @@ window.Quarto = {
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>y_rct <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(d_rct <span class="sc">==</span> <span class="dv">1</span>, y1, y0)</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>rct <span class="ot">&lt;-</span> <span class="fu">mean</span>(y_rct[d_rct <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(y_rct[d_rct <span class="sc">==</span> <span class="dv">0</span>])</span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">true_ATE =</span> <span class="fu">mean</span>(y1 <span class="sc">-</span> y0), <span class="at">naive_comparison =</span> naive, <span class="at">randomized =</span> rct), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># The two terms from the previous slide</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>att <span class="ot">&lt;-</span> <span class="fu">mean</span>((y1 <span class="sc">-</span> y0)[d_obs <span class="sc">==</span> <span class="dv">1</span>])                          <span class="co"># effect on the insured</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>selection <span class="ot">&lt;-</span> <span class="fu">mean</span>(y0[d_obs <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(y0[d_obs <span class="sc">==</span> <span class="dv">0</span>])    <span class="co"># selection bias</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">true_ATE =</span> <span class="fu">mean</span>(y1 <span class="sc">-</span> y0), <span class="at">naive_comparison =</span> naive, <span class="at">ATT =</span> att,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">selection_bias =</span> selection, <span class="at">randomized =</span> rct), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>        true_ATE naive_comparison       randomized 
-          -0.286            0.536           -0.287 </code></pre>
+<pre><code>        true_ATE naive_comparison              ATT   selection_bias 
+          -0.286            0.536           -0.299            0.835 
+      randomized 
+          -0.287 </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reading the Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In the observational world the insured die more often, so insurance looks harmful (+0.54 percentage points). That gap is the effect on the insured (−0.30) plus selection bias (+0.83), because sicker people bought insurance. The coin flip balances risk across the two groups, and the comparison recovers the true effect (−0.29).</p>
 </div>
 </div>
 <div class="notes">

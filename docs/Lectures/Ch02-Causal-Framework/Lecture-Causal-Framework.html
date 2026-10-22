@@ -649,22 +649,22 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>ATE</strong></td>
+<td><strong>ATE</strong> (average treatment effect)</td>
 <td><span class="math inline">E[Y_i(1) - Y_i(0)]</span></td>
 <td>What if <em>everyone</em> got the treatment?</td>
 </tr>
 <tr class="even">
-<td><strong>ATT</strong></td>
+<td><strong>ATT</strong> (average treatment effect on the treated)</td>
 <td><span class="math inline">E[Y_i(1) - Y_i(0) \mid D_i = 1]</span></td>
 <td>Did the program help the people who actually received it?</td>
 </tr>
 <tr class="odd">
-<td><strong>ATC</strong></td>
+<td><strong>ATC</strong> (average treatment effect on the controls, i.e.&nbsp;the untreated)</td>
 <td><span class="math inline">E[Y_i(1) - Y_i(0) \mid D_i = 0]</span></td>
 <td>What if we extended it to those not yet covered?</td>
 </tr>
 <tr class="even">
-<td><strong>CATE</strong></td>
+<td><strong>CATE</strong> (conditional average treatment effect)</td>
 <td><span class="math inline">E[Y_i(1) - Y_i(0) \mid X_i = x]</span></td>
 <td>Who benefits most? How should we target?</td>
 </tr>
@@ -719,7 +719,7 @@ window.Quarto = {
 </tr>
 <tr class="even">
 <td>Experiment with imperfect take-up, or an instrument</td>
-<td>LATE: effect for <em>compliers</em>, whose treatment responds to the instrument</td>
+<td>LATE (local average treatment effect): the effect for <em>compliers</em>, whose treatment responds to the instrument</td>
 <td>5–6</td>
 </tr>
 <tr class="odd">
