@@ -390,6 +390,7 @@ window.Quarto = {
   <ul>
   <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
   <li><a href="#in-practice-difference-in-differences" id="toc-in-practice-difference-in-differences" class="nav-link" data-scroll-target="#in-practice-difference-in-differences">In Practice: Difference-in-Differences</a></li>
+  <li><a href="#workflow-difference-in-differences" id="toc-workflow-difference-in-differences" class="nav-link" data-scroll-target="#workflow-difference-in-differences">Workflow: Difference-in-Differences</a></li>
   <li><a href="#motivation" id="toc-motivation" class="nav-link" data-scroll-target="#motivation">Motivation</a>
   <ul class="collapse">
   <li><a href="#did-medicaid-expansion-save-lives" id="toc-did-medicaid-expansion-save-lives" class="nav-link" data-scroll-target="#did-medicaid-expansion-save-lives">Did Medicaid Expansion Save Lives?</a></li>
@@ -539,6 +540,73 @@ window.Quarto = {
 <li><strong>In R:</strong> <code>feols(y ~ sunab(cohort, period) | unit + period, data)</code>, <code>did::att_gt()</code></li>
 <li><strong>Telling a manager:</strong> “Before the policy the two groups moved together; afterwards the treated group pulled away by X. That gap is our estimate.”</li>
 </ul>
+</div>
+</div>
+</section>
+<section id="workflow-difference-in-differences" class="level3">
+<h3 class="anchored" data-anchor-id="workflow-difference-in-differences">Workflow: Difference-in-Differences</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Seven Decisions, in Order
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 36%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Decision</th>
+<th>How to decide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Groups and timing</strong></td>
+<td>Treated, control, when treatment starts</td>
+<td>One date or staggered?</td>
+</tr>
+<tr class="even">
+<td><strong>2. Control group</strong></td>
+<td>Never treated or not yet treated</td>
+<td>Why is its change a credible counterfactual?</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Scale</strong></td>
+<td>Levels or logs</td>
+<td>Decide before looking: parallel trends depends on the scale</td>
+</tr>
+<tr class="even">
+<td><strong>4. Estimate</strong></td>
+<td>2×2, two-way fixed effects, or a robust estimator</td>
+<td>Staggered timing with changing effects → Callaway–Sant’Anna or Sun–Abraham</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Event study</strong></td>
+<td>Pre-trends and dynamics</td>
+<td>Report the power of the pre-trend test; run a sensitivity analysis</td>
+</tr>
+<tr class="even">
+<td><strong>6. Inference</strong></td>
+<td>Clustering level</td>
+<td>The level of the policy; wild bootstrap if clusters are few</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Check and interpret</strong></td>
+<td>Placebo groups and dates, spillovers; the ATT</td>
+<td>Scale by take-up if not everyone treated is affected</td>
+</tr>
+</tbody>
+</table>
+<p>Each step is covered later in this chapter.</p>
 </div>
 </div>
 </section>
@@ -1415,7 +1483,7 @@ treated    0    1
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-29-contents" aria-controls="callout-29" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-30-contents" aria-controls="callout-30" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1424,7 +1492,7 @@ treated    0    1
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-29" class="callout-29-contents callout-collapse collapse">
+<div id="callout-30" class="callout-30-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>DiD allows expanding states to differ in levels, for example in income or politics. The design fails only if the expansion decision was related to trends in mortality, or coincided with other changes affecting low-income adults’ health.</li>
@@ -1586,7 +1654,7 @@ treated    0    1
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-35-contents" aria-controls="callout-35" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-36-contents" aria-controls="callout-36" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1595,7 +1663,7 @@ treated    0    1
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-35" class="callout-35-contents callout-collapse collapse">
+<div id="callout-36" class="callout-36-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>A cross-section compares strong agents with weaker ones, which credits AI with pre-existing differences. With agent fixed effects each agent is compared with themselves, so level differences cancel; only differences in trends would bias the result.</li>
@@ -1726,7 +1794,7 @@ treated    0    1
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-41-contents" aria-controls="callout-41" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-42-contents" aria-controls="callout-42" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1735,7 +1803,7 @@ treated    0    1
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-41" class="callout-41-contents callout-collapse collapse">
+<div id="callout-42" class="callout-42-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Freelance demand changes for other reasons at the same time: seasonality, platform growth, interest rates, and tech-sector layoffs in 2022–23. A before–after comparison of writing jobs would attribute all of these to ChatGPT.</li>

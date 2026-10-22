@@ -390,6 +390,7 @@ window.Quarto = {
   <ul>
   <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
   <li><a href="#in-practice-synthetic-control" id="toc-in-practice-synthetic-control" class="nav-link" data-scroll-target="#in-practice-synthetic-control">In Practice: Synthetic Control</a></li>
+  <li><a href="#workflow-synthetic-control" id="toc-workflow-synthetic-control" class="nav-link" data-scroll-target="#workflow-synthetic-control">Workflow: Synthetic Control</a></li>
   <li><a href="#motivation" id="toc-motivation" class="nav-link" data-scroll-target="#motivation">Motivation</a>
   <ul class="collapse">
   <li><a href="#when-only-one-unit-is-treated" id="toc-when-only-one-unit-is-treated" class="nav-link" data-scroll-target="#when-only-one-unit-is-treated">When Only One Unit Is Treated</a></li>
@@ -529,6 +530,73 @@ window.Quarto = {
 <li><strong>In R:</strong> <code>Synth::dataprep()</code> and <code>synth()</code>, <code>tidysynth</code>, <code>synthdid</code> for synthetic DiD</li>
 <li><strong>Telling a manager:</strong> “We built a stand-in from regions that tracked ours closely for 15 years. After the event, ours fell about 10% below its stand-in.”</li>
 </ul>
+</div>
+</div>
+</section>
+<section id="workflow-synthetic-control" class="level3">
+<h3 class="anchored" data-anchor-id="workflow-synthetic-control">Workflow: Synthetic Control</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Seven Decisions, in Order
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 36%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Decision</th>
+<th>How to decide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Treated unit and date</strong></td>
+<td>Who was treated, and when</td>
+<td>Backdate if behaviour changed before the formal date</td>
+</tr>
+<tr class="even">
+<td><strong>2. Donor pool</strong></td>
+<td>Which untreated units</td>
+<td>Similar units, unaffected by the treatment or other large shocks</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Predictors</strong></td>
+<td>What to match on, over which period</td>
+<td>Pre-treatment outcomes and key predictors, over a long period</td>
+</tr>
+<tr class="even">
+<td><strong>4. Fit</strong></td>
+<td>Weights on donors</td>
+<td>Close pre-treatment fit; report the weights and what cannot be matched</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Estimate</strong></td>
+<td>Gap after treatment</td>
+<td>Treated minus synthetic, period by period</td>
+</tr>
+<tr class="even">
+<td><strong>6. Inference</strong></td>
+<td>Placebos</td>
+<td>In-space placebos with a rank-based p-value; in-time placebos</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Robustness</strong></td>
+<td>Leave-one-out, other donor pools</td>
+<td>Results should not hinge on one donor</td>
+</tr>
+</tbody>
+</table>
+<p>Each step is covered later in this chapter.</p>
 </div>
 </div>
 </section>
@@ -1056,7 +1124,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1065,7 +1133,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>The other regions were on average poorer, less industrial, and less densely populated, and followed different paths before terrorism. Their average is a poor guide to what the Basque economy would have done.</li>
@@ -1189,7 +1257,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-26-contents" aria-controls="callout-26" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1198,7 +1266,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-25" class="callout-25-contents callout-collapse collapse">
+<div id="callout-26" class="callout-26-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Matching the actual co-movement of returns captures each firm’s exposure to all common risks (sector, funding, credit), whether measured or not. Size and leverage capture only a few observed characteristics.</li>

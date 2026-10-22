@@ -390,6 +390,7 @@ window.Quarto = {
   <ul>
   <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
   <li><a href="#in-practice-regression-and-matching" id="toc-in-practice-regression-and-matching" class="nav-link" data-scroll-target="#in-practice-regression-and-matching">In Practice: Regression and Matching</a></li>
+  <li><a href="#workflow-regression-and-matching" id="toc-workflow-regression-and-matching" class="nav-link" data-scroll-target="#workflow-regression-and-matching">Workflow: Regression and Matching</a></li>
   <li><a href="#selection-on-observables" id="toc-selection-on-observables" class="nav-link" data-scroll-target="#selection-on-observables">Selection on Observables</a>
   <ul class="collapse">
   <li><a href="#the-assumption" id="toc-the-assumption" class="nav-link" data-scroll-target="#the-assumption">The Assumption</a></li>
@@ -526,6 +527,73 @@ window.Quarto = {
 <li><strong>In R:</strong> <code>MatchIt::matchit()</code> and <code>match.data()</code>, <code>sensemakr</code> for sensitivity</li>
 <li><strong>Telling a manager:</strong> “Among customers with the same purchase history, joiners visited 5% more. A hidden factor would need to be this strong to explain that away.”</li>
 </ul>
+</div>
+</div>
+</section>
+<section id="workflow-regression-and-matching" class="level3">
+<h3 class="anchored" data-anchor-id="workflow-regression-and-matching">Workflow: Regression and Matching</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Seven Decisions, in Order
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 36%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Decision</th>
+<th>How to decide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Argue selection on observables</strong></td>
+<td>Why treatment depends only on measured variables</td>
+<td>Knowledge of how treatment was chosen</td>
+</tr>
+<tr class="even">
+<td><strong>2. Covariates</strong></td>
+<td>Which variables to adjust for</td>
+<td>Pre-treatment only, especially past outcomes; never mediators</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Overlap</strong></td>
+<td>Do treated and untreated units overlap?</td>
+<td>Plot propensity scores; trim units with no comparable counterparts</td>
+</tr>
+<tr class="even">
+<td><strong>4. Estimator</strong></td>
+<td>Regression, matching, weighting, or doubly robust</td>
+<td>Compare several; large disagreement is a warning</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Balance</strong></td>
+<td>Are the groups now alike on covariates?</td>
+<td>Standardized differences below 0.1</td>
+</tr>
+<tr class="even">
+<td><strong>6. Estimate</strong></td>
+<td>ATE or ATT</td>
+<td>Match the estimand to the policy question</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Sensitivity</strong></td>
+<td>How strong would hidden confounding need to be?</td>
+<td>Rosenbaum bounds or <code>sensemakr</code>; report the answer</td>
+</tr>
+</tbody>
+</table>
+<p>Each step is covered later in this chapter.</p>
 </div>
 </div>
 </section>
@@ -996,7 +1064,7 @@ loyalty       0.47  0.01</code></pre>
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1005,7 +1073,7 @@ loyalty       0.47  0.01</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>The national surveys sample the wider population: older, more often employed, and with much higher earnings than the disadvantaged people the program enrolled. Those differences dwarf the program’s effect.</li>
@@ -1153,7 +1221,7 @@ loyalty       0.47  0.01</code></pre>
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-26-contents" aria-controls="callout-26" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1162,7 +1230,7 @@ loyalty       0.47  0.01</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-25" class="callout-25-contents callout-collapse collapse">
+<div id="callout-26" class="callout-26-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Past buying shows loyalty, interest in wine, and how often a customer visits, which drive both joining the page and future visits. Demographics capture these only weakly.</li>

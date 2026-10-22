@@ -288,6 +288,13 @@
     "text": "In Practice: Synthetic Control\n\n\n\n\n\n\nPractitioner Summary\n\n\n\nUse it when: one or a few units are treated and no single untreated unit is a convincing comparison\nWhat you need: the outcome for the treated unit and many untreated units over a long pre-treatment period, plus predictors\nWhat must hold: the weighted donors would have tracked the treated unit without treatment; no spillovers to donors; no anticipation (or backdate the treatment)\nChecks to run: pre-treatment fit; the weights and predictor balance; in-space and in-time placebos; leave-one-out\nIn R: Synth::dataprep() and synth(), tidysynth, synthdid for synthetic DiD\nTelling a manager: “We built a stand-in from regions that tracked ours closely for 15 years. After the event, ours fell about 10% below its stand-in.”"
   },
   {
+    "objectID": "Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.slides.html#workflow-synthetic-control",
+    "href": "Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.slides.html#workflow-synthetic-control",
+    "title": "Synthetic Control",
+    "section": "Workflow: Synthetic Control",
+    "text": "Workflow: Synthetic Control\n\n\n\n\n\n\nSeven Decisions, in Order\n\n\n\n\n\n\n\n\n\n\nStep\nDecision\nHow to decide\n\n\n\n\n1. Treated unit and date\nWho was treated, and when\nBackdate if behaviour changed before the formal date\n\n\n2. Donor pool\nWhich untreated units\nSimilar units, unaffected by the treatment or other large shocks\n\n\n3. Predictors\nWhat to match on, over which period\nPre-treatment outcomes and key predictors, over a long period\n\n\n4. Fit\nWeights on donors\nClose pre-treatment fit; report the weights and what cannot be matched\n\n\n5. Estimate\nGap after treatment\nTreated minus synthetic, period by period\n\n\n6. Inference\nPlacebos\nIn-space placebos with a rank-based p-value; in-time placebos\n\n\n7. Robustness\nLeave-one-out, other donor pools\nResults should not hinge on one donor\n\n\n\nEach step is covered later in this chapter."
+  },
+  {
     "objectID": "Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.slides.html#when-only-one-unit-is-treated",
     "href": "Lectures/Ch10-Synthetic-Control/Lecture-Synthetic-Control.slides.html#when-only-one-unit-is-treated",
     "title": "Synthetic Control",
@@ -650,6 +657,13 @@
     "text": "In Practice: Panel Fixed Effects\n\n\n\n\n\n\nPractitioner Summary\n\n\n\nUse it when: you observe the same units repeatedly and their treatment changes over time\nWhat you need: a panel with enough within-unit variation in treatment\nWhat must hold: strict exogeneity: no confounders that change over time, and no feedback from past outcomes to treatment\nChecks to run: residual variation after fixed effects; leads of treatment; selection into the panel; alternative fixed-effect structures; clustering at the level of treatment (wild bootstrap if clusters are few)\nIn R: feols(y ~ d + x | unit + time, data, cluster = ~unit), fepois() for counts\nTelling a manager: “We compared each branch’s sales after the training with the same branch’s sales before it. Its location, size and customers were the same both times, so they can’t explain the change. Something else that changed at that branch around the same time, such as a rival closing nearby, still could.”"
   },
   {
+    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#workflow-panel-fixed-effects",
+    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#workflow-panel-fixed-effects",
+    "title": "Panel Data and Fixed Effects",
+    "section": "Workflow: Panel Fixed Effects",
+    "text": "Workflow: Panel Fixed Effects\n\n\n\n\n\n\nSeven Decisions, in Order\n\n\n\n\n\n\n\n\n\n\nStep\nDecision\nHow to decide\n\n\n\n\n1. Set up the panel\nUnit, period, treatment, outcome\nDoes treatment change within units often enough to learn from?\n\n\n2. Fixed effects\nUnit only, two-way, or interacted (e.g., postcode × month)\nWhich comparison is as good as random?\n\n\n3. Controls\nWhich time-varying variables to add\nConfounders that change within units; never variables the treatment changes\n\n\n4. Model\nLinear, logs, or Poisson\nCounts with many zeros → Poisson fixed effects\n\n\n5. Inference\nClustering level\nWhere treatment varies; wild bootstrap if clusters are few\n\n\n6. Checks\nLeads, selection into the panel, other fixed effects\nDo the results survive?\n\n\n7. Interpret\nWhose effect, over what horizon\nIf treatment is a policy that switches on at a date, use DiD (Chapter 9)\n\n\n\nEach step is covered later in this chapter. The checklist at the end repeats them as questions to review a finished analysis."
+  },
+  {
     "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#do-hot-places-learn-less",
     "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#do-hot-places-learn-less",
     "title": "Panel Data and Fixed Effects",
@@ -753,6 +767,13 @@
     "title": "Panel Data and Fixed Effects",
     "section": "What Strict Exogeneity Rules Out",
     "text": "What Strict Exogeneity Rules Out\n\n\n\n\n\n\nThreats to FE Identification\n\n\n1. Time-varying confounders Something changes over time for unit i and affects both D_{it} and Y_{it}. Example: a local recession reduces both school AC maintenance and family resources. A fixed trait whose effect changes over time acts the same way. Example: a student’s ability is fixed, but if it counts for more on later tests, its contribution to scores changes from year to year.\n2. Feedback / reverse causality Past outcomes affect future treatment: Y_{i,t-1} \\rightarrow D_{it}. Example: a firm whose stock price fell cuts emissions. A worker who was injured changes jobs.\n3. Anticipation and dynamic effects Future treatment affects current outcomes, or past treatment still matters today.\n4. Lagged dependent variables Including Y_{i,t-1} as a regressor with unit FE violates strict exogeneity mechanically. This is the Nickell bias, of order 1/T (Nickell 1981).\n5. Selection into the panel Whether unit i appears in period t depends on the treatment. Example: hot weather discourages students from retaking the test."
+  },
+  {
+    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#choosing-time-varying-controls",
+    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#choosing-time-varying-controls",
+    "title": "Panel Data and Fixed Effects",
+    "section": "Choosing Time-Varying Controls",
+    "text": "Choosing Time-Varying Controls\n\n\n\n\n\n\nWhich X_{it} to Include\n\n\n\nOnly time-varying variables matter. Anything fixed within a unit is already absorbed by \\alpha_i, so adding it changes nothing.\nInclude variables that change within units and affect both treatment and the outcome (time-varying confounders). Example: rain is related to both temperature and injury risk (Case Study 5).\nExclude anything the treatment can change. Hours worked respond to AI access, and pollution may respond to heat. Controlling for them removes part of the effect.\nWatch for feedback. A control affected by past outcomes, or a lagged outcome, breaks strict exogeneity (Nickell bias).\nVariables that only predict the outcome are optional. They can improve precision but do not remove bias.\nReport results with and without debatable controls. Example: Case Study 5 reports 0.24% per 1°C without a pollution control and 0.20% with it."
   },
   {
     "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#why-weather-is-the-ideal-fe-treatment",
@@ -1112,6 +1133,34 @@
     "text": "Case Study 5: Sensitivity to the FE Structure\n\n\n\n\n\n\nIreland et al. (2023), Table 2\n\n\n\n\n\nSpecification\nSemi-elasticity (%)\n\n\n\n\nPostcode × month-year FE (main)\n0.24 (0.020)\n\n\n+ PM2.5 control\n0.20 (0.021)\n\n\n+ Calendar-date FE\n0.27 (0.020)\n\n\nSeparate postcode × month FE and month-year FE\n0.22 (0.021)\n\n\n\nStable estimates across FE structures are reassuring evidence that the result does not depend on one particular comparison."
   },
   {
+    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist",
+    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist",
+    "title": "Panel Data and Fixed Effects",
+    "section": "Case Study 5: Running the Checklist",
+    "text": "Case Study 5: Running the Checklist\nThe fixed-effects checklist from the end of this chapter, applied to this paper. Try each question before revealing the answer.\n\nState the comparison the fixed effects impose. A hotter weekday against a cooler weekday in the same postcode, in the same month of the same year.\nWhy is the remaining variation as good as random? Which confounders could still vary within a postcode-month? Nobody chooses the day’s temperature, and within a postcode-month it is unrelated to the local economy, workforce, or industry mix. Rain and the day of the week do vary from day to day and relate to both heat and injuries, so the model controls for them.\nDoes the fixed-effect structure match that argument? Yes. Postcode × month-year fixed effects absorb anything specific to one place in one month: seasonal work, local booms and slumps, the size of the workforce, and changes to the compensation scheme over 35 years."
+  },
+  {
+    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-46",
+    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-46",
+    "title": "Panel Data and Fixed Effects",
+    "section": "Case Study 5: Running the Checklist (4–6)",
+    "text": "Case Study 5: Running the Checklist (4–6)\n\nAt what level should standard errors be clustered? Temperature is measured for each postcode, so standard errors are clustered by postcode. Neighbouring postcodes share weather; standard errors that allow for this spatial correlation (Conley) barely change, in a check using OLS.\nHow much variation in treatment is left after the fixed effects? A lot. In Melbourne the hottest and coolest days in a month differ by about 19°C in summer and 10°C in winter.\nIs the result robust to other fixed effects and controls? Yes. The main estimate is 0.24% more claims per 1°C; 0.20 with a PM2.5 control, 0.27 with calendar-date fixed effects, and 0.22 with separate postcode × month and month-year fixed effects. It is similar using only accepted claims, OLS, dry days only, and including weekends."
+  },
+  {
+    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-78",
+    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-78",
+    "title": "Panel Data and Fixed Effects",
+    "section": "Case Study 5: Running the Checklist (7–8)",
+    "text": "Case Study 5: Running the Checklist (7–8)\n\nDo placebo tests support the design? Partly. The paper checks past, not future, temperatures: yesterday’s heat adds 0.14% per 1°C, the day before has no effect (−0.01%), and last night’s minimum has no effect. A natural addition is a lead test: tomorrow’s temperature should not predict today’s claims.\nCould selection into the data bias the result? Claims appear only if lodged, so heat could change reporting rather than injuries. The result holds using only claims the insurer accepted. Postcode-months with no claims drop out of the Poisson model because they carry no information. Workers may choose jobs by heat tolerance, which the authors argue makes the gap between manual and other occupations conservative."
+  },
+  {
+    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-910",
+    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-910",
+    "title": "Panel Data and Fixed Effects",
+    "section": "Case Study 5: Running the Checklist (9–10)",
+    "text": "Case Study 5: Running the Checklist (9–10)\n\nWhose effect is estimated, and over what horizon? Workers in Victoria’s compulsory scheme, which leaves out some groups such as federal government employees. It is the effect of one hot day on that day’s and the next day’s claims, net of responses such as working less on hot days, because the number of workers at risk is not observed.\nDoes it separate short-run weather effects from long-run climate effects? The estimates come from day-to-day weather. The authors translate them with a simple calculation: 1.5°C of warming would add about 0.38% to claims (about 156 claims and AU$40.3 million a year), assuming current adaptation stays the same. Heat effects for high-risk workers did not fall over 35 years, a sign that adaptation has been limited."
+  },
+  {
     "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-what-to-copy",
     "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-what-to-copy",
     "title": "Panel Data and Fixed Effects",
@@ -1145,6 +1194,13 @@
     "title": "Panel Data and Fixed Effects",
     "section": "Comparing the Designs",
     "text": "Comparing the Designs\n\n\n\n\n\n\n\n\n\n\nAbsorbed by FE\nRemaining identifying variation\nMain remaining threat\n\n\n\n\nKünn\nPlayer skill and health; game phase; tournament dynamics\nRound-to-round indoor PM2.5\nFew independent shocks; outdoor co-pollutants\n\n\nArdia\nFirm average return\nSame-day shock × firm emissions intensity\nMarket-wide confounders on news days; feedback\n\n\nBrynjolfsson\nAgent ability; month shocks; experience\nSame agent before vs. after AI access\nManagers selecting agents on trends\n\n\nPark\nStudent ability, background, location, climate; test-date difficulty\nYear-to-year school-day heat for the same student\nTime-varying local shocks; measurement error\n\n\nIreland\nPostcode industry mix, workforce, seasonality, local economy in that month\nDay-to-day temperature within postcode-month\nUnobserved hours worked; extreme-heat work stoppages"
+  },
+  {
+    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#controls-in-the-five-case-studies",
+    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#controls-in-the-five-case-studies",
+    "title": "Panel Data and Fixed Effects",
+    "section": "Controls in the Five Case Studies",
+    "text": "Controls in the Five Case Studies\n\n\n\n\n\n\nWhat Each Paper Controls For\n\n\n\n\n\n\n\n\n\n\nCase\nControls in the main specification\nAdded only as checks, or left out\n\n\n\n\nKünn\nIndoor temperature, CO2, humidity, noise; Elo difference and its square; points so far; board position\nTraffic and flexible weather controls (checks)\n\n\nArdia\nUp to 15 daily market, energy, and macro factors, each with a firm-specific coefficient\nResults reported for four nested sets (1, 3, 6, 15 controls)\n\n\nBrynjolfsson\nNone beyond fixed effects (agent, location, year-month, tenure)\n—\n\n\nPark\nNone beyond fixed effects (student; cohort × test date × take)\nWeather, pollution, county payroll, state-specific trends (checks)\n\n\nIreland\nDay of week, precipitation\nPM2.5 left out as a possible mediator; 0.20 with it vs. 0.24 without\n\n\n\nIn panels, fixed effects often do most of the work, and time-varying controls are added only where something changes within units alongside treatment."
   },
   {
     "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#implementing-the-case-study-specifications",
@@ -1324,6 +1380,13 @@
     "title": "Instrumental Variables",
     "section": "In Practice: Instrumental Variables",
     "text": "In Practice: Instrumental Variables\n\n\n\n\n\n\nPractitioner Summary\n\n\n\nUse it when: something outside the units’ control shifts treatment (a randomized offer, a rule, a market shock) and you can argue it has no other route to the outcome\nWhat you need: the instrument, treatment, and outcome for the same units; outcomes from before the shock for falsification tests\nWhat must hold: relevance, independence, exclusion, and monotonicity\nChecks to run: first stage and its F-statistic; reduced form; placebo and falsification tests; a description of the compliers\nIn R: feols(y ~ x | fe | d ~ z, data), fitstat(model, ~ivf) for the first-stage F\nTelling a manager: “We use only the part of the variation in X caused by Z, which has nothing to do with the outcome otherwise. For units whose X responds to Z, the effect is …”"
+  },
+  {
+    "objectID": "Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.slides.html#workflow-instrumental-variables",
+    "href": "Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.slides.html#workflow-instrumental-variables",
+    "title": "Instrumental Variables",
+    "section": "Workflow: Instrumental Variables",
+    "text": "Workflow: Instrumental Variables\n\n\n\n\n\n\nSeven Decisions, in Order\n\n\n\n\n\n\n\n\n\n\nStep\nDecision\nHow to decide\n\n\n\n\n1. Find the instrument\nWhat shifts treatment from outside\nA story for why it moves treatment and has no other route to the outcome\n\n\n2. First stage\nHow strongly it moves treatment\nReport the coefficient and F; the usual t-test needs F well above 10\n\n\n3. Reduced form\nEffect of the instrument on the outcome\nReport it; it is the instrument’s intent-to-treat effect\n\n\n4. Controls\nWhat makes the instrument as good as random\nCondition on whatever its assignment depends on\n\n\n5. Estimate\nTwo-stage least squares\nUse software, never by hand; weak-instrument-robust intervals if F is low\n\n\n6. Defend exclusion\nOther channels from instrument to outcome\nName them; run placebo and falsification tests\n\n\n7. Interpret\nWhose effect\nDescribe the compliers (LATE)\n\n\n\nEach step is covered later in this chapter."
   },
   {
     "objectID": "Lectures/Ch06-Instrumental-Variables/Lecture-Instrumental-Variables.slides.html#the-idea",
@@ -1607,6 +1670,13 @@
     "title": "Experiments in Practice",
     "section": "In Practice: Running an Experiment",
     "text": "In Practice: Running an Experiment\n\n\n\n\n\n\nPractitioner Summary\n\n\n\nUse it when: you have agreement to randomize and must decide where to run it, what to measure, and how to analyze it\nWhat you need: a primary outcome defined in advance, measured from records or systems rather than surveys where possible\nWhat must hold: the reported analysis is the one planned; participants and setting resemble the people and decisions you care about\nChecks to run: pre-registration filed before outcomes are seen; a check that the treatment was delivered as intended; quality as well as quantity of output\nIn R: power.t.test() and power.prop.test() for sample sizes; the same estimators as Chapter 3\nTelling a manager: “We fixed the measure and the analysis before seeing any results, so this finding was not fished for.”"
+  },
+  {
+    "objectID": "Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.slides.html#workflow-running-an-experiment",
+    "href": "Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.slides.html#workflow-running-an-experiment",
+    "title": "Experiments in Practice",
+    "section": "Workflow: Running an Experiment",
+    "text": "Workflow: Running an Experiment\n\n\n\n\n\n\nSeven Decisions, in Order\n\n\n\n\n\n\n\n\n\n\nStep\nDecision\nHow to decide\n\n\n\n\n1. Setting\nLab, online, or field\nTrade control for realism; match the decision you want to inform\n\n\n2. Treatment and arms\nOne version or several\nAdd arms to learn why it works, if power allows\n\n\n3. Outcomes\nPrimary outcome and its source\nRecords over surveys; quality as well as quantity\n\n\n4. Comparison\nBetween or within subjects\nWithin subjects for precision, if carry-over is unlikely\n\n\n5. Pre-register\nWhat to commit to in advance\nHypotheses, primary outcome, estimator, subgroups\n\n\n6. Ethics\nConsent, deception, withholding benefits\nEthics review; debrief after any deception\n\n\n7. Launch and monitor\nDelivery and take-up\nCheck the treatment was delivered as intended; do not peek at outcomes\n\n\n\nEach step is covered later in this chapter."
   },
   {
     "objectID": "Lectures/Ch04-Experiments-Practice/Lecture-Experiments-Practice.slides.html#lab-online-field",
@@ -2461,6 +2531,13 @@
     "text": "In Practice: Randomized Experiments\n\n\n\n\n\n\nPractitioner Summary\n\n\n\nUse it when: you, or a partner organization, control who gets the treatment, and withholding or delaying it for some units is acceptable\nWhat you need: the assignment list, baseline covariates (ideally past outcomes), and an outcome you can measure for nearly everyone\nWhat must hold: assignment really was random and was followed; no spillovers between treated and control units\nChecks to run: a power calculation before launch; a balance table with a joint test; attrition by arm\nIn R: lm_robust(y ~ treat, data) from estimatr (HC2 by default, matching the formula above), or clusters = team if teams were randomized; a permutation loop for randomization inference (this chapter)\nTelling a manager: “A lottery decided who got it, so the only systematic difference between the groups is the program. The gap in outcomes is its effect, within this margin of error.”"
   },
   {
+    "objectID": "Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.slides.html#workflow-randomized-experiments",
+    "href": "Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.slides.html#workflow-randomized-experiments",
+    "title": "Randomized Experiments: Design and Inference",
+    "section": "Workflow: Randomized Experiments",
+    "text": "Workflow: Randomized Experiments\n\n\n\n\n\n\nSeven Decisions, in Order\n\n\n\n\n\n\n\n\n\n\nStep\nDecision\nHow to decide\n\n\n\n\n1. Define the question\nTreatment, outcome, estimand\nWhat would the decision-maker change, and for whom?\n\n\n2. Unit of randomization\nIndividuals or clusters\nClusters if treatment is delivered to groups or spillovers are likely\n\n\n3. Blocking\nWhether to stratify, and on what\nBlock on variables that predict the outcome\n\n\n4. Sample size\nHow many units, what share treated\nPower calculation for the smallest effect worth detecting\n\n\n5. Pre-register\nOutcomes, estimator, covariates\nFix them before seeing the data\n\n\n6. Estimate\nDifference in means or regression adjustment\nAdjust for pre-treatment covariates for precision; cluster if randomized by cluster\n\n\n7. Check and interpret\nBalance, attrition, uncertainty\nJoint balance test; randomization inference in small samples; report the ATE\n\n\n\nEach step is covered later in this chapter."
+  },
+  {
     "objectID": "Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.slides.html#randomization-removes-selection-bias",
     "href": "Lectures/Ch03-Experiments-Design/Lecture-Experiments-Design.slides.html#randomization-removes-selection-bias",
     "title": "Randomized Experiments: Design and Inference",
@@ -2709,6 +2786,13 @@
     "text": "In Practice: When the Experiment Goes Wrong\n\n\n\n\n\n\nPractitioner Summary\n\n\n\nUse it when: people did not take what they were offered, outcomes are missing, or the treatment leaked to the control group\nWhat you need: take-up in both arms, attrition by arm, and the team or cluster structure of the units\nWhat must hold: exclusion (the offer affects outcomes only through use); no defiers if controls can get the treatment; for Lee bounds, treatment changes whether outcomes are observed in one direction only\nChecks to run: take-up and attrition by arm; baseline traits of those who leave; control-group take-up over time\nIn R: intent-to-treat feols(y ~ z, data), effect of use feols(y ~ 1 | d ~ z, data)\nTelling a manager: “Offering the tool raised output by X. Among the people who used it because we offered it, the gain was Y.”"
   },
   {
+    "objectID": "Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.slides.html#workflow-when-the-experiment-goes-wrong",
+    "href": "Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.slides.html#workflow-when-the-experiment-goes-wrong",
+    "title": "When Experiments Go Wrong",
+    "section": "Workflow: When the Experiment Goes Wrong",
+    "text": "Workflow: When the Experiment Goes Wrong\n\n\n\n\n\n\nSeven Decisions, in Order\n\n\n\n\n\n\n\n\n\n\nStep\nDecision\nHow to decide\n\n\n\n\n1. Check take-up\nDid assigned units take the treatment?\nCompare take-up in both arms\n\n\n2. Report the ITT\nEffect of the offer\nAlways: compare everyone by assignment\n\n\n3. Scale to the effect of use\nLATE (or CACE) by instrumental variables\nIf the decision needs the effect of use; argue exclusion and no defiers\n\n\n4. Check attrition\nMissing outcomes by arm\nCompare rates, and baseline traits of those who leave\n\n\n5. Bound if needed\nLee bounds\nIf attrition differs between arms\n\n\n6. Check spillovers\nDid control units get or feel the treatment?\nControl-group take-up over time; team or cluster structure\n\n\n7. Report\nEverything, including what failed\nITT, LATE, attrition, and deviations from the plan\n\n\n\nEach step is covered later in this chapter."
+  },
+  {
     "objectID": "Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.slides.html#assigned-is-not-the-same-as-treated",
     "href": "Lectures/Ch05-Experiments-Problems/Lecture-Experiments-Problems.slides.html#assigned-is-not-the-same-as-treated",
     "title": "When Experiments Go Wrong",
@@ -2934,6 +3018,13 @@
     "title": "Regression Discontinuity Design",
     "section": "In Practice: Regression Discontinuity",
     "text": "In Practice: Regression Discontinuity\n\n\n\n\n\n\nPractitioner Summary\n\n\n\nUse it when: a rule gives treatment to units above (or below) a cutoff on a score\nWhat you need: the score, the cutoff, the outcome, and many observations close to the cutoff\nWhat must hold: nothing else changes at the cutoff, and units cannot precisely sort to the favourable side\nChecks to run: a plot of binned means; a density test; smooth covariates; several bandwidths, a donut, and placebo cutoffs; the first stage if the design is fuzzy\nIn R: rdrobust(y, x, c = 0) (add fuzzy = d), rdplot(), rddensity()\nTelling a manager: “Households just either side of the threshold are alike except for the subsidy, so the jump at the threshold is the subsidy’s effect for households near it.”"
+  },
+  {
+    "objectID": "Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.slides.html#workflow-regression-discontinuity",
+    "href": "Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.slides.html#workflow-regression-discontinuity",
+    "title": "Regression Discontinuity Design",
+    "section": "Workflow: Regression Discontinuity",
+    "text": "Workflow: Regression Discontinuity\n\n\n\n\n\n\nSeven Decisions, in Order\n\n\n\n\n\n\n\n\n\n\nStep\nDecision\nHow to decide\n\n\n\n\n1. Know the rule\nScore, cutoff, who sets them\nIs anything else tied to the same cutoff?\n\n\n2. Sharp or fuzzy\nDoes crossing the cutoff fully decide treatment?\nIf not, use a fuzzy design (an IV at the cutoff)\n\n\n3. Plot\nBinned means of outcome and treatment\nIs there a visible jump at the cutoff?\n\n\n4. Estimate\nLocal linear fit and bandwidth\nData-driven bandwidth and robust confidence intervals\n\n\n5. Check manipulation\nDensity and covariates at the cutoff\nNo bunching; predetermined covariates do not jump\n\n\n6. Robustness\nBandwidths, donut, placebo cutoffs\nDo the results hold?\n\n\n7. Interpret\nEffect at the cutoff\nHow far from the cutoff can it be applied?\n\n\n\nEach step is covered later in this chapter."
   },
   {
     "objectID": "Lectures/Ch07-Regression-Discontinuity/Lecture-Regression-Discontinuity.slides.html#rules-with-thresholds-are-everywhere",
@@ -3271,6 +3362,13 @@
     "title": "Difference-in-Differences",
     "section": "In Practice: Difference-in-Differences",
     "text": "In Practice: Difference-in-Differences\n\n\n\n\n\n\nPractitioner Summary\n\n\n\nUse it when: a policy switches on for some units at a known date, and you observe treated and untreated units before and after\nWhat you need: outcomes for both groups over several periods before and after the policy\nWhat must hold: parallel trends without the policy; no anticipation; no spillovers onto the control group\nChecks to run: a plot of raw trends; an event study and the power of its pre-trend test; a heterogeneity-robust estimator if timing is staggered; placebo groups and dates; clustering at the policy level\nIn R: feols(y ~ sunab(cohort, period) | unit + period, data), did::att_gt()\nTelling a manager: “Before the policy the two groups moved together; afterwards the treated group pulled away by X. That gap is our estimate.”"
+  },
+  {
+    "objectID": "Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.slides.html#workflow-difference-in-differences",
+    "href": "Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.slides.html#workflow-difference-in-differences",
+    "title": "Difference-in-Differences",
+    "section": "Workflow: Difference-in-Differences",
+    "text": "Workflow: Difference-in-Differences\n\n\n\n\n\n\nSeven Decisions, in Order\n\n\n\n\n\n\n\n\n\n\nStep\nDecision\nHow to decide\n\n\n\n\n1. Groups and timing\nTreated, control, when treatment starts\nOne date or staggered?\n\n\n2. Control group\nNever treated or not yet treated\nWhy is its change a credible counterfactual?\n\n\n3. Scale\nLevels or logs\nDecide before looking: parallel trends depends on the scale\n\n\n4. Estimate\n2×2, two-way fixed effects, or a robust estimator\nStaggered timing with changing effects → Callaway–Sant’Anna or Sun–Abraham\n\n\n5. Event study\nPre-trends and dynamics\nReport the power of the pre-trend test; run a sensitivity analysis\n\n\n6. Inference\nClustering level\nThe level of the policy; wild bootstrap if clusters are few\n\n\n7. Check and interpret\nPlacebo groups and dates, spillovers; the ATT\nScale by take-up if not everyone treated is affected\n\n\n\nEach step is covered later in this chapter."
   },
   {
     "objectID": "Lectures/Ch09-Difference-in-Differences/Lecture-Difference-in-Differences.slides.html#did-medicaid-expansion-save-lives",
@@ -3740,6 +3838,13 @@
     "text": "In Practice: Regression and Matching\n\n\n\n\n\n\nPractitioner Summary\n\n\n\nUse it when: no design-based source of variation exists, and you can argue you observe what drove treatment\nWhat you need: rich pre-treatment covariates, especially past outcomes, and untreated units similar to the treated ones\nWhat must hold: no unmeasured confounders, and overlap\nChecks to run: an overlap plot; standardized differences before and after (below 0.1); several estimators; a sensitivity analysis\nIn R: MatchIt::matchit() and match.data(), sensemakr for sensitivity\nTelling a manager: “Among customers with the same purchase history, joiners visited 5% more. A hidden factor would need to be this strong to explain that away.”"
   },
   {
+    "objectID": "Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.slides.html#workflow-regression-and-matching",
+    "href": "Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.slides.html#workflow-regression-and-matching",
+    "title": "Regression and Matching",
+    "section": "Workflow: Regression and Matching",
+    "text": "Workflow: Regression and Matching\n\n\n\n\n\n\nSeven Decisions, in Order\n\n\n\n\n\n\n\n\n\n\nStep\nDecision\nHow to decide\n\n\n\n\n1. Argue selection on observables\nWhy treatment depends only on measured variables\nKnowledge of how treatment was chosen\n\n\n2. Covariates\nWhich variables to adjust for\nPre-treatment only, especially past outcomes; never mediators\n\n\n3. Overlap\nDo treated and untreated units overlap?\nPlot propensity scores; trim units with no comparable counterparts\n\n\n4. Estimator\nRegression, matching, weighting, or doubly robust\nCompare several; large disagreement is a warning\n\n\n5. Balance\nAre the groups now alike on covariates?\nStandardized differences below 0.1\n\n\n6. Estimate\nATE or ATT\nMatch the estimand to the policy question\n\n\n7. Sensitivity\nHow strong would hidden confounding need to be?\nRosenbaum bounds or sensemakr; report the answer\n\n\n\nEach step is covered later in this chapter."
+  },
+  {
     "objectID": "Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.slides.html#the-assumption",
     "href": "Lectures/Ch11-Regression-Matching/Lecture-Regression-Matching.slides.html#the-assumption",
     "title": "Regression and Matching",
@@ -4079,47 +4184,5 @@
       "Part VI: Selection on Observables",
       "Chapter 11: Regression and Matching"
     ]
-  },
-  {
-    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist",
-    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist",
-    "title": "Panel Data and Fixed Effects",
-    "section": "Case Study 5: Running the Checklist",
-    "text": "Case Study 5: Running the Checklist\nThe fixed-effects checklist from the end of this chapter, applied to this paper. Try each question before revealing the answer.\n\nState the comparison the fixed effects impose. A hotter weekday against a cooler weekday in the same postcode, in the same month of the same year.\nWhy is the remaining variation as good as random? Which confounders could still vary within a postcode-month? Nobody chooses the day’s temperature, and within a postcode-month it is unrelated to the local economy, workforce, or industry mix. Rain and the day of the week do vary from day to day and relate to both heat and injuries, so the model controls for them.\nDoes the fixed-effect structure match that argument? Yes. Postcode × month-year fixed effects absorb anything specific to one place in one month: seasonal work, local booms and slumps, the size of the workforce, and changes to the compensation scheme over 35 years."
-  },
-  {
-    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-46",
-    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-46",
-    "title": "Panel Data and Fixed Effects",
-    "section": "Case Study 5: Running the Checklist (4–6)",
-    "text": "Case Study 5: Running the Checklist (4–6)\n\nAt what level should standard errors be clustered? Temperature is measured for each postcode, so standard errors are clustered by postcode. Neighbouring postcodes share weather; standard errors that allow for this spatial correlation (Conley) barely change, in a check using OLS.\nHow much variation in treatment is left after the fixed effects? A lot. In Melbourne the hottest and coolest days in a month differ by about 19°C in summer and 10°C in winter.\nIs the result robust to other fixed effects and controls? Yes. The main estimate is 0.24% more claims per 1°C; 0.20 with a PM2.5 control, 0.27 with calendar-date fixed effects, and 0.22 with separate postcode × month and month-year fixed effects. It is similar using only accepted claims, OLS, dry days only, and including weekends."
-  },
-  {
-    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-78",
-    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-78",
-    "title": "Panel Data and Fixed Effects",
-    "section": "Case Study 5: Running the Checklist (7–8)",
-    "text": "Case Study 5: Running the Checklist (7–8)\n\nDo placebo tests support the design? Partly. The paper checks past, not future, temperatures: yesterday’s heat adds 0.14% per 1°C, the day before has no effect (−0.01%), and last night’s minimum has no effect. A natural addition is a lead test: tomorrow’s temperature should not predict today’s claims.\nCould selection into the data bias the result? Claims appear only if lodged, so heat could change reporting rather than injuries. The result holds using only claims the insurer accepted. Postcode-months with no claims drop out of the Poisson model because they carry no information. Workers may choose jobs by heat tolerance, which the authors argue makes the gap between manual and other occupations conservative."
-  },
-  {
-    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-910",
-    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#case-study-5-running-the-checklist-910",
-    "title": "Panel Data and Fixed Effects",
-    "section": "Case Study 5: Running the Checklist (9–10)",
-    "text": "Case Study 5: Running the Checklist (9–10)\n\nWhose effect is estimated, and over what horizon? Workers in Victoria’s compulsory scheme, which leaves out some groups such as federal government employees. It is the effect of one hot day on that day’s and the next day’s claims, net of responses such as working less on hot days, because the number of workers at risk is not observed.\nDoes it separate short-run weather effects from long-run climate effects? The estimates come from day-to-day weather. The authors translate them with a simple calculation: 1.5°C of warming would add about 0.38% to claims (about 156 claims and AU$40.3 million a year), assuming current adaptation stays the same. Heat effects for high-risk workers did not fall over 35 years, a sign that adaptation has been limited."
-  },
-  {
-    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#choosing-time-varying-controls",
-    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#choosing-time-varying-controls",
-    "title": "Panel Data and Fixed Effects",
-    "section": "Choosing Time-Varying Controls",
-    "text": "Choosing Time-Varying Controls\n\n\n\n\n\n\nWhich X_{it} to Include\n\n\n\nOnly time-varying variables matter. Anything fixed within a unit is already absorbed by \\alpha_i, so adding it changes nothing.\nInclude variables that change within units and affect both treatment and the outcome (time-varying confounders). Example: rain is related to both temperature and injury risk (Case Study 5).\nExclude anything the treatment can change. Hours worked respond to AI access, and pollution may respond to heat. Controlling for them removes part of the effect.\nWatch for feedback. A control affected by past outcomes, or a lagged outcome, breaks strict exogeneity (Nickell bias).\nVariables that only predict the outcome are optional. They can improve precision but do not remove bias.\nReport results with and without debatable controls. Example: Case Study 5 reports 0.24% per 1°C without a pollution control and 0.20% with it."
-  },
-  {
-    "objectID": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#controls-in-the-five-case-studies",
-    "href": "Lectures/Ch08-Panel-Fixed-Effects/Lecture-Panel-Fixed-Effects.slides.html#controls-in-the-five-case-studies",
-    "title": "Panel Data and Fixed Effects",
-    "section": "Controls in the Five Case Studies",
-    "text": "Controls in the Five Case Studies\n\n\n\n\n\n\nWhat Each Paper Controls For\n\n\n\n\n\n\n\n\n\n\nCase\nControls in the main specification\nAdded only as checks, or left out\n\n\n\n\nKünn\nIndoor temperature, CO2, humidity, noise; Elo difference and its square; points so far; board position\nTraffic and flexible weather controls (checks)\n\n\nArdia\nUp to 15 daily market, energy, and macro factors, each with a firm-specific coefficient\nResults reported for four nested sets (1, 3, 6, 15 controls)\n\n\nBrynjolfsson\nNone beyond fixed effects (agent, location, year-month, tenure)\n—\n\n\nPark\nNone beyond fixed effects (student; cohort × test date × take)\nWeather, pollution, county payroll, state-specific trends (checks)\n\n\nIreland\nDay of week, precipitation\nPM2.5 left out as a possible mediator; 0.20 with it vs. 0.24 without\n\n\n\nIn panels, fixed effects often do most of the work, and time-varying controls are added only where something changes within units alongside treatment."
   }
 ]

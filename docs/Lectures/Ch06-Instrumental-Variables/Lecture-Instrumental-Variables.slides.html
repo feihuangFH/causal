@@ -319,6 +319,73 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
+<section id="workflow-instrumental-variables" class="slide level2 center">
+<h2>Workflow: Instrumental Variables</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Seven Decisions, in Order</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 36%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Decision</th>
+<th>How to decide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Find the instrument</strong></td>
+<td>What shifts treatment from outside</td>
+<td>A story for why it moves treatment and has no other route to the outcome</td>
+</tr>
+<tr class="even">
+<td><strong>2. First stage</strong></td>
+<td>How strongly it moves treatment</td>
+<td>Report the coefficient and F; the usual t-test needs F well above 10</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Reduced form</strong></td>
+<td>Effect of the instrument on the outcome</td>
+<td>Report it; it is the instrument’s intent-to-treat effect</td>
+</tr>
+<tr class="even">
+<td><strong>4. Controls</strong></td>
+<td>What makes the instrument as good as random</td>
+<td>Condition on whatever its assignment depends on</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Estimate</strong></td>
+<td>Two-stage least squares</td>
+<td>Use software, never by hand; weak-instrument-robust intervals if F is low</td>
+</tr>
+<tr class="even">
+<td><strong>6. Defend exclusion</strong></td>
+<td>Other channels from instrument to outcome</td>
+<td>Name them; run placebo and falsification tests</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Interpret</strong></td>
+<td>Whose effect</td>
+<td>Describe the compliers (LATE)</td>
+</tr>
+</tbody>
+</table>
+<p>Each step is covered later in this chapter.</p>
+</div>
+</div>
+</div>
+</section>
 <section>
 <section id="from-experiments-to-instruments" class="title-slide slide level1 center">
 <h1>From Experiments to Instruments</h1>

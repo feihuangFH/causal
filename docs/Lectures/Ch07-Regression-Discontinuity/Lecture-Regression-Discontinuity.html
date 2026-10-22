@@ -390,6 +390,7 @@ window.Quarto = {
   <ul>
   <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
   <li><a href="#in-practice-regression-discontinuity" id="toc-in-practice-regression-discontinuity" class="nav-link" data-scroll-target="#in-practice-regression-discontinuity">In Practice: Regression Discontinuity</a></li>
+  <li><a href="#workflow-regression-discontinuity" id="toc-workflow-regression-discontinuity" class="nav-link" data-scroll-target="#workflow-regression-discontinuity">Workflow: Regression Discontinuity</a></li>
   <li><a href="#motivation" id="toc-motivation" class="nav-link" data-scroll-target="#motivation">Motivation</a>
   <ul class="collapse">
   <li><a href="#rules-with-thresholds-are-everywhere" id="toc-rules-with-thresholds-are-everywhere" class="nav-link" data-scroll-target="#rules-with-thresholds-are-everywhere">Rules with Thresholds Are Everywhere</a></li>
@@ -521,6 +522,73 @@ window.Quarto = {
 <li><strong>In R:</strong> <code>rdrobust(y, x, c = 0)</code> (add <code>fuzzy = d</code>), <code>rdplot()</code>, <code>rddensity()</code></li>
 <li><strong>Telling a manager:</strong> “Households just either side of the threshold are alike except for the subsidy, so the jump at the threshold is the subsidy’s effect for households near it.”</li>
 </ul>
+</div>
+</div>
+</section>
+<section id="workflow-regression-discontinuity" class="level3">
+<h3 class="anchored" data-anchor-id="workflow-regression-discontinuity">Workflow: Regression Discontinuity</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Seven Decisions, in Order
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 36%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Decision</th>
+<th>How to decide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Know the rule</strong></td>
+<td>Score, cutoff, who sets them</td>
+<td>Is anything else tied to the same cutoff?</td>
+</tr>
+<tr class="even">
+<td><strong>2. Sharp or fuzzy</strong></td>
+<td>Does crossing the cutoff fully decide treatment?</td>
+<td>If not, use a fuzzy design (an IV at the cutoff)</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Plot</strong></td>
+<td>Binned means of outcome and treatment</td>
+<td>Is there a visible jump at the cutoff?</td>
+</tr>
+<tr class="even">
+<td><strong>4. Estimate</strong></td>
+<td>Local linear fit and bandwidth</td>
+<td>Data-driven bandwidth and robust confidence intervals</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Check manipulation</strong></td>
+<td>Density and covariates at the cutoff</td>
+<td>No bunching; predetermined covariates do not jump</td>
+</tr>
+<tr class="even">
+<td><strong>6. Robustness</strong></td>
+<td>Bandwidths, donut, placebo cutoffs</td>
+<td>Do the results hold?</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Interpret</strong></td>
+<td>Effect at the cutoff</td>
+<td>How far from the cutoff can it be applied?</td>
+</tr>
+</tbody>
+</table>
+<p>Each step is covered later in this chapter.</p>
 </div>
 </div>
 </section>
@@ -957,7 +1025,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -966,7 +1034,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Income affects take-up directly: richer households differ in needs, preferences, and access to other coverage. A comparison of everyone above and below mixes the price change with these differences; the RD uses only households close to the threshold.</li>
@@ -1087,7 +1155,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1096,7 +1164,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Crossing the cutoff raises the average credit limit, but limits also depend on other factors and vary within each side. The treatment is the credit limit, a continuous amount, so the jump in borrowing is scaled by the jump in the limit.</li>

@@ -390,6 +390,7 @@ window.Quarto = {
   <ul>
   <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
   <li><a href="#in-practice-panel-fixed-effects" id="toc-in-practice-panel-fixed-effects" class="nav-link" data-scroll-target="#in-practice-panel-fixed-effects">In Practice: Panel Fixed Effects</a></li>
+  <li><a href="#workflow-panel-fixed-effects" id="toc-workflow-panel-fixed-effects" class="nav-link" data-scroll-target="#workflow-panel-fixed-effects">Workflow: Panel Fixed Effects</a></li>
   <li><a href="#motivation" id="toc-motivation" class="nav-link" data-scroll-target="#motivation">Motivation</a>
   <ul class="collapse">
   <li><a href="#do-hot-places-learn-less" id="toc-do-hot-places-learn-less" class="nav-link" data-scroll-target="#do-hot-places-learn-less">Do Hot Places Learn Less?</a></li>
@@ -571,6 +572,73 @@ window.Quarto = {
 <li><strong>In R:</strong> <code>feols(y ~ d + x | unit + time, data, cluster = ~unit)</code>, <code>fepois()</code> for counts</li>
 <li><strong>Telling a manager:</strong> “We compared each branch’s sales after the training with the same branch’s sales before it. Its location, size and customers were the same both times, so they can’t explain the change. Something else that changed at that branch around the same time, such as a rival closing nearby, still could.”</li>
 </ul>
+</div>
+</div>
+</section>
+<section id="workflow-panel-fixed-effects" class="level3">
+<h3 class="anchored" data-anchor-id="workflow-panel-fixed-effects">Workflow: Panel Fixed Effects</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Seven Decisions, in Order
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 36%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Decision</th>
+<th>How to decide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Set up the panel</strong></td>
+<td>Unit, period, treatment, outcome</td>
+<td>Does treatment change within units often enough to learn from?</td>
+</tr>
+<tr class="even">
+<td><strong>2. Fixed effects</strong></td>
+<td>Unit only, two-way, or interacted (e.g., postcode × month)</td>
+<td>Which comparison is as good as random?</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Controls</strong></td>
+<td>Which time-varying variables to add</td>
+<td>Confounders that change within units; never variables the treatment changes</td>
+</tr>
+<tr class="even">
+<td><strong>4. Model</strong></td>
+<td>Linear, logs, or Poisson</td>
+<td>Counts with many zeros → Poisson fixed effects</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Inference</strong></td>
+<td>Clustering level</td>
+<td>Where treatment varies; wild bootstrap if clusters are few</td>
+</tr>
+<tr class="even">
+<td><strong>6. Checks</strong></td>
+<td>Leads, selection into the panel, other fixed effects</td>
+<td>Do the results survive?</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Interpret</strong></td>
+<td>Whose effect, over what horizon</td>
+<td>If treatment is a policy that switches on at a date, use DiD (Chapter 9)</td>
+</tr>
+</tbody>
+</table>
+<p>Each step is covered later in this chapter. The checklist at the end repeats them as questions to review a finished analysis.</p>
 </div>
 </div>
 </section>
@@ -1658,7 +1726,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-34-contents" aria-controls="callout-34" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-35-contents" aria-controls="callout-35" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1667,7 +1735,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-34" class="callout-34-contents callout-collapse collapse">
+<div id="callout-35" class="callout-35-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Errors are more frequent at certain stages of a game, such as the moves before the time control. If high-pollution rounds happened to have more late-game moves, pollution would appear to cause errors through game length alone.</li>
@@ -1820,7 +1888,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-41-contents" aria-controls="callout-41" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-42-contents" aria-controls="callout-42" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1829,7 +1897,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-41" class="callout-41-contents callout-collapse collapse">
+<div id="callout-42" class="callout-42-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Prices should react to news, not to what investors already expected. The predictable part of the concern index is already in prices and may move with other market conditions; the surprise is closer to new information.</li>
@@ -1975,7 +2043,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-47-contents" aria-controls="callout-47" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-48-contents" aria-controls="callout-48" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1984,7 +2052,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-47" class="callout-47-contents callout-collapse collapse">
+<div id="callout-48" class="callout-48-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Agent fixed effects remove permanent differences between agents. The estimate falls because agents who got access had higher productivity to begin with, so stronger agents tended to get access earlier.</li>
@@ -2155,7 +2223,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-55-contents" aria-controls="callout-55" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-56-contents" aria-controls="callout-56" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2164,7 +2232,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-55" class="callout-55-contents callout-collapse collapse">
+<div id="callout-56" class="callout-56-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>The within-student estimate is about a tenth of the cross-country slope, so most of the cross-sectional association reflects differences between places (income, institutions, schools), not heat. The comparison is rough, since the tests and units differ.</li>
@@ -2312,7 +2380,7 @@ window.Quarto = {
 <li>Does it separate short-run weather effects from long-run climate effects?</li>
 </ol>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-60-contents" aria-controls="callout-60" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-61-contents" aria-controls="callout-61" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2321,7 +2389,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-60" class="callout-60-contents callout-collapse collapse">
+<div id="callout-61" class="callout-61-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>A hotter weekday against a cooler weekday in the same postcode, in the same month of the same year.</li>
@@ -2370,7 +2438,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-62-contents" aria-controls="callout-62" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-63-contents" aria-controls="callout-63" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -2379,7 +2447,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-62" class="callout-62-contents callout-collapse collapse">
+<div id="callout-63" class="callout-63-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Most postcode-days have zero claims, and the log of zero is undefined. OLS on logs drops those days or needs an arbitrary transformation such as log(y + 1). Poisson keeps zero days and gives a percentage effect; only postcode-months with no claims at all drop out, because they carry no information.</li>
@@ -2814,6 +2882,44 @@ Wooldridge, Jeffrey M. 1999. <span>“Distribution-Free Estimation of Some Nonli
 </section>
 
 </main> <!-- /main -->
+
+<script>
+  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+  // slide changes (different for each slide format).
+  (function () {
+    // dispatch for htmlwidgets
+    function fireSlideEnter() {
+      const event = window.document.createEvent("Event");
+      event.initEvent("slideenter", true, true);
+      window.document.dispatchEvent(event);
+    }
+
+    function fireSlideChanged(previousSlide, currentSlide) {
+      fireSlideEnter();
+
+      // dispatch for shiny
+      if (window.jQuery) {
+        if (previousSlide) {
+          window.jQuery(previousSlide).trigger("hidden");
+        }
+        if (currentSlide) {
+          window.jQuery(currentSlide).trigger("shown");
+        }
+      }
+    }
+
+    // hookup for slidy
+    if (window.w3c_slidy) {
+      window.w3c_slidy.add_observer(function (slide_num) {
+        // slide_num starts at position 1
+        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+      });
+    }
+
+  })();
+</script>
+
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

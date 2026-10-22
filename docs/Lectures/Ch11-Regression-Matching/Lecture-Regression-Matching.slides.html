@@ -319,6 +319,73 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
+<section id="workflow-regression-and-matching" class="slide level2 center">
+<h2>Workflow: Regression and Matching</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Seven Decisions, in Order</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 36%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Decision</th>
+<th>How to decide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Argue selection on observables</strong></td>
+<td>Why treatment depends only on measured variables</td>
+<td>Knowledge of how treatment was chosen</td>
+</tr>
+<tr class="even">
+<td><strong>2. Covariates</strong></td>
+<td>Which variables to adjust for</td>
+<td>Pre-treatment only, especially past outcomes; never mediators</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Overlap</strong></td>
+<td>Do treated and untreated units overlap?</td>
+<td>Plot propensity scores; trim units with no comparable counterparts</td>
+</tr>
+<tr class="even">
+<td><strong>4. Estimator</strong></td>
+<td>Regression, matching, weighting, or doubly robust</td>
+<td>Compare several; large disagreement is a warning</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Balance</strong></td>
+<td>Are the groups now alike on covariates?</td>
+<td>Standardized differences below 0.1</td>
+</tr>
+<tr class="even">
+<td><strong>6. Estimate</strong></td>
+<td>ATE or ATT</td>
+<td>Match the estimand to the policy question</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Sensitivity</strong></td>
+<td>How strong would hidden confounding need to be?</td>
+<td>Rosenbaum bounds or <code>sensemakr</code>; report the answer</td>
+</tr>
+</tbody>
+</table>
+<p>Each step is covered later in this chapter.</p>
+</div>
+</div>
+</div>
+</section>
 <section>
 <section id="selection-on-observables" class="title-slide slide level1 center">
 <h1>Selection on Observables</h1>

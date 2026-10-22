@@ -312,6 +312,7 @@ gtag('config', 'G-F11HECZVN7', { 'anonymize_ip': true});
   <ul>
   <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
   <li><a href="#in-practice-running-an-experiment" id="toc-in-practice-running-an-experiment" class="nav-link" data-scroll-target="#in-practice-running-an-experiment">In Practice: Running an Experiment</a></li>
+  <li><a href="#workflow-running-an-experiment" id="toc-workflow-running-an-experiment" class="nav-link" data-scroll-target="#workflow-running-an-experiment">Workflow: Running an Experiment</a></li>
   <li><a href="#where-experiments-happen" id="toc-where-experiments-happen" class="nav-link" data-scroll-target="#where-experiments-happen">Where Experiments Happen</a>
   <ul class="collapse">
   <li><a href="#lab-online-field" id="toc-lab-online-field" class="nav-link" data-scroll-target="#lab-online-field">Lab, Online, Field</a></li>
@@ -427,6 +428,73 @@ gtag('config', 'G-F11HECZVN7', { 'anonymize_ip': true});
 <li><strong>In R:</strong> <code>power.t.test()</code> and <code>power.prop.test()</code> for sample sizes; the same estimators as Chapter 3</li>
 <li><strong>Telling a manager:</strong> “We fixed the measure and the analysis before seeing any results, so this finding was not fished for.”</li>
 </ul>
+</div>
+</div>
+</section>
+<section id="workflow-running-an-experiment" class="level3">
+<h3 class="anchored" data-anchor-id="workflow-running-an-experiment">Workflow: Running an Experiment</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Seven Decisions, in Order
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 36%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Decision</th>
+<th>How to decide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Setting</strong></td>
+<td>Lab, online, or field</td>
+<td>Trade control for realism; match the decision you want to inform</td>
+</tr>
+<tr class="even">
+<td><strong>2. Treatment and arms</strong></td>
+<td>One version or several</td>
+<td>Add arms to learn why it works, if power allows</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Outcomes</strong></td>
+<td>Primary outcome and its source</td>
+<td>Records over surveys; quality as well as quantity</td>
+</tr>
+<tr class="even">
+<td><strong>4. Comparison</strong></td>
+<td>Between or within subjects</td>
+<td>Within subjects for precision, if carry-over is unlikely</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Pre-register</strong></td>
+<td>What to commit to in advance</td>
+<td>Hypotheses, primary outcome, estimator, subgroups</td>
+</tr>
+<tr class="even">
+<td><strong>6. Ethics</strong></td>
+<td>Consent, deception, withholding benefits</td>
+<td>Ethics review; debrief after any deception</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Launch and monitor</strong></td>
+<td>Delivery and take-up</td>
+<td>Check the treatment was delivered as intended; do not peek at outcomes</td>
+</tr>
+</tbody>
+</table>
+<p>Each step is covered later in this chapter.</p>
 </div>
 </div>
 </section>
@@ -787,7 +855,7 @@ gtag('config', 'G-F11HECZVN7', { 'anonymize_ip': true});
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -796,7 +864,7 @@ gtag('config', 'G-F11HECZVN7', { 'anonymize_ip': true});
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>People choose whether to consult the AI, so consulters and non-consulters may differ in ability or motivation. Whether the AI is right is randomized within person, so the accurate–faulty contrast compares like with like.</li>
@@ -965,7 +1033,7 @@ gtag('config', 'G-F11HECZVN7', { 'anonymize_ip': true});
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -974,7 +1042,7 @@ gtag('config', 'G-F11HECZVN7', { 'anonymize_ip': true});
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Everyone gets the tool within weeks, which is easier to justify to managers and staff, while the random order still creates a valid comparison between early and late groups during the rollout.</li>

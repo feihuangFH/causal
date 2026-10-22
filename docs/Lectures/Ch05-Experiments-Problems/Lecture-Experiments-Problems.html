@@ -390,6 +390,7 @@ window.Quarto = {
   <ul>
   <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
   <li><a href="#in-practice-when-the-experiment-goes-wrong" id="toc-in-practice-when-the-experiment-goes-wrong" class="nav-link" data-scroll-target="#in-practice-when-the-experiment-goes-wrong">In Practice: When the Experiment Goes Wrong</a></li>
+  <li><a href="#workflow-when-the-experiment-goes-wrong" id="toc-workflow-when-the-experiment-goes-wrong" class="nav-link" data-scroll-target="#workflow-when-the-experiment-goes-wrong">Workflow: When the Experiment Goes Wrong</a></li>
   <li><a href="#non-compliance" id="toc-non-compliance" class="nav-link" data-scroll-target="#non-compliance">Non-Compliance</a>
   <ul class="collapse">
   <li><a href="#assigned-is-not-the-same-as-treated" id="toc-assigned-is-not-the-same-as-treated" class="nav-link" data-scroll-target="#assigned-is-not-the-same-as-treated">Assigned Is Not the Same as Treated</a></li>
@@ -504,6 +505,73 @@ window.Quarto = {
 <li><strong>In R:</strong> intent-to-treat <code>feols(y ~ z, data)</code>, effect of use <code>feols(y ~ 1 | d ~ z, data)</code></li>
 <li><strong>Telling a manager:</strong> “Offering the tool raised output by X. Among the people who used it because we offered it, the gain was Y.”</li>
 </ul>
+</div>
+</div>
+</section>
+<section id="workflow-when-the-experiment-goes-wrong" class="level3">
+<h3 class="anchored" data-anchor-id="workflow-when-the-experiment-goes-wrong">Workflow: When the Experiment Goes Wrong</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Seven Decisions, in Order
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 36%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Decision</th>
+<th>How to decide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Check take-up</strong></td>
+<td>Did assigned units take the treatment?</td>
+<td>Compare take-up in both arms</td>
+</tr>
+<tr class="even">
+<td><strong>2. Report the ITT</strong></td>
+<td>Effect of the offer</td>
+<td>Always: compare everyone by assignment</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Scale to the effect of use</strong></td>
+<td>LATE (or CACE) by instrumental variables</td>
+<td>If the decision needs the effect of use; argue exclusion and no defiers</td>
+</tr>
+<tr class="even">
+<td><strong>4. Check attrition</strong></td>
+<td>Missing outcomes by arm</td>
+<td>Compare rates, and baseline traits of those who leave</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Bound if needed</strong></td>
+<td>Lee bounds</td>
+<td>If attrition differs between arms</td>
+</tr>
+<tr class="even">
+<td><strong>6. Check spillovers</strong></td>
+<td>Did control units get or feel the treatment?</td>
+<td>Control-group take-up over time; team or cluster structure</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Report</strong></td>
+<td>Everything, including what failed</td>
+<td>ITT, LATE, attrition, and deviations from the plan</td>
+</tr>
+</tbody>
+</table>
+<p>Each step is covered later in this chapter.</p>
 </div>
 </div>
 </section>
@@ -966,7 +1034,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -975,7 +1043,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Developers choose whether to use the tool. Those who do may be more motivated, more junior, or working on tasks where it helps, so the comparison mixes the tool’s effect with these differences.</li>

@@ -390,6 +390,7 @@ window.Quarto = {
   <ul>
   <li><a href="#where-this-chapter-fits" id="toc-where-this-chapter-fits" class="nav-link active" data-scroll-target="#where-this-chapter-fits">Where This Chapter Fits</a></li>
   <li><a href="#in-practice-randomized-experiments" id="toc-in-practice-randomized-experiments" class="nav-link" data-scroll-target="#in-practice-randomized-experiments">In Practice: Randomized Experiments</a></li>
+  <li><a href="#workflow-randomized-experiments" id="toc-workflow-randomized-experiments" class="nav-link" data-scroll-target="#workflow-randomized-experiments">Workflow: Randomized Experiments</a></li>
   <li><a href="#why-randomization-works" id="toc-why-randomization-works" class="nav-link" data-scroll-target="#why-randomization-works">Why Randomization Works</a>
   <ul class="collapse">
   <li><a href="#randomization-removes-selection-bias" id="toc-randomization-removes-selection-bias" class="nav-link" data-scroll-target="#randomization-removes-selection-bias">Randomization Removes Selection Bias</a></li>
@@ -506,6 +507,73 @@ window.Quarto = {
 <li><strong>In R:</strong> <code>lm_robust(y ~ treat, data)</code> from <code>estimatr</code> (HC2 by default, matching the formula above), or <code>clusters = team</code> if teams were randomized; a permutation loop for randomization inference (this chapter)</li>
 <li><strong>Telling a manager:</strong> “A lottery decided who got it, so the only systematic difference between the groups is the program. The gap in outcomes is its effect, within this margin of error.”</li>
 </ul>
+</div>
+</div>
+</section>
+<section id="workflow-randomized-experiments" class="level3">
+<h3 class="anchored" data-anchor-id="workflow-randomized-experiments">Workflow: Randomized Experiments</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Seven Decisions, in Order
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 36%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Decision</th>
+<th>How to decide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Define the question</strong></td>
+<td>Treatment, outcome, estimand</td>
+<td>What would the decision-maker change, and for whom?</td>
+</tr>
+<tr class="even">
+<td><strong>2. Unit of randomization</strong></td>
+<td>Individuals or clusters</td>
+<td>Clusters if treatment is delivered to groups or spillovers are likely</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Blocking</strong></td>
+<td>Whether to stratify, and on what</td>
+<td>Block on variables that predict the outcome</td>
+</tr>
+<tr class="even">
+<td><strong>4. Sample size</strong></td>
+<td>How many units, what share treated</td>
+<td>Power calculation for the smallest effect worth detecting</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Pre-register</strong></td>
+<td>Outcomes, estimator, covariates</td>
+<td>Fix them before seeing the data</td>
+</tr>
+<tr class="even">
+<td><strong>6. Estimate</strong></td>
+<td>Difference in means or regression adjustment</td>
+<td>Adjust for pre-treatment covariates for precision; cluster if randomized by cluster</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Check and interpret</strong></td>
+<td>Balance, attrition, uncertainty</td>
+<td>Joint balance test; randomization inference in small samples; report the ATE</td>
+</tr>
+</tbody>
+</table>
+<p>Each step is covered later in this chapter.</p>
 </div>
 </div>
 </section>
@@ -974,7 +1042,7 @@ window.Quarto = {
 </ol>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -983,7 +1051,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>One letter was sent per tax return, addressed to the filers, so the return is the natural unit. People on the same return also make coverage decisions together; randomizing individuals within a return would put treated and control people in the same household and invite spillovers. Standard errors are clustered by household.</li>
