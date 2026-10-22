@@ -875,8 +875,9 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="simulating-the-bias-and-the-fix" class="slide level2 center">
-<h2>Simulating the Bias and the Fix</h2>
+<section id="simulation-the-bias-and-the-fix" class="slide level2 center">
+<h2>Simulation: The Bias and the Fix</h2>
+<p>1,000 students each take a test four times. Students in hotter places have fewer school and family resources, which we do not observe, so heat and resources are confounded. The truth: each 1°F of heat lowers scores by 0.02 SD. We compare four estimators.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -890,44 +891,46 @@ Fei Huang, UNSW Sydney
 <span id="cb2-8"><a></a>  <span class="fu">sprintf</span>(<span class="st">"%.4f (%.4f)"</span>, b, <span class="fu">se</span>(m)[<span class="fu">names</span>(b)])</span>
 <span id="cb2-9"><a></a>}</span>
 <span id="cb2-10"><a></a></span>
-<span id="cb2-11"><a></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span>   <span class="co"># students</span></span>
-<span id="cb2-12"><a></a>n_t <span class="ot">&lt;-</span> <span class="dv">4</span>    <span class="co"># test sittings</span></span>
-<span id="cb2-13"><a></a></span>
-<span id="cb2-14"><a></a><span class="co"># Long-run climate of each student's location (°F)</span></span>
-<span id="cb2-15"><a></a>climate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">65</span>, <span class="at">sd =</span> <span class="dv">5</span>)</span>
-<span id="cb2-16"><a></a></span>
-<span id="cb2-17"><a></a><span class="co"># Unobserved resources: lower in hotter places (the confounder)</span></span>
-<span id="cb2-18"><a></a>alpha <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.05</span> <span class="sc">*</span> (climate <span class="sc">-</span> <span class="dv">65</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">0.3</span>)</span>
-<span id="cb2-19"><a></a></span>
-<span id="cb2-20"><a></a>panel <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>N, <span class="at">t =</span> <span class="dv">1</span><span class="sc">:</span>n_t)</span>
-<span id="cb2-21"><a></a>year_shock <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.5</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.5</span>)   <span class="co"># nationwide hot/cool years</span></span>
-<span id="cb2-22"><a></a></span>
-<span id="cb2-23"><a></a>panel<span class="sc">$</span>heat  <span class="ot">&lt;-</span> climate[panel<span class="sc">$</span>id] <span class="sc">+</span> year_shock[panel<span class="sc">$</span>t] <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb2-24"><a></a>true_tau    <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.02</span></span>
-<span id="cb2-25"><a></a>panel<span class="sc">$</span>score <span class="ot">&lt;-</span> alpha[panel<span class="sc">$</span>id] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> panel<span class="sc">$</span>t <span class="sc">+</span> true_tau <span class="sc">*</span> panel<span class="sc">$</span>heat <span class="sc">+</span></span>
-<span id="cb2-26"><a></a>               <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="fl">0.1</span>)</span>
-<span id="cb2-27"><a></a></span>
-<span id="cb2-28"><a></a><span class="co"># 1. Pooled OLS: confounded by alpha</span></span>
-<span id="cb2-29"><a></a>m_pooled <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">+</span> <span class="fu">i</span>(t), <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb2-30"><a></a></span>
-<span id="cb2-31"><a></a><span class="co"># 2. Unit fixed effects only</span></span>
-<span id="cb2-32"><a></a>m_fe     <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">|</span> id, <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb2-33"><a></a></span>
-<span id="cb2-34"><a></a><span class="co"># 3. Two-way fixed effects</span></span>
-<span id="cb2-35"><a></a>m_twfe   <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">|</span> id <span class="sc">+</span> t, <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb2-36"><a></a></span>
-<span id="cb2-37"><a></a><span class="co"># 4. First differences</span></span>
-<span id="cb2-38"><a></a>panel    <span class="ot">&lt;-</span> panel[<span class="fu">order</span>(panel<span class="sc">$</span>id, panel<span class="sc">$</span>t), ]</span>
-<span id="cb2-39"><a></a>m_fd     <span class="ot">&lt;-</span> <span class="fu">feols</span>(<span class="fu">d</span>(score) <span class="sc">~</span> <span class="fu">d</span>(heat), <span class="at">data =</span> panel,</span>
-<span id="cb2-40"><a></a>                  <span class="at">panel.id =</span> <span class="sc">~</span>id <span class="sc">+</span> t, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb2-41"><a></a></span>
-<span id="cb2-42"><a></a><span class="co"># Pooled OLS is over 3x too large. TWFE and FD recover the truth.</span></span>
-<span id="cb2-43"><a></a><span class="co"># Unit FE alone is slightly off: the year shocks happen to correlate with the score trend.</span></span>
-<span id="cb2-44"><a></a><span class="fu">data.frame</span>(</span>
-<span id="cb2-45"><a></a>  <span class="at">model    =</span> <span class="fu">c</span>(<span class="st">"Pooled OLS"</span>, <span class="st">"Unit FE"</span>, <span class="st">"Two-way FE"</span>, <span class="st">"First differences"</span>),</span>
-<span id="cb2-46"><a></a>  <span class="at">estimate =</span> <span class="fu">sapply</span>(<span class="fu">list</span>(m_pooled, m_fe, m_twfe, m_fd), heat_est),</span>
-<span id="cb2-47"><a></a>  <span class="at">truth    =</span> true_tau</span>
-<span id="cb2-48"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-11"><a></a>b_heat <span class="ot">&lt;-</span> <span class="cf">function</span>(m) <span class="fu">unname</span>(<span class="fu">coef</span>(m)[<span class="fu">grep</span>(<span class="st">"heat"</span>, <span class="fu">names</span>(<span class="fu">coef</span>(m)))][<span class="dv">1</span>])   <span class="co"># coefficient only, for the text</span></span>
+<span id="cb2-12"><a></a></span>
+<span id="cb2-13"><a></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span>   <span class="co"># students</span></span>
+<span id="cb2-14"><a></a>n_t <span class="ot">&lt;-</span> <span class="dv">4</span>    <span class="co"># test sittings</span></span>
+<span id="cb2-15"><a></a></span>
+<span id="cb2-16"><a></a><span class="co"># Long-run climate of each student's location (°F)</span></span>
+<span id="cb2-17"><a></a>climate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">65</span>, <span class="at">sd =</span> <span class="dv">5</span>)</span>
+<span id="cb2-18"><a></a></span>
+<span id="cb2-19"><a></a><span class="co"># Unobserved resources: lower in hotter places (the confounder)</span></span>
+<span id="cb2-20"><a></a>alpha <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.05</span> <span class="sc">*</span> (climate <span class="sc">-</span> <span class="dv">65</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">0.3</span>)</span>
+<span id="cb2-21"><a></a></span>
+<span id="cb2-22"><a></a>panel <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>N, <span class="at">t =</span> <span class="dv">1</span><span class="sc">:</span>n_t)</span>
+<span id="cb2-23"><a></a>year_shock <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.5</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.5</span>)   <span class="co"># nationwide hot/cool years</span></span>
+<span id="cb2-24"><a></a></span>
+<span id="cb2-25"><a></a>panel<span class="sc">$</span>heat  <span class="ot">&lt;-</span> climate[panel<span class="sc">$</span>id] <span class="sc">+</span> year_shock[panel<span class="sc">$</span>t] <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb2-26"><a></a>true_tau    <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.02</span></span>
+<span id="cb2-27"><a></a>panel<span class="sc">$</span>score <span class="ot">&lt;-</span> alpha[panel<span class="sc">$</span>id] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> panel<span class="sc">$</span>t <span class="sc">+</span> true_tau <span class="sc">*</span> panel<span class="sc">$</span>heat <span class="sc">+</span></span>
+<span id="cb2-28"><a></a>               <span class="fu">rnorm</span>(<span class="fu">nrow</span>(panel), <span class="dv">0</span>, <span class="fl">0.1</span>)</span>
+<span id="cb2-29"><a></a></span>
+<span id="cb2-30"><a></a><span class="co"># 1. Pooled OLS: confounded by alpha</span></span>
+<span id="cb2-31"><a></a>m_pooled <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">+</span> <span class="fu">i</span>(t), <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb2-32"><a></a></span>
+<span id="cb2-33"><a></a><span class="co"># 2. Unit fixed effects only</span></span>
+<span id="cb2-34"><a></a>m_fe     <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">|</span> id, <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb2-35"><a></a></span>
+<span id="cb2-36"><a></a><span class="co"># 3. Two-way fixed effects</span></span>
+<span id="cb2-37"><a></a>m_twfe   <span class="ot">&lt;-</span> <span class="fu">feols</span>(score <span class="sc">~</span> heat <span class="sc">|</span> id <span class="sc">+</span> t, <span class="at">data =</span> panel, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb2-38"><a></a></span>
+<span id="cb2-39"><a></a><span class="co"># 4. First differences</span></span>
+<span id="cb2-40"><a></a>panel    <span class="ot">&lt;-</span> panel[<span class="fu">order</span>(panel<span class="sc">$</span>id, panel<span class="sc">$</span>t), ]</span>
+<span id="cb2-41"><a></a>m_fd     <span class="ot">&lt;-</span> <span class="fu">feols</span>(<span class="fu">d</span>(score) <span class="sc">~</span> <span class="fu">d</span>(heat), <span class="at">data =</span> panel,</span>
+<span id="cb2-42"><a></a>                  <span class="at">panel.id =</span> <span class="sc">~</span>id <span class="sc">+</span> t, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb2-43"><a></a></span>
+<span id="cb2-44"><a></a><span class="co"># Pooled OLS is over 3x too large. TWFE and FD recover the truth.</span></span>
+<span id="cb2-45"><a></a><span class="co"># Unit FE alone is slightly off: the year shocks happen to correlate with the score trend.</span></span>
+<span id="cb2-46"><a></a><span class="fu">data.frame</span>(</span>
+<span id="cb2-47"><a></a>  <span class="at">model    =</span> <span class="fu">c</span>(<span class="st">"Pooled OLS"</span>, <span class="st">"Unit FE"</span>, <span class="st">"Two-way FE"</span>, <span class="st">"First differences"</span>),</span>
+<span id="cb2-48"><a></a>  <span class="at">estimate =</span> <span class="fu">sapply</span>(<span class="fu">list</span>(m_pooled, m_fe, m_twfe, m_fd), heat_est),</span>
+<span id="cb2-49"><a></a>  <span class="at">truth    =</span> true_tau</span>
+<span id="cb2-50"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>              model         estimate truth
@@ -937,10 +940,26 @@ Fei Huang, UNSW Sydney
 4 First differences -0.0198 (0.0014) -0.02</code></pre>
 </div>
 </div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Pooled OLS:</strong> −0.069, over three times the truth (−0.020), because hotter students also have fewer resources.</li>
+<li><strong>Unit fixed effects only:</strong> −0.026, close but slightly off, because nationwide hot and cool years happen to line up with the trend in scores.</li>
+<li><strong>Two-way fixed effects</strong> (−0.019) and <strong>first differences</strong> (−0.020) recover the truth: comparing each student with themselves removes resources, and year effects remove the nationwide shocks.</li>
+</ul>
+</div>
+</div>
+</div>
 <aside class="notes">
 <ul>
 <li>Ask students to predict the sign of the pooled OLS bias before running it.</li>
-<li>Note why the unit-FE-only model (m_fe) is also biased here: the nationwide year shocks are correlated with the time trend in scores. Adding year FE fixes this.</li>
 <li>Then compare sd(panel$heat) (about 5°F) with the SD of heat after demeaning (about 0.9°F). This mirrors Park et al.’s point about residual variation.</li>
 </ul>
 <style type="text/css">
@@ -954,6 +973,27 @@ Fei Huang, UNSW Sydney
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="dynamic-effects-leads-and-lags" class="slide level2 center">
+<h2>Dynamic Effects: Leads and Lags</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Treatment Need Not Act Only in the Same Period</strong></p>
+</div>
+<div class="callout-content">
+<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \sum_{k=-K}^{L} \beta_k \, D_{i,t-k} + \varepsilon_{it}</span></p>
+<ul>
+<li><strong>Lags</strong> (<span class="math inline">k &gt; 0</span>): effects can persist or accumulate. Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> find that hot school days two to four years before the test also lower scores, so the cumulative effect of a warmer climate is larger than the one-year estimate</li>
+<li><strong>Leads</strong> (<span class="math inline">k &lt; 0</span>): future treatment cannot cause today’s outcome. A significant lead signals reverse causality, anticipation, or a spurious trend. Park et al.’s <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> future-temperature placebo is this test</li>
+<li>When the treatment is a policy that switches on once and stays on, this becomes an event study, the central tool of Chapter 9</li>
+</ul>
+</div>
+</div>
+</div>
 </section></section>
 <section>
 <section id="identification" class="title-slide slide level1 center">
@@ -1094,27 +1134,6 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="dynamic-effects-leads-and-lags" class="slide level2 center">
-<h2>Dynamic Effects: Leads and Lags</h2>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Treatment Need Not Act Only in the Same Period</strong></p>
-</div>
-<div class="callout-content">
-<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \sum_{k=-K}^{L} \beta_k \, D_{i,t-k} + \varepsilon_{it}</span></p>
-<ul>
-<li><strong>Lags</strong> (<span class="math inline">k &gt; 0</span>): effects can persist or accumulate. Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> find that hot school days two to four years before the test also lower scores, so the cumulative effect of a warmer climate is larger than the one-year estimate</li>
-<li><strong>Leads</strong> (<span class="math inline">k &lt; 0</span>): future treatment cannot cause today’s outcome. A significant lead signals reverse causality, anticipation, or a spurious trend. Park et al.’s <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> future-temperature placebo is this test</li>
-<li>When the treatment is a policy that switches on once and stays on, this becomes an event study, the central tool of Chapter 9</li>
-</ul>
-</div>
-</div>
-</div>
-</section>
 <section id="what-to-do-about-each-threat" class="slide level2 center">
 <h2>What to Do About Each Threat</h2>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1187,8 +1206,9 @@ Fei Huang, UNSW Sydney
 </div>
 </div>
 </section>
-<section id="simulation-when-fe-fails" class="slide level2 center">
-<h2>Simulation: When FE Fails</h2>
+<section id="simulation-when-fixed-effects-fail" class="slide level2 center">
+<h2>Simulation: When Fixed Effects Fail</h2>
+<p>Same simulated students as the first simulation, now with a local economic shock that changes from year to year. In a bad year, schools defer air-conditioning maintenance (more heat exposure) and families have fewer resources (lower scores). The truth is still −0.020.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1217,6 +1237,22 @@ Fei Huang, UNSW Sydney
 <pre><code>                      model         estimate truth
 1                      TWFE -0.0435 (0.0015) -0.02
 2 TWFE + econ_shock control -0.0192 (0.0018) -0.02</code></pre>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reading the Result</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Two-way fixed effects:</strong> −0.044, about twice the truth. The shock changes within each student over time, so fixed effects cannot remove it.</li>
+<li><strong>Adding the shock as a control:</strong> −0.019, back to the truth. In real data the shock is often unobserved, which is why Park et al.&nbsp;control for county payroll in weather-exposed industries.</li>
+</ul>
+</div>
 </div>
 </div>
 </section></section>
