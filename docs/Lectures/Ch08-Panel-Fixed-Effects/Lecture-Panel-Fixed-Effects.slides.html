@@ -684,11 +684,11 @@ Fei Huang, UNSW Sydney
 </div>
 <div class="callout-content">
 <p>Write potential outcomes for unit <span class="math inline">i</span> at time <span class="math inline">t</span> under treatment level <span class="math inline">d</span>:</p>
-<p><span class="math display">Y_{it}(d) = \alpha_i + \lambda_t + \tau d + \varepsilon_{it}</span></p>
+<p><span class="math display">Y_{it}(d) = \alpha_i + \tau d + X_{it}'\beta + \varepsilon_{it}</span></p>
 <p>The observed outcome is <span class="math inline">Y_{it} = Y_{it}(D_{it})</span>.</p>
 <p><strong>Implicit assumptions in this model:</strong></p>
 <ol type="1">
-<li><strong>Additivity:</strong> unit and time heterogeneity enter as level shifts</li>
+<li><strong>Additivity:</strong> differences between units enter as level shifts (<span class="math inline">\alpha_i</span>)</li>
 <li><strong>Constant effect:</strong> <span class="math inline">\tau</span> is the same for all <span class="math inline">i, t</span> (we relax this later)</li>
 <li><strong>No carryover:</strong> <span class="math inline">Y_{it}</span> depends on <span class="math inline">D_{it}</span> but not on <span class="math inline">D_{i,t-1}</span> (unless we model it)</li>
 <li><strong>No interference:</strong> unit <span class="math inline">i</span>’s outcome does not depend on unit <span class="math inline">j</span>’s treatment (SUTVA)</li>
@@ -826,8 +826,8 @@ Fei Huang, UNSW Sydney
 <p><strong>Does Raising the Minimum Wage Reduce Employment?</strong></p>
 </div>
 <div class="callout-content">
-<p>A panel of states <span class="math inline">s</span> observed over years <span class="math inline">t</span>:</p>
-<p><span class="math display">\text{Employment}_{st} = \alpha_s + \lambda_t + \beta \,\text{MinWage}_{st} + \varepsilon_{st}</span></p>
+<p>A panel of states <span class="math inline">i</span> observed over years <span class="math inline">t</span>:</p>
+<p><span class="math display">\text{Employment}_{it} = \alpha_i + \lambda_t + \tau \,\text{MinWage}_{it} + \varepsilon_{it}</span></p>
 <table class="caption-top">
 <colgroup>
 <col style="width: 50%">
@@ -845,11 +845,11 @@ Fei Huang, UNSW Sydney
 <td>Anything hitting all states in year <span class="math inline">t</span>: national recessions, interest rates, federal policy, nationwide trends</td>
 </tr>
 <tr class="even">
-<td><strong>State FE</strong> <span class="math inline">\alpha_s</span></td>
+<td><strong>State FE</strong> <span class="math inline">\alpha_i</span></td>
 <td>Persistent state differences: industry mix, cost of living, unionization, politics</td>
 </tr>
 <tr class="odd">
-<td><span class="math inline">\beta</span></td>
+<td><span class="math inline">\tau</span></td>
 <td>Identified from states changing their minimum wage at different times, relative to their own average and to the national year average</td>
 </tr>
 </tbody>
@@ -1037,7 +1037,7 @@ Fei Huang, UNSW Sydney
 <p><strong>Treatment Need Not Act Only in the Same Period</strong></p>
 </div>
 <div class="callout-content">
-<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \sum_{k=-K}^{L} \beta_k \, D_{i,t-k} + \varepsilon_{it}</span></p>
+<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \sum_{k=-K}^{L} \tau_k \, D_{i,t-k} + \varepsilon_{it}</span></p>
 <ul>
 <li><strong>Lags</strong> (<span class="math inline">k &gt; 0</span>): effects can persist or accumulate. Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> find that hot school days two to four years before the test also lower scores, so the cumulative effect of a warmer climate is larger than the one-year estimate</li>
 <li><strong>Leads</strong> (<span class="math inline">k &lt; 0</span>): future treatment cannot cause today’s outcome. A significant lead signals reverse causality, anticipation, or a spurious trend. Park et al.’s <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> future-temperature placebo is this test</li>
@@ -1352,8 +1352,8 @@ Fei Huang, UNSW Sydney
 </div>
 <div class="callout-content">
 <p>Rather than a linear term in temperature, count the days in each temperature bin:</p>
-<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \sum_{b \neq \text{ref}} \beta_b \cdot \text{Days}^{(b)}_{it} + \varepsilon_{it}</span></p>
-<p>Each <span class="math inline">\beta_b</span> is the effect of replacing one day in the reference bin with one day in bin <span class="math inline">b</span>. Both Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> and Ireland et al. <span class="citation" data-cites="ireland2023heat">(<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span> use this to show damages that rise steeply at high temperatures.</p>
+<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \sum_{b \neq \text{ref}} \tau_b \cdot \text{Days}^{(b)}_{it} + \varepsilon_{it}</span></p>
+<p>Each <span class="math inline">\tau_b</span> is the effect of replacing one day in the reference bin with one day in bin <span class="math inline">b</span>. Both Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> and Ireland et al. <span class="citation" data-cites="ireland2023heat">(<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span> use this to show damages that rise steeply at high temperatures.</p>
 </div>
 </div>
 </div>
@@ -1469,9 +1469,83 @@ Fei Huang, UNSW Sydney
 <li>Long-run climate, geography (location FE)</li>
 <li>Industry (firm FE, if firms do not switch)</li>
 </ul>
-<p><strong>But you can estimate interactions</strong> between a time-invariant characteristic and a time-varying treatment:</p>
-<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \tau D_{it} + \delta (D_{it} \times \text{Black}_i) + \varepsilon_{it}</span></p>
-<p>This is how Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> show heat harms Black and Hispanic students’ learning about three times as much as white students’.</p>
+<p><strong>But you can estimate how the treatment effect differs</strong> by such characteristics, using interactions (next two slides). This is how Park et al. <span class="citation" data-cites="park2020heat">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> show heat harms Black and Hispanic students’ learning about three times as much as white students’.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="heterogeneous-effects-adding-interactions" class="slide level2 center">
+<h2>Heterogeneous Effects: Adding Interactions</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Letting the Effect Differ by Group</strong></p>
+</div>
+<div class="callout-content">
+<p><span class="math display">Y_{it} = \alpha_i + \lambda_t + \tau D_{it} + \delta \, (D_{it} \times Z_i) + X_{it}'\beta + \varepsilon_{it}</span></p>
+<ul>
+<li><span class="math inline">Z_i</span> is a characteristic that may change the effect, such as race, occupation, or skill. With <span class="math inline">Z_i = 0</span> or <span class="math inline">1</span>, the effect is <span class="math inline">\tau</span> for the first group and <span class="math inline">\tau + \delta</span> for the second; <span class="math inline">\delta</span> is the difference</li>
+<li>If <span class="math inline">Z_i</span> is fixed within a unit, <span class="math inline">\alpha_i</span> absorbs its own effect, but <span class="math inline">\delta</span> is still identified from within-unit changes in <span class="math inline">D_{it}</span></li>
+<li>If the characteristic changes over time (<span class="math inline">Z_{it}</span>), include it on its own as well</li>
+<li>For a continuous <span class="math inline">Z</span>, centre it at its mean, so <span class="math inline">\tau</span> is the effect for a typical unit</li>
+<li>In R: <code>feols(y ~ d + d:z | unit + time, data)</code></li>
+</ul>
+<p>This is different from interacted fixed effects (postcode × month) or interacted controls. Those change the comparison to remove confounding; an interaction with the treatment changes what we estimate.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>When to Include One</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>The policy question is about who gains or loses: targeting, or distributional effects</li>
+<li>A mechanism predicts a difference: air conditioning should offset heat (Case Study 4)</li>
+<li>Earlier evidence points to a group: the least-skilled agents gain most (Case Study 3)</li>
+<li>Choose the groups before seeing the results; with many groups, adjust for multiple testing</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="heterogeneous-effects-what-must-hold" class="slide level2 center scrollable">
+<h2>Heterogeneous Effects: What Must Hold</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Identification Requirements</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><strong>Strict exogeneity within each group:</strong> treatment must be as good as random within units in every group, not only on average</li>
+<li><strong>The moderator is not affected by treatment:</strong> use a fixed trait or one measured before treatment. Income after a heatwave, or hours worked after getting an AI tool, would be bad moderators</li>
+<li><strong>No group-specific shocks that move with treatment:</strong> if groups face different time shocks, <span class="math inline">\delta</span> absorbs them. Allow separate time effects for each group (in R: <code>| unit + time^z</code>)</li>
+<li><strong>Enough within-unit variation in treatment in every group,</strong> or that group’s effect is imprecise</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong><span class="math inline">\delta</span> Shows That the Effect Differs, Not Why</strong></p>
+</div>
+<div class="callout-content">
+<p>Groups defined by <span class="math inline">Z</span> differ in many ways: race is correlated with income and access to air conditioning. To claim that <span class="math inline">Z</span> itself changes the effect, you need variation in <span class="math inline">Z</span> that is as good as random, as in Park et al.’s within-school changes in air conditioning.</p>
 </div>
 </div>
 </div>
@@ -3019,6 +3093,44 @@ Wooldridge, Jeffrey M. 1999. <span>“Distribution-Free Estimation of Some Nonli
       });
     });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
